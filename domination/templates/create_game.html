@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Create new game{% endblock %}
+{% block head %}
+  {{ super() }}
+  <script type="text/javascript">
+    var update_button = function() {
+      var button = $("input[type='submit']")[0];
+      var checkmarks = $("input[name=card_key]:checked").size();
+      button.disabled = (checkmarks != 10);
+      $("#noofcards").text(checkmarks);
+    };
+    $(function() {
+      $("input[name=card_key]").change(update_button);
+      update_button();
+    });
+    function select_set(cards) {
+      $("input[name=card_key]:checked").attr("checked", false);
+      $.each(cards, function(index, value) {
+        $("input[name=card_key][value='" + value + "']").attr("checked", true);
+      });
+      update_button();
+    }
+  </script>
+  {{ macros.init_render_card() }}
+{% endblock %}
+{% block content %}
+  <h2>Create new game</h2>
+  <form action="" method="post">
+    <p>Name of Game: <input type="text" name="name" value="Game of {{ session.username }}"></p>
+    <p>Sets:
+      <a href="javascript:;" onclick='select_set([])'>Empty</a>
+      {% for name, cards in card_sets %}
+        <a href="javascript:;" onclick='select_set({{cards | tojson | safe}})'>{{ name }}</a>
+      {% endfor %}
+    <p>Which 10 cards? You selected <span id="noofcards"></span> cards.
+      {% for cls in app.card_classes %}
+        {% call macros.render_card(cls) %}
+          <input type="checkbox" name="card_key" value="{{ cls.__name__ }}">
+        {% endcall %}
+      {% endfor %}
+    <p><input type="submit" value="Create game"></p>
+  </form>
+{% endblock %}

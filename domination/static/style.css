@@ -1,0 +1,13 @@
+#footer { border-top: 1px solid black; }
+
+.card { display: inline-block; width: 10em; padding: 0.5em; margin: 0.5em; }
+/* .card .description { visibility: hidden; } */
+.VictoryCard { background-color: #7FFF00; }
+.CurseCard { background-color: #DA70D6; }
+.TreasureCard { background-color: gold; }
+.ActionCard { background-color: #EEEEEE; }
+.AttackCard { background-color: #FFEEEE; }
+.ReactionCard { background-color: lightblue; }
+
+.activeplayer { font-style: italic;  }
+.infoitem { display: inline-block; width: 14em; }

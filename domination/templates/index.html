@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+  <h2>Overview</h2>
+  {% if session.username %}
+    <h3>Running games</h3>
+    <ul>
+      {% for name in app.games %}
+      <li>{{ name }} <a href="{{ url_for('game', name=name) }}">View</a></li>
+      {% else %}
+      <li>None</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
+

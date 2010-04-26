@@ -1,0 +1,41 @@
+{% macro render_card(card) -%}
+<div class="card {{ card.card_type }}">
+  <h4>{{ card.name }}</h4>
+  <div style="display: none;">
+    <div class="description">
+      {% if card.desc %}
+        <h5>Description</h5>
+        {{ card.desc }}
+      {% endif %}
+    </div>
+  </div>
+  <div class="costs">
+    Cost: {{ card.cost }}
+  </div>
+  {% if card.worth %}
+  <div class="worth">
+    Worth: {{ card.worth }}
+  </div>
+  {% endif %}
+  {% if card.points  %}
+  <div class="points">
+    Points: {{ card.points }}
+  </div>
+  {% endif %}
+  {% if caller %}
+    {{ caller() }}
+  {% endif %}
+</div>
+{%- endmacro %}
+{% macro init_render_card() -%}
+  <script type="text/javascript">
+    $(window).load(function() {
+      $(".card").tooltip({
+        bodyHandler: function() {
+          return $($(this).find(".description")).html() 
+        }, 
+        showURL: false 
+      });
+    });
+  </script>
+{%- endmacro %}
