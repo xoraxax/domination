@@ -80,6 +80,7 @@ class GameRunner(Thread):
         Thread.__init__(self)
         self.game = game
         self.seqno = 0
+        self.seqno_condition = Condition()
         self.waiting_for = None
         self.owner = owner
         self.fresh = True
@@ -88,6 +89,10 @@ class GameRunner(Thread):
         return self.fresh and player is self.owner and not self.is_alive()\
                 and len(self.game.players) > 1
 
+    @property
+    def joinable(self):
+        return self.fresh
+
     def run(self):
         try:
             self._run()
@@ -95,7 +100,13 @@ class GameRunner(Thread):
             pass
         except:
             self.owner.request_queue.append(DebugRequest(sys.exc_info()))
-            self.seqno += 1
+            self.increment_seqno()
+
+    def increment_seqno(self):
+        self.seqno_condition.acquire()
+        self.seqno += 1
+        self.seqno_condition.notify()
+        self.seqno_condition.release()
 
     def _run(self):
         self.fresh = False
@@ -106,19 +117,17 @@ class GameRunner(Thread):
                 req = gen.send(reply)
             except StopIteration:
                 break
-            if req is None:
-                self.seqno += 1
-                continue
             player = req.player
             assert not player.request_queue and not player.response
             if isinstance(req, InfoRequest):
                 player.info_queue.append(req)
                 self.waiting_for = None
-                self.seqno += 1
+                self.increment_seqno()
                 continue
             player.request_queue.append(req)
             self.waiting_for = player
-            self.seqno += 1
+            self.increment_seqno()
+
             player.response_condition.acquire()
             while not player.response:
                 player.response_condition.wait()

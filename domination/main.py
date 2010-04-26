@@ -139,8 +139,8 @@ def create_game(): # XXX check for at most 10 sets
 @gets_game
 def game(game_runner):
     game = game_runner.game
+    seqno = game_runner.seqno
     if game_runner.game in get_store()["games"]:
-        seqno = game_runner.seqno
         player = get_store()["games"][game_runner.game]
         if request.method == 'POST':
             cv = player.response_condition
@@ -164,7 +164,6 @@ def game(game_runner):
                 del app.games[game.name]
                 raise req.exc_info[0], req.exc_info[1], req.exc_info[2]
     else:
-        seqno = -1
         player = None
         req = None
 
@@ -177,6 +176,8 @@ def game(game_runner):
 @gets_game
 def join_game(game_runner):
     assert not game_runner in get_store()["games"]
+    if not game_runner.joinable:
+        return render_error(_("Game has begun or ended already."))
     get_store()["games"][game_runner.game] = player = Player(session["username"])
     game = game_runner.game
     assert player not in game.players
@@ -184,7 +185,7 @@ def join_game(game_runner):
     if len(game.players) > game.MAX_PLAYERS:
         game.players.remove(player)
         return render_error(_("Too many players in the game!"))
-    game_runner.seqno += 1
+    game_runner.increment_seqno()
     return redirect(url_for("game", name=game.name))
 
 @app.route("/game/start/<name>")
@@ -193,14 +194,20 @@ def join_game(game_runner):
 def start_game(game_runner):
     game_runner.start()
     game = game_runner.game
-    game_runner.seqno += 1
+    game_runner.increment_seqno()
     return redirect(url_for("game", name=game.name))
 
 @app.route("/game/get_seqno/<name>")
 @needs_login
 @gets_game
 def get_seqno(game_runner):
-    return jsonify(result=game_runner.seqno)
+    old_seqno = request.args.get('seqno', type=int)
+    cv = game_runner.seqno_condition
+    cv.acquire()
+    while game_runner.seqno == old_seqno:
+        cv.wait()
+    cv.release()
+    return jsonify()
 
 
 @app.before_request
@@ -211,5 +218,5 @@ def before_request():
 
 if __name__ == '__main__':
     app.secret_key = "insecure"
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True, threaded=True)
 
