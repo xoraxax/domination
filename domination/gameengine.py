@@ -169,7 +169,7 @@ class Game(object):
                                         _("%s plays this card:") % (player.name, ), [card])
                         player.hand.remove(card)
                         if card.trash_after_playing:
-                            game.trash_pile.append(card)
+                            self.trash_pile.append(card)
                         else:
                             discarded_cards.append(card)
 
