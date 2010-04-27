@@ -5,7 +5,7 @@
   {% if session.username %}
     <h3>Running games</h3>
     <ul>
-      {% for name in app.games %}
+      {% for name, _ in app.games | dictsort %}
       <li>{{ name }} <a href="{{ url_for('game', name=name) }}">View</a></li>
       {% else %}
       <li>None</li>
