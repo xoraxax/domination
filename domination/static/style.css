@@ -1,7 +1,11 @@
 #footer { border-top: 1px solid black; }
 
-.card { display: inline-block; width: 10em; padding: 0.5em; margin: 0.5em; }
-/* .card .description { visibility: hidden; } */
+.card { display: inline-block; width: 9em; padding: 0.5em; margin: 0.5em; }
+.card h4 { margin-top: 0px; margin-bottom: 0.8em; }
+.card span.costs { background-color: #FFEF99; float: right; }
+.descheading { margin-top: 0px; }
+.importantfigure { font-weight: bold; color: darkred; }
+
 .VictoryCard { background-color: #7FFF00; }
 .CurseCard { background-color: #DA70D6; }
 .TreasureCard { background-color: gold; }
@@ -10,4 +14,4 @@
 .ReactionCard { background-color: lightblue; }
 
 .activeplayer { font-style: italic;  }
-.infoitem { display: inline-block; width: 14em; }
+.infoitem { display: inline-block; width: 15em; }

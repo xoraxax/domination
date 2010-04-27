@@ -54,9 +54,10 @@ class SelectDeal(Request):
 
 
 class SelectCard(Request):
-    def __init__(self, game, player, msg, card_classes):
+    def __init__(self, game, player, msg, card_classes, show_supply_count=False):
         Request.__init__(self, game, player, msg)
         self.card_classes = card_classes
+        self.show_supply_count = show_supply_count
         card_classes.sort(key=lambda x: x.cost, reverse=True)
 
 class DebugRequest(Request):
@@ -105,7 +106,7 @@ class GameRunner(Thread):
     def increment_seqno(self):
         self.seqno_condition.acquire()
         self.seqno += 1
-        self.seqno_condition.notify()
+        self.seqno_condition.notifyAll()
         self.seqno_condition.release()
 
     def _run(self):
@@ -167,7 +168,10 @@ class Game(object):
                                 yield InfoRequest(self, other_player,
                                         _("%s plays this card:") % (player.name, ), [card])
                         player.hand.remove(card)
-                        discarded_cards.append(card)
+                        if card.trash_after_playing:
+                            game.trash_pile.append(card)
+                        else:
+                            discarded_cards.append(card)
 
                         if next_times is not None:
                             times = next_times
@@ -399,6 +403,7 @@ class Card(object):
     worth = 0
     optional = False
     abstract = True
+    trash_after_playing = False
     __slots__ = ()
 
     def __init__(self):
@@ -590,7 +595,7 @@ class Mine(ActionCard):
                 CardTypeRegistry.card_classes if c.cost <= card.cost + 3 and
                 game.supply.get(c.__name__) and issubclass(c, TreasureCard)]
             card_cls = yield SelectCard(game, player, card_classes=card_classes,
-                msg=_("Select a treasure card that you want to have."))
+                msg=_("Select a treasure card that you want to have."), show_supply_count=True)
             card.trash(game, player)
             new_card = game.supply[card_cls.__name__].pop(-1)
             player.hand.append(new_card)
@@ -629,7 +634,7 @@ class Remodel(ActionCard):
             card_cls = yield SelectCard(game, player, card_classes=[c for c in
                 CardTypeRegistry.card_classes if c.cost <= card.cost + 2 and
                 game.supply.get(c.__name__)],
-                msg=_("Select a card that you want to have."))
+                msg=_("Select a card that you want to have."), show_supply_count=True)
             card.trash(game, player)
             new_card = game.supply[card_cls.__name__].pop(-1)
             player.hand.append(new_card)
@@ -736,20 +741,19 @@ class CouncilRoom(ActionCard):
 class Feast(ActionCard):
     name = _("Feast")
     cost = 4
+    trash_after_playing = True
     desc = _("Trash this card, gain a card costing up to 5.")
 
     def activate_action(self, game, player):
-        try:
-            player.discard_pile.remove(self)
-        except ValueError: # happens with Feast
-            pass
-        game.trash_pile.append(self)
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
             CardTypeRegistry.card_classes if c.cost <= 5 and
             game.supply.get(c.__name__)],
-            msg=_("Select a card that you want to have."))
+            msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop(-1)
         player.discard_pile.append(new_card)
+        for info_player in game.following_players(player):
+            yield InfoRequest(game, info_player,
+                    _("%s gains this card:") % (player.name, ), [new_card])
 
 class Festival(ActionCard):
     name = _("Festival")
@@ -858,9 +862,9 @@ class Thief(AttackCard):
             if defends:
                 continue
             cards = []
-            player.draw_cards(2)
-            cards.append(player.hand.pop())
-            cards.append(player.hand.pop())
+            other_player.draw_cards(2)
+            cards.append(other_player.hand.pop())
+            cards.append(other_player.hand.pop())
             for info_player in game.players:
                 yield InfoRequest(game, info_player, _("%s reveals the top 2 cards of his deck:") %
                         (other_player.name, ), cards[:])
@@ -935,7 +939,7 @@ class Workshop(ActionCard):
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
             CardTypeRegistry.card_classes if c.cost <= 4 and
             game.supply.get(c.__name__)],
-            msg=_("Select a card that you want to have."))
+            msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop(-1)
         player.discard_pile.append(new_card)
 

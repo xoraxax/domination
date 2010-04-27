@@ -197,10 +197,10 @@ def start_game(game_runner):
     game_runner.increment_seqno()
     return redirect(url_for("game", name=game.name))
 
-@app.route("/game/get_seqno/<name>")
+@app.route("/game/check_seqno/<name>")
 @needs_login
 @gets_game
-def get_seqno(game_runner):
+def check_seqno(game_runner):
     old_seqno = request.args.get('seqno', type=int)
     cv = game_runner.seqno_condition
     cv.acquire()
@@ -209,6 +209,9 @@ def get_seqno(game_runner):
     cv.release()
     return jsonify()
 
+@app.route("/crash")
+def crash():
+    1/0
 
 @app.before_request
 def before_request():

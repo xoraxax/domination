@@ -20,6 +20,13 @@
       });
       update_button();
     }
+    function select_random_set() {
+      $("input[name=card_key]:checked").attr("checked", false);
+      $("input[name=card_key]").random(10).each(function() {
+          $(this).attr("checked", true);
+      });
+      update_button();
+    }
   </script>
   {{ macros.init_render_card() }}
 {% endblock %}
@@ -29,9 +36,11 @@
     <p>Name of Game: <input type="text" name="name" value="Game of {{ session.username }}"></p>
     <p>Sets:
       <a href="javascript:;" onclick='select_set([])'>Empty</a>
+      <a href="javascript:;" onclick='select_random_set()'>Random</a>
       {% for name, cards in card_sets %}
         <a href="javascript:;" onclick='select_set({{cards | tojson | safe}})'>{{ name }}</a>
       {% endfor %}
+      
     <p>Which 10 cards? You selected <span id="noofcards"></span> cards.
       {% for cls in app.card_classes %}
         {% call macros.render_card(cls) %}

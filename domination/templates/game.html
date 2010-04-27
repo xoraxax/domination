@@ -10,6 +10,9 @@
   </script>
   {% endif %}
   <script type="text/javascript">
+    {% if req %}
+      your_turn_reminder();
+    {% endif %}
     $(function() {
         $.scrollTo("#game");
     });
@@ -65,10 +68,11 @@
       <div class="errormessage">{{ req.last_error }}</div>
     {% endif %}
     {% if req_type == "SelectDeal" %}
-      <p>You have {{ player.remaining_money }} Money remaining!</p>
+    <p>You have {{ player.remaining_money }} Money and {{ player.remaining_deals }} buys remaining!</p>
       {% for card in req.cards %}
         {% call macros.render_card(card) %}
-          {{ game.supply[card.__name__] | count }} left
+          <span class="{% if not game.supply[card.__name__] %}importantfigure{% endif %}">
+            {{ game.supply[card.__name__] | count }} left</span>
           {% if req.is_buyable(card) %}
             <form action="" method="post">
               <input type="hidden" name="req_id" value="{{ req_id }}">
@@ -118,6 +122,9 @@
     {% elif req_type == "SelectCard" %}
       {% for card in req.card_classes %}
         {% call macros.render_card(card) %}
+          {% if req.show_supply_count %}
+            {{ game.supply[card.__name__] | count }} left
+          {% endif %}
           <form action="" method="post">
             <input type="hidden" name="req_id" value="{{ req_id }}">
             <input type="hidden" name="card" value="{{ card.__name__ }}">
