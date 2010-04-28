@@ -107,3 +107,51 @@ class Baron(ActionCard):
     name = _("Baron")
     edition = Intrigue
     cost = 4
+
+
+class Tribute(ActionCard):
+    name = _("Tribute")
+    edition = Intrigue
+    cost = 5
+
+
+class Masquerade(ActionCard):
+    name = _("Masquerade")
+    edition = Intrigue
+    cost = 3
+
+
+class Torturer(AttackCard):
+    name = _("Torturer")
+    edition = Intrigue
+    cost = 5
+
+
+class Swindler(AttackCard):
+    name = _("Swindler")
+    edition = Intrigue
+    cost = 3
+
+
+class Upgrade(ActionCard):
+    name = _("Upgrade")
+    edition = Intrigue
+    cost = 5
+
+
+class TradingPost(ActionCard):
+    name = _("Trading Post")
+    edition = Intrigue
+    cost = 5
+
+
+class WishingWell(ActionCard):
+    name = _("Wishing Well")
+    edition = Intrigue
+    cost = 3
+
+
+class Steward(ActionCard):
+    name = _("Steward")
+    edition = Intrigue
+    cost = 3
