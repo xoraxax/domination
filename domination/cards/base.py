@@ -146,9 +146,10 @@ class Mine(ActionCard):
                     msg=_("Select a treasure card you want to convert to a potentially better card."))
         if cards:
             card = cards[0]
-            card_classes = [c for c in
-                CardTypeRegistry.card_classes if c.cost <= card.cost + 3 and
-                game.supply.get(c.__name__) and issubclass(c, TreasureCard)]
+            card_classes = [c for c in CardTypeRegistry.card_classes.itervalues()
+                            if c.cost <= card.cost + 3 and
+                            game.supply.get(c.__name__) and
+                            issubclass(c, TreasureCard)]
             card_cls = yield SelectCard(game, player, card_classes=card_classes,
                 msg=_("Select a treasure card that you want to have."), show_supply_count=True)
             card.trash(game, player)
@@ -191,8 +192,8 @@ class Remodel(ActionCard):
         if cards:
             card = cards[0]
             card_cls = yield SelectCard(game, player, card_classes=[c for c in
-                CardTypeRegistry.card_classes if c.cost <= card.cost + 2 and
-                game.supply.get(c.__name__)],
+                CardTypeRegistry.card_classes.itervalues()
+                if c.cost <= card.cost + 2 and game.supply.get(c.__name__)],
                 msg=_("Select a card that you want to have."), show_supply_count=True)
             card.trash(game, player)
             new_card = game.supply[card_cls.__name__].pop(-1)
@@ -319,7 +320,7 @@ class Feast(ActionCard):
 
     def activate_action(self, game, player):
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
-            CardTypeRegistry.card_classes if c.cost <= 5 and
+            CardTypeRegistry.card_classes.itervalues() if c.cost <= 5 and
             game.supply.get(c.__name__)],
             msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop(-1)
@@ -520,7 +521,7 @@ class Workshop(ActionCard):
 
     def activate_action(self, game, player):
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
-            CardTypeRegistry.card_classes if c.cost <= 4 and
+            CardTypeRegistry.card_classes.itervalues() if c.cost <= 4 and
             game.supply.get(c.__name__)],
             msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop(-1)
