@@ -1,4 +1,15 @@
-#footer { margin-top: 20px; border-top: 1px solid #AAAAAA; padding-top: 10px;
+body { margin: 0; }
+
+#menu { float: right; margin-right: 1em; }
+#menu ul { padding: 0 0 0 2em; list-style: none; }
+#menu ul li { display: inline; padding-left: 1.5em; }
+
+#header { border-bottom: 1px solid #AAAAAA; padding: 0 1em; }
+#header a { text-decoration: none; color: black; }
+
+#content { clear: both; padding: 0 1em; }
+
+#footer { margin-top: 1.5em; border-top: 1px solid #AAAAAA; padding: 0.8em 1em;
           text-align: right; color: #666666; }
 
 .card { display: inline-block; width: 9em; padding: 0.5em; margin: 0.5em; }
