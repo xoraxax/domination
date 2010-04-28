@@ -10,8 +10,8 @@
 .CurseCard { background-color: #DA70D6; }
 .TreasureCard { background-color: gold; }
 .ActionCard { background-color: #EEEEEE; }
-.AttackCard { background-color: #FFEEEE; }
-.ReactionCard { background-color: lightblue; }
+.AttackCard { background-color: #FFD7D7; }
+.ReactionCard { background-color: #D7D7FF; }
 
 .activeplayer { font-style: italic;  }
 .infoitem { display: inline-block; width: 15em; }
