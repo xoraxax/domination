@@ -670,7 +670,7 @@ class Village(ActionCard):
 
 class Adventurer(ActionCard):
     name = _("Adventurer")
-    cost = 0#6
+    cost = 6
     desc = _("Reveal cards from your deck until you reveal 2 Treasure cards."
             " Put those Treasure cards into your hand and discard the other revealed cards.")
 
