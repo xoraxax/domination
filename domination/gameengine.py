@@ -261,57 +261,77 @@ class Game(object):
 
 
 class DominationGame(Game):
-    MAX_PLAYERS = 4
+    MAX_PLAYERS = 6 #maximum allowed number of players
     def __init__(self, name, selected_cards):
         Game.__init__(self, name)
-        self.selected_cards = selected_cards
+        self.selected_cards = selected_cards #cards chosen for the game
 
     def deal_cards(self):
-        self.deal_initial_decks()
-        self.deal_supply_cards(self.selected_cards)
+        self.deal_initial_decks() #the players' decks are initialized
+        self.deal_supply_cards(self.selected_cards) #the supply is equipped with cards
 
     def deal_supply_cards(game, selected_cards):
-        no_players = len(game.players)
-        assert len(selected_cards) == 10
-        game.add_supply(Copper, 60)
-        game.add_supply(Silver, 40)
-        game.add_supply(Gold, 30)
+        no_players = len(game.players) #number of players
+        assert len(selected_cards) == 10 #debug check that there are 10 kinds of kingdom cards in selected_cards
+
+	#add treasure cards
+	if no_players > 4:
+            game.add_supply(Copper, 120) 
+            game.add_supply(Silver, 80)
+            game.add_supply(Gold, 60)
+	else:
+            game.add_supply(Copper, 60) 
+            game.add_supply(Silver, 40)
+            game.add_supply(Gold, 30)
+
+	#add victory cards (except victory kingdom cards)
         if no_players == 2:
             victory_cards = 8
-            curse_cards = 10
+	    province_cards = 8
+	elif no_players == 5:
+	    victory_cards = 12
+	    province_cards = 15
+	elif no_players == 6:
+	    victory_cards = 12
+	    province_cards = 18
         else:
             victory_cards = 12
-            if no_players == 3:
-                curse_cards = 20
-            else:
-                curse_cards = 30
+	    province_cards = 12
+        curse_cards = (no_players-1)*10
 
         game.add_supply(Curse, curse_cards)
         game.add_supply(Estate, victory_cards)
         game.add_supply(Duchy, victory_cards)
-        game.add_supply(Province, victory_cards)
+        game.add_supply(Province, province_cards)
+
+	#add kingdom cards
         for selected_card in selected_cards:
             amount = 10
-            if selected_card is Gardens:
+            if selected_card is Gardens: #modify for additional victory cards
                 amount = victory_cards
             game.add_supply(selected_card, amount)
 
-    def deal_initial_decks(game):
-        for player in game.players:
-            assert not player.deck
-            player.deck.extend(Copper() for _ in xrange(7))
-            player.deck.extend(Estate() for _ in xrange(3))
-            random.shuffle(player.deck)
+    def deal_initial_decks(game): #deal the starting hands
+        for player in game.players: #every player...
+            assert not player.deck #...does not have a deck...
+            player.deck.extend(Copper() for _ in xrange(7)) #...gets 7 Copper
+            player.deck.extend(Estate() for _ in xrange(3)) #...and 3 Estates.
+            random.shuffle(player.deck) #then his deck is shuffled
 
     def check_end_of_game(self):
-        if not self.supply["Province"]:
-            return _("No provinces in supply left.")
+	no_players = len(self.players) #number of players
+        if not self.supply["Province"]: #check if province supply is empty
+            return _("Province supply is empty.")
         empty_batches = [card_key for card_key, cards in self.supply.items()
-                if not cards]
-        if len(empty_batches) > 2:
-            return _("The following piles are empty:") + " " + \
+                if not cards] #fill empty_batches with card keys of cards the supply of which is empty
+	if no_players < 5:
+	    must_empty = 3
+	else
+	    must_empty = 4
+        if len(empty_batches) >= must_empty: #check if at least must_empty supply piles are empty
+            return _("The following supplies are empty:") + " " + \
                     ", ".join(card.name for card in
-                            CardTypeRegistry.keys2classes(empty_batches))
+                            CardTypeRegistry.keys2classes(empty_batches)) #return a String listing the empty card piles
 
 
 class Player(object):
