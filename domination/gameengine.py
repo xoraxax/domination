@@ -397,6 +397,18 @@ class Player(object):
         return shuffled
 
 
+class Edition(object):
+
+    def __init__(self, name):
+	self.name = name
+
+Promo = Edition(_("Promo Cards"))
+BaseGame = Edition(_("Base game"))
+Intrigue = Edition(_("Intrigue game"))
+Seaside = Edition(_("Seaside expansion"))
+Alchemy = Edition(_("Alchemy expansion"))
+
+
 class CardTypeRegistry(type):
     card_classes = []
 
@@ -422,13 +434,13 @@ class CardTypeRegistry(type):
 
 class Card(object):
     __metaclass__ = CardTypeRegistry
-    name = "UNKNOWN"
-    cost = None
-    points = 0
-    worth = 0
-    optional = False
-    abstract = True
-    trash_after_playing = False
+    name = "UNKNOWN" #card name
+    cost = None #card cost
+    points = 0 #victory points
+    worth = 0 #monetary worth
+    optional = False #one of the mandatory cards?
+    abstract = True #abstract template?
+    trash_after_playing = False #does it go to trash after playing?
     __slots__ = ()
 
     def __init__(self):
@@ -525,6 +537,7 @@ class Gardens(VictoryCard):
     cost = 4
     desc = _("Worth one point for every ten cards in your deck (rounded down)")
     optional = True
+    edition = BaseGame
     points = 0
 
     def get_points(self, game, player):
@@ -535,9 +548,10 @@ class Chapel(ActionCard):
     name = _("Chapel")
     cost = 2
     desc = _("Trash up to four cards from your hand.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
-        cards = yield SelectHandCards(game, player, count_lower=0, count_upper=4,
+        cards = yield SelectHandCards(game, player, count_lower=0, count_upper=4, #TODO: must not count_lower=1? If a player has at least one card in his hand, he must trash at least one card.
                 msg=_("Which cards do you want to trash?"))
         # trash cards
         for card in cards:
@@ -551,6 +565,7 @@ class Cellar(ActionCard):
     name = _("Cellar")
     cost = 2
     desc = _("+1 Action, Discard any number of cards. +1 Card per card discarded.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
@@ -570,6 +585,7 @@ class Market(ActionCard):
     name = _("Market")
     cost = 5
     desc = _("+1 Card, +1 Action, +1 Buy, +1 Money")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
@@ -581,6 +597,7 @@ class Militia(AttackCard):
     name = _("Militia")
     cost = 4
     desc = _("+2 Money, Each other player discards down to three cards in his hand.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.virtual_money += 2
@@ -602,13 +619,14 @@ class Militia(AttackCard):
             for info_player in game.players:
                 if info_player is not other_player:
                     yield InfoRequest(game, info_player,
-                            _("%s discards these cards:") % (other_player.name, ), cards)
+                            _("%s discards these cards:") % (other_player.name, ), cards) #TODO: info players may only see one of the discarded cards
 
 class Mine(ActionCard):
     name = _("Mine")
     cost = 5
     desc = _("Trash a treasure card in your hand. Gain a treasure card costing"
             " up to three money more, put it in your hand.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         cards = yield SelectHandCards(game, player, cls=TreasureCard,
@@ -634,9 +652,10 @@ class Mine(ActionCard):
 class Moat(ReactionCard):
     name = _("Moat")
     cost = 2
-    desc = _("+2 Cards, When another player plays an attack card, you may"
+    desc = _("+2 Cards, When another player plays an attack card, you"
             " reveal this from your hand. If you do, you are unaffected by"
             " the attack.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.draw_cards(2)
@@ -649,10 +668,11 @@ class Remodel(ActionCard):
     cost = 4
     desc = _("Trash a card from your hand. Gain a card costing up to 2 Money"
             " more than the trashed card.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         cards = yield SelectHandCards(game, player,
-                    count_lower=0, count_upper=1,
+                    count_lower=0, count_upper=1, #TODO: count_lower=1?
                     msg=_("Select a card you want to trash."))
         if cards:
             card = cards[0]
@@ -675,6 +695,7 @@ class Smithy(ActionCard):
     name = _("Smithy")
     cost = 4
     desc = _("+3 Cards")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.draw_cards(3)
@@ -683,6 +704,7 @@ class Village(ActionCard):
     name = _("Village")
     cost = 3
     desc = _("+1 Card, +2 Actions")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.draw_cards(1)
@@ -693,6 +715,7 @@ class Adventurer(ActionCard):
     cost = 6
     desc = _("Reveal cards from your deck until you reveal 2 Treasure cards."
             " Put those Treasure cards into your hand and discard the other revealed cards.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         treasure_cards_found = 0
@@ -721,6 +744,7 @@ class Bureaucrat(AttackCard):
     desc = _("Gain a Silver card; put it on top of your deck. Each other player"
             " reveals a Victory card from his hand and puts it on his deck (or"
             " reveals a hand with no Victory cards).")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         silver_cards = game.supply["Silver"]
@@ -751,6 +775,7 @@ class Chancellor(ActionCard):
     name = _("Chancellor")
     cost = 3
     desc = _("+2 Money, You may immediately put your deck into your discard pile.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.virtual_money += 2
@@ -763,6 +788,7 @@ class CouncilRoom(ActionCard):
     name = _("Council Room")
     cost = 5
     desc = _("+4 cards, +1 buy, Each other player draws a card.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.draw_cards(4)
@@ -775,6 +801,7 @@ class Feast(ActionCard):
     cost = 4
     trash_after_playing = True
     desc = _("Trash this card, gain a card costing up to 5.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
@@ -791,6 +818,7 @@ class Festival(ActionCard):
     name = _("Festival")
     cost = 5
     desc = _("+2 Actions, +1 Buy, +2 Money")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.remaining_actions += 2
@@ -801,6 +829,7 @@ class Laboratory(ActionCard):
     name = _("Laboratory")
     cost = 5
     desc = _("+2 Cards, +1 Action")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.draw_cards(2)
@@ -812,6 +841,7 @@ class Library(ActionCard):
     desc = _("Draw until you have 7 cards in your hand. You may set aside any"
             " action cards drawn this way, as you draw them; discard the set"
             " aside cards after you finish drawing.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         set_aside_cards = []
@@ -829,6 +859,7 @@ class Moneylender(ActionCard):
     name = _("Moneylender")
     cost = 4
     desc = _("Trash a Copper card from your hand. If you do, +3 Money.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         copper_cards = [c for c in player.hand if isinstance(c, Copper)]
@@ -846,13 +877,14 @@ class Spy(AttackCard):
     desc = _("+1 Card, +1 Action, Each player (including you) reveals the top"
             " card of his deck and either discards it or puts it back,"
             " your choice.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.draw_cards(1)
         player.remaining_actions += 1
         for other_player in game.players:
             defends = False
-            for item in self.defends_check(game, other_player,
+            for item in self.defends_check(game, other_player, #TODO: one cannot defend against one's own Spy, can one?
                     _("%s defends against the Spy with:")):
                 defends = True
                 yield item
@@ -873,7 +905,7 @@ class Spy(AttackCard):
                             {"playername": player.name, "player2name": other_player.name},
                             [card])
             else:
-                other_player.deck.append(card)
+                other_player.deck.append(card) #TODO: Is it on top of the deck now?
 
 class Thief(AttackCard):
     name = _("Thief")
@@ -882,6 +914,7 @@ class Thief(AttackCard):
             " If they revealed any Treasure cards, they trash one of them that"
             " you choose. You may gain any or all of these trashed cards. They"
             " discard the other revealed cards.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         trashed = []
@@ -927,6 +960,7 @@ class ThroneRoom(ActionCard):
     name = _("Throne Room")
     cost = 4
     desc = _("Choose an action card in your hand. Play it twice.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
@@ -936,6 +970,7 @@ class Witch(AttackCard):
     name = _("Witch")
     cost = 5
     desc = _("+2 Cards, Each other player gains a Curse card.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.draw_cards(2)
@@ -957,6 +992,7 @@ class Woodcutter(ActionCard):
     name = _("Woodcutter")
     cost = 3
     desc = _("+1 Buy, +2 Money")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
@@ -966,6 +1002,7 @@ class Workshop(ActionCard):
     name = _("Workshop")
     cost = 3
     desc = _("Gain a card costing up to 4.")
+    edition = BaseGame
 
     def activate_action(self, game, player):
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
