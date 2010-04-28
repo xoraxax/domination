@@ -166,7 +166,7 @@ class Game(object):
                         for other_player in self.players:
                             if other_player is not player:
                                 yield InfoRequest(self, other_player,
-                                        _("%s plays this card:") % (player.name, ), [card])
+                                        _("%s plays:") % (player.name, ), [card])
                         player.hand.remove(card)
                         if card.trash_after_playing:
                             self.trash_pile.append(card)
@@ -213,7 +213,7 @@ class Game(object):
                         for other_player in self.players:
                             if other_player is not player:
                                 yield InfoRequest(self, other_player,
-                                        _("%s buys this card:") % (player.name, ), [card])
+                                        _("%s buys:") % (player.name, ), [card])
 
                 # cleanup
                 player.discard_pile.extend(discarded_cards)
@@ -363,13 +363,18 @@ class Player(object):
         self.draw_cards(5)
 
     def draw_cards(self, count):
+        shuffled = False
         for _ in xrange(count):
             if not self.deck:
                 self.deck, self.discard_pile = self.discard_pile, self.deck
                 random.shuffle(self.deck)
+                shuffled = True
             if self.deck:
                 choice = self.deck.pop()
                 self.hand.append(choice)
+            else:
+                return None
+        return shuffled
 
 
 class CardTypeRegistry(type):
@@ -408,7 +413,7 @@ class Card(object):
 
     def __init__(self):
         self.__name__ = type(self).__name__
-        assert self.name != "UNKOWN"
+        assert self.name != "UNKNOWN"
         assert self.cost is not None
         assert self.points is not None
         assert self.worth is not None
@@ -562,7 +567,7 @@ class Militia(AttackCard):
         for other_player in game.following_players(player):
             defends = False
             for item in self.defends_check(game, other_player,
-                    _("%s defends against the Militia with this card:")):
+                    _("%s defends against the Militia with:")):
                 defends = True
                 yield item
             if defends:
@@ -571,7 +576,7 @@ class Militia(AttackCard):
             if count <= 0:
                 continue
             cards = yield SelectHandCards(game, other_player, count_lower=count, count_upper=count,
-                    msg=_("Another player played Militia. Which cards do you want to discard?"))
+                    msg=_("%s played Militia. Which cards do you want to discard?") % (player.name, ))
             for card in cards:
                 card.discard(other_player)
             for info_player in game.players:
@@ -602,9 +607,9 @@ class Mine(ActionCard):
             for info_player in game.players:
                 if info_player is not player:
                     yield InfoRequest(game, info_player,
-                            _("%s trashes this card:") % (player.name, ), [card])
+                            _("%s trashes:") % (player.name, ), [card])
                     yield InfoRequest(game, info_player,
-                            _("%s gains this card:") % (player.name, ), [new_card])
+                            _("%s gains:") % (player.name, ), [new_card])
 
 class Moat(ReactionCard):
     name = _("Moat")
@@ -637,14 +642,14 @@ class Remodel(ActionCard):
                 msg=_("Select a card that you want to have."), show_supply_count=True)
             card.trash(game, player)
             new_card = game.supply[card_cls.__name__].pop(-1)
-            player.hand.append(new_card)
+            player.discard_pile.append(new_card)
 
             for info_player in game.players:
                 if info_player is not player:
                     yield InfoRequest(game, info_player,
-                            _("%s trashes this card:") % (player.name, ), [card])
+                            _("%s trashes:") % (player.name, ), [card])
                     yield InfoRequest(game, info_player,
-                            _("%s gains this card:") % (player.name, ), [new_card])
+                            _("%s gains:") % (player.name, ), [new_card])
 
 class Smithy(ActionCard):
     name = _("Smithy")
@@ -665,16 +670,23 @@ class Village(ActionCard):
 
 class Adventurer(ActionCard):
     name = _("Adventurer")
-    cost = 6
+    cost = 0#6
     desc = _("Reveal cards from your deck until you reveal 2 Treasure cards."
             " Put those Treasure cards into your hand and discard the other revealed cards.")
 
     def activate_action(self, game, player):
         treasure_cards_found = 0
-        while player.deck:
-            card = player.deck.pop(-1)
+        shuffled = 0
+        while True:
+            ret = player.draw_cards(1)
+            if ret is None: # no cards left
+                break
+            shuffled += ret
+            if shuffled == 2: # we shuffled our discard_pile 2 times, abort
+                break
+            card = player.hand.pop()
             for info_player in game.players:
-                yield InfoRequest(game, info_player, _("%s reveals this card:") % (player.name, ), [card])
+                yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ), [card])
             if isinstance(card, TreasureCard):
                 player.hand.append(card)
                 treasure_cards_found += 1
@@ -697,7 +709,7 @@ class Bureaucrat(AttackCard):
         for other_player in game.following_players(player):
             defends = False
             for item in self.defends_check(game, other_player,
-                    _("%s defends against the Bureaucrat with this card:")):
+                    _("%s defends against the Bureaucrat with:")):
                 defends = True
                 yield item
             if defends:
@@ -753,7 +765,7 @@ class Feast(ActionCard):
         player.discard_pile.append(new_card)
         for info_player in game.following_players(player):
             yield InfoRequest(game, info_player,
-                    _("%s gains this card:") % (player.name, ), [new_card])
+                    _("%s gains:") % (player.name, ), [new_card])
 
 class Festival(ActionCard):
     name = _("Festival")
@@ -806,7 +818,7 @@ class Moneylender(ActionCard):
             card.trash(game, player)
             for info_player in game.following_players(player):
                 yield InfoRequest(game, info_player,
-                        _("%s trashes this card:") % (player.name, ), [card])
+                        _("%s trashes:") % (player.name, ), [card])
 
 class Spy(AttackCard):
     name = _("Spy")
@@ -821,7 +833,7 @@ class Spy(AttackCard):
         for other_player in game.players:
             defends = False
             for item in self.defends_check(game, other_player,
-                    _("%s defends against the Spy with this card:")):
+                    _("%s defends against the Spy with:")):
                 defends = True
                 yield item
             if defends:
@@ -856,7 +868,7 @@ class Thief(AttackCard):
         for other_player in game.following_players(player):
             defends = False
             for item in self.defends_check(game, other_player,
-                    _("%s defends against the Thief with this card:")):
+                    _("%s defends against the Thief with:")):
                 defends = True
                 yield item
             if defends:
@@ -878,7 +890,7 @@ class Thief(AttackCard):
                 trashed.append(card)
                 cards.remove(card)
                 for info_player in game.following_players(player):
-                    yield InfoRequest(game, info_player, _("%s trashes this card:") %
+                    yield InfoRequest(game, info_player, _("%s trashes:") %
                             (player.name, ), [card])
             other_player.discard_pile.extend(cards)
         for card in trashed:
@@ -912,7 +924,7 @@ class Witch(AttackCard):
             if curse_cards:
                 defends = False
                 for item in self.defends_check(game, other_player,
-                        _("%s defends against the Witch with this card:")):
+                        _("%s defends against the Witch with:")):
                     defends = True
                     yield item
                 if defends:
@@ -942,6 +954,9 @@ class Workshop(ActionCard):
             msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop(-1)
         player.discard_pile.append(new_card)
+        for info_player in game.following_players(player):
+            yield InfoRequest(game, info_player,
+                    _("%s gains:") % (player.name, ), [new_card])
 
 card_sets = {
     _('First game'): (Cellar, Market, Militia, Mine, Moat, Remodel, Smithy, Village,
