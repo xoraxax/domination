@@ -164,7 +164,7 @@ class Mine(ActionCard):
 class Moat(ReactionCard):
     name = _("Moat")
     cost = 2
-    desc = _("+2 Cards, When another player plays an attack card, you"
+    desc = _("+2 Cards, When another player plays an attack card, you may"
             " reveal this from your hand. If you do, you are unaffected by"
             " the attack.")
     edition = BaseGame
