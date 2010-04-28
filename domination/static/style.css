@@ -1,10 +1,11 @@
-body { margin: 0; }
+body { margin: 0; padding: 0; }
 
 #menu { float: right; margin-right: 1em; }
-#menu ul { padding: 0 0 0 2em; list-style: none; }
+#menu ul { margin: 0.4em 0; padding: 0 0 0 2em; list-style: none; }
 #menu ul li { display: inline; padding-left: 1.5em; }
 
 #header { border-bottom: 1px solid #AAAAAA; padding: 0 1em; }
+#header h1 { margin: 0.4em 0; }
 #header a { text-decoration: none; color: black; }
 
 #content { clear: both; padding: 0 1em; }
