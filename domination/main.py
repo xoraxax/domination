@@ -4,22 +4,22 @@ import random
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from flask import Flask, render_template, session, redirect, url_for, escape,\
-        request, g, abort, jsonify
+from flask import Flask, render_template, session, redirect, url_for, \
+        request, abort, jsonify
 
 app = Flask(__name__)
 app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
 
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
-        InfoRequest, YesNoQuestion, card_sets
+        YesNoQuestion, card_sets
 from domination.tools import _
 
 
 app.games = {}
 app.users = {}
-app.card_classes = [cls for cls in CardTypeRegistry.card_classes
-        if cls.optional]
+app.card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues()
+                    if cls.optional]
 app.card_classes.sort(key=lambda x: x.name)
 app.template_context_processors.append(lambda: {'app': app, 'store': get_store()})
 
@@ -123,7 +123,7 @@ def create_game(): # XXX check for at most 10 sets
                 CardTypeRegistry.keys2classes(request.form.getlist('card_key')))
         player = Player(session["username"])
         game.players.append(player)
-        app.games[name] = game_runner = GameRunner(game, player)
+        app.games[name] = GameRunner(game, player)
         get_store()["games"][game] = player
         return redirect(url_for('game', name=name))
     def transform_sets(sets):
