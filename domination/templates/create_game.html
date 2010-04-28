@@ -7,7 +7,7 @@
       var button = $("input[type='submit']")[0];
       var checkmarks = $("input[name=card_key]:checked").size();
       button.disabled = (checkmarks != 10);
-      $("#noofcards").text(checkmarks);
+      $("#noofcards").text(checkmarks + " card" + (checkmarks == 1 ? "" : "s"));
     };
     $(function() {
       $("input[name=card_key]").change(update_button);
@@ -41,7 +41,7 @@
         <a href="javascript:;" onclick='select_set({{cards | tojson | safe}})'>{{ name }}</a>
       {% endfor %}
       
-    <p>Which 10 cards? You selected <span id="noofcards"></span> cards.
+    <p>Which 10 cards? You selected <span id="noofcards"></span>.
       {% for cls in app.card_classes %}
         {% call macros.render_card(cls) %}
           <input type="checkbox" name="card_key" value="{{ cls.__name__ }}">
