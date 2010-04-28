@@ -261,77 +261,80 @@ class Game(object):
 
 
 class DominationGame(Game):
-    MAX_PLAYERS = 6 #maximum allowed number of players
+    MAX_PLAYERS = 6 # maximum allowed number of players
     def __init__(self, name, selected_cards):
         Game.__init__(self, name)
-        self.selected_cards = selected_cards #cards chosen for the game
+        self.selected_cards = selected_cards # cards chosen for the game
 
     def deal_cards(self):
-        self.deal_initial_decks() #the players' decks are initialized
-        self.deal_supply_cards(self.selected_cards) #the supply is equipped with cards
+        self.deal_initial_decks() # the players' decks are initialized
+        self.deal_supply_cards(self.selected_cards) # the supply is equipped with cards
 
     def deal_supply_cards(game, selected_cards):
-        no_players = len(game.players) #number of players
-        assert len(selected_cards) == 10 #debug check that there are 10 kinds of kingdom cards in selected_cards
+        no_players = len(game.players) # number of players
+        # debug check that there are 10 kinds of kingdom cards in selected_cards
+        assert len(selected_cards) == 10
 
-	#add treasure cards
-	if no_players > 4:
-            game.add_supply(Copper, 120) 
+        # add treasure cards
+        if no_players > 4:
+            game.add_supply(Copper, 120)
             game.add_supply(Silver, 80)
             game.add_supply(Gold, 60)
-	else:
-            game.add_supply(Copper, 60) 
+        else:
+            game.add_supply(Copper, 60)
             game.add_supply(Silver, 40)
             game.add_supply(Gold, 30)
 
-	#add victory cards (except victory kingdom cards)
+        # add victory cards (except victory kingdom cards)
         if no_players == 2:
             victory_cards = 8
-	    province_cards = 8
-	elif no_players == 5:
-	    victory_cards = 12
-	    province_cards = 15
-	elif no_players == 6:
-	    victory_cards = 12
-	    province_cards = 18
+            province_cards = 8
+        elif no_players == 5:
+            victory_cards = 12
+            province_cards = 15
+        elif no_players == 6:
+            victory_cards = 12
+            province_cards = 18
         else:
             victory_cards = 12
-	    province_cards = 12
-        curse_cards = (no_players-1)*10
+        province_cards = 12
+        curse_cards = (no_players - 1) * 10
 
         game.add_supply(Curse, curse_cards)
         game.add_supply(Estate, victory_cards)
         game.add_supply(Duchy, victory_cards)
         game.add_supply(Province, province_cards)
 
-	#add kingdom cards
+        # add kingdom cards
         for selected_card in selected_cards:
             amount = 10
-            if selected_card is Gardens: #modify for additional victory cards
+            if selected_card is Gardens: # modify for additional victory cards
                 amount = victory_cards
             game.add_supply(selected_card, amount)
 
-    def deal_initial_decks(game): #deal the starting hands
-        for player in game.players: #every player...
-            assert not player.deck #...does not have a deck...
-            player.deck.extend(Copper() for _ in xrange(7)) #...gets 7 Copper
-            player.deck.extend(Estate() for _ in xrange(3)) #...and 3 Estates.
-            random.shuffle(player.deck) #then his deck is shuffled
+    def deal_initial_decks(game): # deal the starting hands
+        for player in game.players: # every player...
+            assert not player.deck # ...does not have a deck...
+            player.deck.extend(Copper() for _ in xrange(7)) # ...gets 7 Copper
+            player.deck.extend(Estate() for _ in xrange(3)) # ...and 3 Estates.
+            random.shuffle(player.deck) # then his deck is shuffled
 
     def check_end_of_game(self):
-	no_players = len(self.players) #number of players
-        if not self.supply["Province"]: #check if province supply is empty
+        no_players = len(self.players) # number of players
+        if not self.supply["Province"]: # check if province supply is empty
             return _("Province supply is empty.")
+        # fill empty_batches with card keys of cards the supply of which is empty
         empty_batches = [card_key for card_key, cards in self.supply.items()
-                if not cards] #fill empty_batches with card keys of cards the supply of which is empty
-	if no_players < 5:
-	    must_empty = 3
-	else
-	    must_empty = 4
-        if len(empty_batches) >= must_empty: #check if at least must_empty supply piles are empty
+                if not cards]
+        if no_players < 5:
+            must_empty = 3
+        else:
+            must_empty = 4
+        # check if at least must_empty supply piles are empty
+        if len(empty_batches) >= must_empty:
             return _("The following supplies are empty:") + " " + \
                     ", ".join(card.name for card in
-                            CardTypeRegistry.keys2classes(empty_batches)) #return a String listing the empty card piles
+                            CardTypeRegistry.keys2classes(empty_batches))
 
 
 class Player(object):
@@ -398,9 +401,8 @@ class Player(object):
 
 
 class Edition(object):
-
     def __init__(self, name):
-	self.name = name
+        self.name = name
 
 Promo = Edition(_("Promo Cards"))
 BaseGame = Edition(_("Base game"))
@@ -434,13 +436,13 @@ class CardTypeRegistry(type):
 
 class Card(object):
     __metaclass__ = CardTypeRegistry
-    name = "UNKNOWN" #card name
-    cost = None #card cost
-    points = 0 #victory points
-    worth = 0 #monetary worth
-    optional = False #one of the mandatory cards?
-    abstract = True #abstract template?
-    trash_after_playing = False #does it go to trash after playing?
+    name = "UNKNOWN" # card name
+    cost = None # card cost
+    points = 0 # victory points
+    worth = 0 # monetary worth
+    optional = False # one of the mandatory cards?
+    abstract = True # abstract template?
+    trash_after_playing = False # does it go to trash after playing?
     __slots__ = ()
 
     def __init__(self):
@@ -551,8 +553,11 @@ class Chapel(ActionCard):
     edition = BaseGame
 
     def activate_action(self, game, player):
-        cards = yield SelectHandCards(game, player, count_lower=0, count_upper=4, #TODO: must not count_lower=1? If a player has at least one card in his hand, he must trash at least one card.
-                msg=_("Which cards do you want to trash?"))
+        if player.hand:
+            cards = yield SelectHandCards(game, player, count_lower=1, count_upper=4,
+                    msg=_("Which cards do you want to trash?"))
+        else:
+            return
         # trash cards
         for card in cards:
             card.trash(game, player)
@@ -618,8 +623,9 @@ class Militia(AttackCard):
                 card.discard(other_player)
             for info_player in game.players:
                 if info_player is not other_player:
+                    # TODO: info players may only see one of the discarded cards
                     yield InfoRequest(game, info_player,
-                            _("%s discards these cards:") % (other_player.name, ), cards) #TODO: info players may only see one of the discarded cards
+                            _("%s discards these cards:") % (other_player.name, ), cards)
 
 class Mine(ActionCard):
     name = _("Mine")
@@ -671,8 +677,10 @@ class Remodel(ActionCard):
     edition = BaseGame
 
     def activate_action(self, game, player):
+        if not player.hand:
+            return
         cards = yield SelectHandCards(game, player,
-                    count_lower=0, count_upper=1, #TODO: count_lower=1?
+                    count_lower=0, count_upper=1,
                     msg=_("Select a card you want to trash."))
         if cards:
             card = cards[0]
@@ -884,7 +892,7 @@ class Spy(AttackCard):
         player.remaining_actions += 1
         for other_player in game.players:
             defends = False
-            for item in self.defends_check(game, other_player, #TODO: one cannot defend against one's own Spy, can one?
+            for item in self.defends_check(game, other_player,
                     _("%s defends against the Spy with:")):
                 defends = True
                 yield item
@@ -905,7 +913,7 @@ class Spy(AttackCard):
                             {"playername": player.name, "player2name": other_player.name},
                             [card])
             else:
-                other_player.deck.append(card) #TODO: Is it on top of the deck now?
+                other_player.deck.append(card)
 
 class Thief(AttackCard):
     name = _("Thief")
