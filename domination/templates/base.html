@@ -27,7 +27,10 @@
       </li>
       {% else %}
       <li>
-        <a href="{{ url_for('create_game') }}">Create new game</a>
+        <a href="{{ url_for('index') }}">view game list</a>
+      </li>
+      <li>
+        <a href="{{ url_for('create_game') }}">create new game</a>
       </li>
       <li>
         <a href="{{ url_for('logout') }}">log out</a>
