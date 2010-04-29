@@ -1,5 +1,5 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
-     AttackCard, CardSet, Intrigue
+     AttackCard, ReactionCard, CardSet, Intrigue
 from domination.cards.base import Duchy
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      YesNoQuestion
@@ -170,8 +170,33 @@ class Steward(ActionCard):
     cost = 3
 
 
-from domination.cards.base import Moat
+class SecretChamber(ReactionCard):
+    name = _("Secret Chamber")
+    edition = Intrigue
+    cost = 2
+
+
+from domination.cards.base import (
+    Bureaucrat, Cellar, Chancellor, CouncilRoom, Festival, Library, Mine,
+    Militia, Remodel, Spy, Thief, ThroneRoom, Witch)
 
 card_sets = [
-    CardSet(_('Test'), [Duke, Moat]),
+    CardSet(_('Victory Dance'),
+            [Bridge, Duke, GreatHall, Harem, Ironworks, Masquerade, Nobles,
+             Pawn, Scout, Upgrade]),
+    CardSet(_('Secret Schemes'),
+            [Conspirator, Harem, Ironworks, Pawn, Saboteur, ShantyTown,
+             Steward, Swindler, TradingPost, Tribute]),
+    CardSet(_('Best Wishes'),
+            [Coppersmith, Courtyard, Masquerade, Scout, ShantyTown, Steward,
+             Torturer, TradingPost, Upgrade, WishingWell]),
+    CardSet(_('Deconstruction'),
+            [Bridge, MiningVillage, Remodel, Saboteur, SecretChamber, Spy,
+             Swindler, Thief, ThroneRoom, Torturer]),
+    CardSet(_('Hand Madness'),
+            [Bureaucrat, Chancellor, CouncilRoom, Courtyard, Mine, Militia,
+             Minion, Nobles, Steward, Torturer]),
+    CardSet(_('Underlings'),
+            [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
+             Pawn, Steward, Witch]),
 ]
