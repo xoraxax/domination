@@ -1,8 +1,12 @@
-from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
-     AttackCard, ReactionCard, Intrigue, CardTypeRegistry
+from domination.cards import TreasureCard, VictoryCard, ActionCard, \
+     AttackCard, Edition
+from domination.cards.base import Duchy
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
-     YesNoQuestion, ActivateNextActionMultipleTimes
+     YesNoQuestion
 from domination.tools import _
+
+
+Intrigue = Edition(_("Intrigue game"))
 
 
 class Ironworks(ActionCard):
@@ -46,11 +50,12 @@ class GreatHall(ActionCard, VictoryCard):
 class Duke(VictoryCard):
     name = _("Duke")
     edition = Intrigue
+    optional = True
     cost = 5
+    points = 0
 
     def get_points(self, game, player):
-        # XXX 1 point per duchy
-        return 0
+        return sum(isinstance(card, Duchy) for card in player.deck)
 
 
 class Harem(TreasureCard, VictoryCard):
