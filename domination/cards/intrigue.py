@@ -51,6 +51,7 @@ class Duke(VictoryCard):
     optional = True
     cost = 5
     points = 0
+    desc = _("Worth one point for every duchy you have.")
 
     def get_points(self, game, player):
         return sum(isinstance(card, Duchy) for card in player.deck)
@@ -105,6 +106,7 @@ class Courtyard(ActionCard):
     name = _("Courtyard")
     edition = Intrigue
     cost = 2
+    desc = _("+3 Cards, put a card from your hand on top of your deck.")
 
     def activate_action(self, game, player):
         player.draw_cards(3)
@@ -174,6 +176,10 @@ class SecretChamber(ReactionCard):
     name = _("Secret Chamber")
     edition = Intrigue
     cost = 2
+    desc = _("Discard any number of cards. +1 Money per card discarded. "
+            " When another player plays an attack card, you may"
+            " reveal this from your hand. If you do, +2 Cards, then put"
+            " 2 cards from your hand on top of your deck.")
 
     def activate_action(self, game, player):
         cards = yield SelectHandCards(
