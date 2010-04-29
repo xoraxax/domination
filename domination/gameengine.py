@@ -409,3 +409,5 @@ from domination.cards.base import card_sets as card_sets_base
 from domination.cards.intrigue import card_sets as card_sets_intrigue
 
 card_sets = card_sets_base + card_sets_intrigue
+
+from domination.cards import editions

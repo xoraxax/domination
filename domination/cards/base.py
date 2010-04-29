@@ -1,11 +1,9 @@
 from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
-     AttackCard, ReactionCard, CardTypeRegistry, Edition, CardSet
+     AttackCard, ReactionCard, CardTypeRegistry, CardSet, BaseGame
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      YesNoQuestion, ActivateNextActionMultipleTimes
 from domination.tools import _
 
-
-BaseGame = Edition(_("Base game"))
 
 class Copper(TreasureCard):
     name = _("Copper")

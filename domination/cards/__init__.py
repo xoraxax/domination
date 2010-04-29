@@ -2,8 +2,15 @@ from domination.tools import _
 
 
 class Edition(object):
-    def __init__(self, name):
+    def __init__(self, key, name, optional=True):
+        self.key = key
         self.name = name
+        self.optional = optional
+
+BaseGame = Edition('base', _("Base game"), optional=False)
+Intrigue = Edition('intrigue', _("Intrigue game"))
+
+editions = [BaseGame, Intrigue]
 
 
 class CardTypeRegistry(type):

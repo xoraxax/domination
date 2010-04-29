@@ -1,12 +1,9 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
-     AttackCard, Edition
+     AttackCard, Intrigue
 from domination.cards.base import Duchy
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      YesNoQuestion
 from domination.tools import _
-
-
-Intrigue = Edition(_("Intrigue game"))
 
 
 class Ironworks(ActionCard):

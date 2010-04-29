@@ -3,6 +3,21 @@
 {% block head %}
   {{ super() }}
   <script type="text/javascript">
+    $(function() {
+      $("input[name=edition]").change(update_sets);
+      update_sets();
+    });
+    var update_sets = function() {
+      $("input[name=edition]").each(function(i) {
+        if (! $(this).attr("checked")) {
+          $(".edition-" + $(this).attr("value")).parent().hide()
+                                                .find("input").attr("checked", false);
+        } else {
+          $(".edition-" + $(this).attr("value")).parent().show();
+        }
+      });
+      update_button();
+    };
     var update_button = function() {
       var button = $("input[type='submit']")[0];
       var checkmarks = $("input[name=card_key]:checked").size();
@@ -34,6 +49,13 @@
   <h2>Create new game</h2>
   <form action="" method="post">
     <p>Name of Game: <input type="text" name="name" value="Game of {{ session.username }}"></p>
+    <p>Editions:
+      {% for edition in editions %}
+      <input type="checkbox" name="edition" value="{{ edition.key }}"
+      {% if not edition.optional %}checked="checked" disabled="disabled"{% endif %}>
+      {{ edition.name }}
+      {% endfor %}
+    </p>
     <p>Sets:
       <a href="javascript:;" onclick='select_set([])'>Empty</a>
       <a href="javascript:;" onclick='select_random_set()'>Random</a>
@@ -44,6 +66,8 @@
     <p>Which 10 cards? You selected <span id="noofcards"></span>.
       {% for cls in app.card_classes %}
         {% call macros.render_card(cls) %}
+          <span id="card-{{ cls.__name__ }}"></span>
+          <span class="edition-{{ cls.edition.key }}"></span>
           <input type="checkbox" name="card_key" value="{{ cls.__name__ }}">
         {% endcall %}
       {% endfor %}

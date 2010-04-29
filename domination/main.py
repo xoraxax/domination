@@ -12,7 +12,7 @@ app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
 
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
-        YesNoQuestion, card_sets
+        YesNoQuestion, card_sets, editions
 from domination.tools import _
 
 
@@ -132,7 +132,8 @@ def create_game(): # XXX check for at most 10 sets
             result.append((set.name, [c.__name__ for c in set.card_classes]))
         result.sort()
         return result
-    return render_template("create_game.html", card_sets=transform_sets(card_sets))
+    return render_template("create_game.html", editions=editions,
+                           card_sets=transform_sets(card_sets))
 
 @app.route("/game/<name>", methods=['GET', 'POST'])
 @needs_login
