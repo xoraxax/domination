@@ -27,8 +27,13 @@
       <li><a href="{{ url_for("join_game", name=game.name) }}">Join</a></li>
     {% endif %}
     {% if runner.startable(store.games[game]) %}
-    <li><a href="{{ url_for("start_game", name=game.name) }}">Start</a></li>
+      <li><a href="{{ url_for("start_game", name=game.name) }}">Start</a></li>
     {% endif %}
+    {% if runner.state != "ended" and player == runner.owner %}
+      <li><form action="{{ url_for("cancel_game", name=game.name) }}" method="post">
+        <input type="submit" value="Abort game">
+      </form></li>
+      {% endif %}
   </ul>
   <div id="players">
     <h3>Players</h3>
@@ -179,7 +184,7 @@
     {% endif %}
   {% endif %}
   {% if player %}
-    {% if not player.deck and not player.hand %}
+    {% if not player.deck and not player.hand and runner.state != "ended" %}
       {% if game.players | count == 1 %}
         Waiting for further players ...
       {% else %}

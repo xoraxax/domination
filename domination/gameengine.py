@@ -106,6 +106,7 @@ class GameRunner(Thread):
         self.waiting_for = None
         self.owner = owner
         self.state = FRESH
+        self.do_cancel = False
 
     def startable(self, player):
         return self.state is FRESH and player is self.owner and not self.is_alive()\
@@ -135,7 +136,7 @@ class GameRunner(Thread):
         self.state = RUNNING
         gen = self.game.play_game()
         reply = None
-        while True:
+        while not self.do_cancel:
             try:
                 req = gen.send(reply)
             except StopIteration:
@@ -152,12 +153,28 @@ class GameRunner(Thread):
             self.increment_seqno()
 
             player.response_condition.acquire()
-            while not player.response:
+            while not player.response or not self.do_cancel:
                 player.response_condition.wait()
-            reply = player.response[0]
+            if not self.do_cancel:
+                reply = player.response[0]
             player.response = []
             player.response_condition.release()
 
+    def cancel(self):
+        self.do_cancel = True
+        if self.state is FRESH:
+            self.state = ENDED
+            self.increment_seqno()
+        else:
+            try:
+                self.game.end_of_game()
+            except EndOfGameException:
+                pass
+        for player in self.game.players:
+            cv = player.response_condition
+            cv.acquire()
+            cv.notifyAll()
+            cv.release()
 
 class Game(object):
     def __init__(self, name):

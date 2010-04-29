@@ -201,6 +201,16 @@ def start_game(game_runner):
     game_runner.increment_seqno()
     return redirect(url_for("game", name=game.name))
 
+@app.route("/game/cancel/<name>", methods=["POST"])
+@needs_login
+@gets_game
+def cancel_game(game_runner):
+    player = get_store()["games"][game_runner.game]
+    assert player is game_runner.owner
+    game_runner.cancel()
+    game = game_runner.game
+    return redirect(url_for("game", name=game.name))
+
 @app.route("/game/check_seqno/<name>")
 @needs_login
 @gets_game
