@@ -5,9 +5,104 @@ from domination.gameengine import SelectHandCards, Question, MultipleChoice
 from domination.tools import _
 
 
+class Baron(ActionCard):
+    # XXX to be implemented
+    name = _("Baron")
+    edition = Intrigue
+    cost = 4
+
+
+class Bridge(ActionCard):
+    # XXX to be implemented
+    name = _("Bridge")
+    edition = Intrigue
+    cost = 4
+
+
+class Conspirator(ActionCard):
+    # XXX to be implemented
+    name = _("Conspirator")
+    edition = Intrigue
+    cost = 4
+
+
+class Coppersmith(ActionCard):
+    # XXX to be implemented
+    name = _("Coppersmith")
+    edition = Intrigue
+    cost = 4
+
+
+class Courtyard(ActionCard):
+    # XXX to be implemented
+    name = _("Courtyard")
+    edition = Intrigue
+    cost = 2
+    desc = _("+3 Cards, put a card from your hand on top of your deck.")
+
+    def activate_action(self, game, player):
+        player.draw_cards(3)
+        cards = yield SelectHandCards(game, player, count_upper=1,
+                                      msg=_("Select a card to put on your deck."))
+        if cards:
+            card = cards[0]
+            player.deck.append(card)
+            player.hand.remove(card)
+
+
+class Duke(VictoryCard):
+    name = _("Duke")
+    edition = Intrigue
+    optional = True
+    cost = 5
+    points = 0
+    desc = _("Worth one point for every duchy you have.")
+
+    def get_points(self, game, player):
+        return sum(isinstance(card, Duchy) for card in
+                   player.deck + player.hand + player.discard_pile)
+
+
+class GreatHall(ActionCard, VictoryCard):
+    # XXX color card appropriately
+    name = _("Great Hall")
+    edition = Intrigue
+    cost = 3
+    points = 1
+    desc = _("+1 Card, +1 Action")
+
+    def activate_action(self, game, player):
+        player.draw_cards(1)
+        player.remaining_actions += 1
+
+
+class Harem(TreasureCard, VictoryCard):
+    # XXX color card appropriately
+    name = _("Harem")
+    edition = Intrigue
+    optional = True
+    cost = 6
+    worth = 2
+    points = 2
+
+
 class Ironworks(ActionCard):
     # XXX to be implemented
     name = _("Ironworks")
+    edition = Intrigue
+    cost = 4
+
+
+class Masquerade(ActionCard):
+    # XXX to be implemented
+    name = _("Masquerade")
+    edition = Intrigue
+    cost = 3
+
+
+class MiningVillage(ActionCard):
+    # XXX to be implemented
+    name = _("Mining Village")
     edition = Intrigue
     cost = 4
 
@@ -17,6 +112,24 @@ class Minion(AttackCard):
     name = _("Minion")
     edition = Intrigue
     cost = 5
+
+
+class Nobles(ActionCard, VictoryCard):
+    # XXX color card appropriately
+    name = _("Nobles")
+    edition = Intrigue
+    cost = 6
+    points = 2
+    desc = _("Choose one: +3 Cards, or +2 Actions.")
+
+    def activate_action(self, game, player):
+        answer = yield Question(game, player, _("What do you want to get?"),
+                                [("cards",   _("+3 Cards")),
+                                 ("actions", _("+2 Actions"))])
+        if answer == "cards":
+            player.draw_cards(3)
+        else:
+            player.remaining_actions += 2
 
 
 class Pawn(ActionCard):
@@ -46,81 +159,6 @@ class Pawn(ActionCard):
                 player.virtual_money += 1
 
 
-class Scout(ActionCard):
-    # XXX to be implemented
-    name = _("Scout")
-    edition = Intrigue
-    cost = 4
-
-
-class Nobles(ActionCard, VictoryCard):
-    # XXX color card appropriately
-    name = _("Nobles")
-    edition = Intrigue
-    cost = 6
-    points = 2
-    desc = _("Choose one: +3 Cards, or +2 Actions.")
-
-    def activate_action(self, game, player):
-        answer = yield Question(game, player, _("What do you want to get?"),
-                                [("cards",   _("+3 Cards")),
-                                 ("actions", _("+2 Actions"))])
-        if answer == "cards":
-            player.draw_cards(3)
-        else:
-            player.remaining_actions += 2
-
-
-class GreatHall(ActionCard, VictoryCard):
-    # XXX color card appropriately
-    name = _("Great Hall")
-    edition = Intrigue
-    cost = 3
-    points = 1
-    desc = _("+1 Card, +1 Action")
-
-    def activate_action(self, game, player):
-        player.draw_cards(1)
-        player.remaining_actions += 1
-
-
-class Duke(VictoryCard):
-    name = _("Duke")
-    edition = Intrigue
-    optional = True
-    cost = 5
-    points = 0
-    desc = _("Worth one point for every duchy you have.")
-
-    def get_points(self, game, player):
-        return sum(isinstance(card, Duchy) for card in
-                   player.deck + player.hand + player.discard_pile)
-
-
-class Harem(TreasureCard, VictoryCard):
-    # XXX color card appropriately
-    name = _("Harem")
-    edition = Intrigue
-    optional = True
-    cost = 6
-    worth = 2
-    points = 2
-
-
-class MiningVillage(ActionCard):
-    # XXX to be implemented
-    name = _("Mining Village")
-    edition = Intrigue
-    cost = 4
-
-
-class ShantyTown(ActionCard):
-    # XXX to be implemented
-    name = _("Shanty Town")
-    edition = Intrigue
-    cost = 3
-
-
 class Saboteur(AttackCard):
     # XXX to be implemented
     name = _("Saboteur")
@@ -128,105 +166,11 @@ class Saboteur(AttackCard):
     cost = 5
 
 
-class Coppersmith(ActionCard):
+class Scout(ActionCard):
     # XXX to be implemented
-    name = _("Coppersmith")
+    name = _("Scout")
     edition = Intrigue
     cost = 4
-
-
-class Bridge(ActionCard):
-    # XXX to be implemented
-    name = _("Bridge")
-    edition = Intrigue
-    cost = 4
-
-
-class Conspirator(ActionCard):
-    # XXX to be implemented
-    name = _("Conspirator")
-    edition = Intrigue
-    cost = 4
-
-
-class Courtyard(ActionCard):
-    # XXX to be implemented
-    name = _("Courtyard")
-    edition = Intrigue
-    cost = 2
-    desc = _("+3 Cards, put a card from your hand on top of your deck.")
-
-    def activate_action(self, game, player):
-        player.draw_cards(3)
-        cards = yield SelectHandCards(game, player, count_upper=1,
-                                      msg=_("Select a card to put on your deck."))
-        if cards:
-            card = cards[0]
-            player.deck.append(card)
-            player.hand.remove(card)
-
-
-class Baron(ActionCard):
-    # XXX to be implemented
-    name = _("Baron")
-    edition = Intrigue
-    cost = 4
-
-
-class Tribute(ActionCard):
-    # XXX to be implemented
-    name = _("Tribute")
-    edition = Intrigue
-    cost = 5
-
-
-class Masquerade(ActionCard):
-    # XXX to be implemented
-    name = _("Masquerade")
-    edition = Intrigue
-    cost = 3
-
-
-class Torturer(AttackCard):
-    # XXX to be implemented
-    name = _("Torturer")
-    edition = Intrigue
-    cost = 5
-
-
-class Swindler(AttackCard):
-    # XXX to be implemented
-    name = _("Swindler")
-    edition = Intrigue
-    cost = 3
-
-
-class Upgrade(ActionCard):
-    # XXX to be implemented
-    name = _("Upgrade")
-    edition = Intrigue
-    cost = 5
-
-
-class TradingPost(ActionCard):
-    # XXX to be implemented
-    name = _("Trading Post")
-    edition = Intrigue
-    cost = 5
-
-
-class WishingWell(ActionCard):
-    # XXX to be implemented
-    name = _("Wishing Well")
-    edition = Intrigue
-    cost = 3
-
-
-class Steward(ActionCard):
-    # XXX to be implemented
-    name = _("Steward")
-    edition = Intrigue
-    cost = 3
 
 
 class SecretChamber(ReactionCard):
@@ -259,6 +203,62 @@ class SecretChamber(ReactionCard):
         for card in cards:
             player.hand.remove(card)
             player.deck.append(card)
+
+
+class ShantyTown(ActionCard):
+    # XXX to be implemented
+    name = _("Shanty Town")
+    edition = Intrigue
+    cost = 3
+
+
+class Swindler(AttackCard):
+    # XXX to be implemented
+    name = _("Swindler")
+    edition = Intrigue
+    cost = 3
+
+
+class Steward(ActionCard):
+    # XXX to be implemented
+    name = _("Steward")
+    edition = Intrigue
+    cost = 3
+
+
+class Torturer(AttackCard):
+    # XXX to be implemented
+    name = _("Torturer")
+    edition = Intrigue
+    cost = 5
+
+
+class TradingPost(ActionCard):
+    # XXX to be implemented
+    name = _("Trading Post")
+    edition = Intrigue
+    cost = 5
+
+
+class Tribute(ActionCard):
+    # XXX to be implemented
+    name = _("Tribute")
+    edition = Intrigue
+    cost = 5
+
+
+class Upgrade(ActionCard):
+    # XXX to be implemented
+    name = _("Upgrade")
+    edition = Intrigue
+    cost = 5
+
+
+class WishingWell(ActionCard):
+    # XXX to be implemented
+    name = _("Wishing Well")
+    edition = Intrigue
+    cost = 3
 
 
 from domination.cards.base import (
