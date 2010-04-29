@@ -23,3 +23,14 @@ function your_turn_reminder() {
         window.onmousemove = null;
     };
 }
+
+_toggle_supply_lock = false;
+
+function toggle_supply() {
+  if (!_toggle_supply_lock) {
+    this._toggle_supply_lock = true;
+    $('div#supplycards').slideToggle(500, function() {
+      _toggle_supply_lock = false;
+    });
+  }
+}
