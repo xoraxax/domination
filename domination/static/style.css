@@ -12,6 +12,9 @@ body { margin: 0; padding: 0; }
 
 #footer { margin-top: 1.5em; border-top: 1px solid #AAAAAA; padding: 0.8em 1em;
           text-align: right; color: #666666; }
+#pileinfo { float: right; }
+#players { float: left; }
+#infosep { clear: both; }
 
 .card { display: inline-block; width: 9em; padding: 0.5em; margin: 0.5em; }
 .card h4 { margin-top: 0px; margin-bottom: 0.8em; }

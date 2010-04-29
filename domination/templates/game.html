@@ -15,7 +15,6 @@
     {% endif %}
     $(function() {
         $.scrollTo("#game");
-        $(".card").corner();
     });
   </script>
   {{ macros.init_render_card() }}
@@ -31,14 +30,25 @@
     <li><a href="{{ url_for("start_game", name=game.name) }}">Start</a></li>
     {% endif %}
   </ul>
-  <h3>Players</h3>
-  <ul>
-    {% for player in game.players %}
-    <li class="{% if player.current %}activeplayer{% endif %}">{{ player.name }} ({{ player.hand | count }} of {{ (player.hand + player.deck + player.discard_pile) | count }} cards in hand)
-    {% if runner.waiting_for == player %} (waiting for this player){% endif %}
-    </li>
-    {% endfor %}
-  </ul>
+  <div id="players">
+    <h3>Players</h3>
+    <ul>
+      {% for player in game.players %}
+      <li class="{% if player.current %}activeplayer{% endif %}">{{ player.name }} ({{ player.hand | count }} of {{ (player.hand + player.deck + player.discard_pile) | count }} cards in hand)
+      {% if runner.waiting_for == player %} (waiting for this player){% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% if player and (player.deck or player.discard_pile) %}
+    <div id="pileinfo">
+      <h3>Your deck</h3>
+      {{ player.deck | count }} cards
+      <h3>Your discard pile</h3>
+      {{ player.discard_pile | count }} cards
+    </div>
+  {% endif %}
+  <div id="infosep"></div>
   {% if player.info_queue %}
   <ul>
     {% for req in player.info_queue %}
@@ -156,22 +166,18 @@
         Waiting for {{ runner.owner.name }} to start the game ...
       {% endif %}
     {% else %}
-      {% if req_type != "SelectHandCards" %}
-        <h3>Your hand</h3>
-        {% for card in player.sorted_hand %}
-          {{ macros.render_card(card) }}  
-        {% endfor %}
-      {% endif %}
-      <h3>Your deck</h3>
-      {{ player.deck | count }} cards
       {% if player.activated_cards %}
         <h3>Activated action cards</h3>
         {% for card in player.activated_cards %}
           {{ macros.render_card(card) }}  
         {% endfor %}
       {% endif %}
-      <h3>Your discard pile</h3>
-      {{ player.discard_pile | count }} cards
+      {% if req_type != "SelectHandCards" %}
+        <h3>Your hand</h3>
+        {% for card in player.sorted_hand %}
+          {{ macros.render_card(card) }}  
+        {% endfor %}
+      {% endif %}
     {% endif %}
   {% endif %}
 {% endblock %}
