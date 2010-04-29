@@ -1,0 +1,13 @@
+Domination
+==========
+
+Installation
+------------
+
+You need Flask.
+
+Running
+-------
+
+To start the game, run domination/main.py
+
