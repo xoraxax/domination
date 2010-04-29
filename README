@@ -4,12 +4,12 @@ Domination
 Installation
 ------------
 
-You need Flask.
+You need Flask (http://flask.pocoo.org).
 
 Running
 -------
 
-To start the game, run domination/main.py
+To start the game, run domination/main.py.
 
 License
 -------
