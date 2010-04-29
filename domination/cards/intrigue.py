@@ -31,6 +31,7 @@ class Scout(ActionCard):
 
 
 class Nobles(ActionCard, VictoryCard):
+    # XXX color card appropriately
     name = _("Nobles")
     edition = Intrigue
     cost = 6
@@ -58,6 +59,7 @@ class Duke(VictoryCard):
 class Harem(TreasureCard, VictoryCard):
     name = _("Harem")
     edition = Intrigue
+    optional = True
     cost = 6
     worth = 2
     points = 2
@@ -103,6 +105,15 @@ class Courtyard(ActionCard):
     name = _("Courtyard")
     edition = Intrigue
     cost = 2
+
+    def activate_action(self, game, player):
+        player.draw_cards(3)
+        cards = yield SelectHandCards(game, player, count_upper=1,
+                                      msg=_("Select a card to put on your deck."))
+        if cards:
+            card = cards[0]
+            player.deck.append(card)
+            player.hand.remove(card)
 
 
 class Baron(ActionCard):
