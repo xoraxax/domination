@@ -162,6 +162,16 @@
         <input type="submit" value="{{ option[1] }}">
       </form>
       {% endfor %}
+    {% elif req_type == "MultipleChoice" %}
+      {# XXX implement restriction on number of choices #}
+      <form action="" method="post">
+      {% for option in req.options %}
+        <input type="checkbox" name="answer" value="{{ option[0] }}">
+        {{ option[1] }} <br>
+      {% endfor %}
+        <input type="hidden" name="req_id" value="{{ req_id }}">
+        <input type="submit" value="Select">
+      </form>
     {% else %}
       Unknown request {{ req | string }}!
     {% endif %}
