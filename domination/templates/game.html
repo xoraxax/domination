@@ -49,26 +49,28 @@
     </div>
   {% endif %}
   <div id="infosep"></div>
+
+  {% if runner.state == "ended" %}
+  <h3>The game has ended. {{ game.end_of_game_reason }}</h3>
+    <ul>
+    {% for player in game.players %}
+      <li>{{ player.name }}: {{ player.deck | count }} cards, {{ player.points(game) }} points</li>
+    {% endfor %}
+    </ul>
+    Your cards:
+    {% for card in player.deck %}
+      {{ macros.render_card(card) }}  
+    {% endfor %}
+  {% endif %}
+
   {% if player.info_queue %}
   <ul>
     {% for req in player.info_queue %}
       <li class="infoitem">
         <h3>{{ req.msg }}</h3>
-        {% if req.req_type == "EndOfGameRequest" %}
-          <ul>
-          {% for player in game.players %}
-            <li>{{ player.name }}: {{ player.deck | count }} cards, {{ player.points(game) }} points</li>
-          {% endfor %}
-          </ul>
-          Your cards:
-          {% for card in req.cards %}
-            {{ macros.render_card(card) }}  
-          {% endfor %}
-        {% else %}
-          {% for card in req.cards %}
-            {{ macros.render_card(card) }}  
-          {% endfor %}
-        {% endif %}
+        {% for card in req.cards %}
+          {{ macros.render_card(card) }}  
+        {% endfor %}
       </li>
     {% endfor %}
   </ul>

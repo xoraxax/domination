@@ -93,6 +93,10 @@ class EndOfGameRequest(InfoRequest):
                 + " " + reason, player.deck)
 
 
+FRESH = "fresh"
+RUNNING = "running"
+ENDED = "ended"
+
 class GameRunner(Thread):
     def __init__(self, game, owner):
         Thread.__init__(self)
@@ -101,15 +105,15 @@ class GameRunner(Thread):
         self.seqno_condition = Condition()
         self.waiting_for = None
         self.owner = owner
-        self.fresh = True
+        self.state = FRESH
 
     def startable(self, player):
-        return self.fresh and player is self.owner and not self.is_alive()\
+        return self.state is FRESH and player is self.owner and not self.is_alive()\
                 and len(self.game.players) > 1
 
     @property
     def joinable(self):
-        return self.fresh
+        return self.state is FRESH
 
     def run(self):
         try:
@@ -118,7 +122,8 @@ class GameRunner(Thread):
             pass
         except:
             self.owner.request_queue.append(DebugRequest(sys.exc_info()))
-            self.increment_seqno()
+        self.state = ENDED
+        self.increment_seqno()
 
     def increment_seqno(self):
         self.seqno_condition.acquire()
@@ -127,7 +132,7 @@ class GameRunner(Thread):
         self.seqno_condition.release()
 
     def _run(self):
-        self.fresh = False
+        self.state = RUNNING
         gen = self.game.play_game()
         reply = None
         while True:
@@ -159,6 +164,7 @@ class Game(object):
         self.players = []
         self.supply = {}
         self.trash_pile = []
+        self.end_of_game_reason = "Aborted!"
         self.name = name
 
     def add_supply(self, cls, no):
@@ -241,8 +247,8 @@ class Game(object):
                 player.prepare_hand()
             reason = self.check_end_of_game()
             if reason:
-                for req in self.end_of_game(reason):
-                    yield req
+                self.end_of_game_reason = reason
+                self.end_of_game()
 
     def play_game(self):
         self.deal_cards()
@@ -264,13 +270,11 @@ class Game(object):
     def check_end_of_game(self):
         raise NotImplementedError
 
-    def end_of_game(game, reason):
-        for player in game.players:
+    def end_of_game(self):
+        for player in self.players:
             player.deck += player.discard_pile + player.hand
             player.discard_pile = []
             player.hand = []
-        for player in game.players:
-            yield EndOfGameRequest(game, player, reason)
         raise EndOfGameException
 
     def following_players(self, current_player):
@@ -325,6 +329,7 @@ class DominationGame(Game):
             province_cards = 12
         curse_cards = (no_players - 1) * 10
 
+        province_cards = 0
         game.add_supply(Curse, curse_cards)
         game.add_supply(Estate, victory_cards)
         game.add_supply(Duchy, victory_cards)
