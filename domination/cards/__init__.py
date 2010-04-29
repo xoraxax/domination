@@ -1,3 +1,4 @@
+from domination.gameengine import Defended
 from domination.tools import _
 
 
@@ -66,8 +67,8 @@ class Card(object):
         player.hand.remove(self)
         game.trash_pile.append(self)
 
-    def defends(self, game, player, card):
-        return False
+    def defend_action(self, game, player, card):
+        raise NotImplementedError
 
 
 class ActionCard(Card):
@@ -78,13 +79,33 @@ class ActionCard(Card):
 class AttackCard(ActionCard):
     abstract = True
 
-    def defends_check(self, game, other_player, msg):
-        from domination.gameengine import InfoRequest
-        for card in other_player.hand:
-            if card.defends(game, other_player, self):
+    def defends_check(self, game, other_player):
+        from domination.gameengine import InfoRequest, SelectHandCards
+        already_selected = set()
+        while True:
+            if not any(isinstance(c, ReactionCard) for c in other_player.hand):
+                break
+            cards = yield SelectHandCards(
+                game, other_player, count_lower=0, count_upper=1, cls=ReactionCard,
+                msg=_("Do you want to flash a card in response to the attack?"),
+                not_selectable=already_selected)
+            if cards:
+                card = cards[0]
+                already_selected.add(card)
+                # notify other players
                 for info_player in game.following_players(other_player):
-                    yield InfoRequest(game, info_player,
-                        _(msg) % (other_player.name, ), [card])
+                    yield InfoRequest(
+                        game, info_player,
+                        _("%s reacts with:") % (other_player.name, ), [card])
+                gen = card.defend_action(game, other_player, self)
+                item = None
+                while True:
+                    try:
+                        # this can raise Defended if the attack has been defended
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
+            else:
                 break
 
 

@@ -1,5 +1,5 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
-     AttackCard, CardSet, Intrigue
+     AttackCard, ReactionCard, CardSet, Intrigue
 from domination.cards.base import Duchy
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      YesNoQuestion
@@ -31,6 +31,7 @@ class Scout(ActionCard):
 
 
 class Nobles(ActionCard, VictoryCard):
+    # XXX color card appropriately
     name = _("Nobles")
     edition = Intrigue
     cost = 6
@@ -58,6 +59,7 @@ class Duke(VictoryCard):
 class Harem(TreasureCard, VictoryCard):
     name = _("Harem")
     edition = Intrigue
+    optional = True
     cost = 6
     worth = 2
     points = 2
@@ -103,6 +105,15 @@ class Courtyard(ActionCard):
     name = _("Courtyard")
     edition = Intrigue
     cost = 2
+
+    def activate_action(self, game, player):
+        player.draw_cards(3)
+        cards = yield SelectHandCards(game, player, count_upper=1,
+                                      msg=_("Select a card to put on your deck."))
+        if cards:
+            card = cards[0]
+            player.deck.append(card)
+            player.hand.remove(card)
 
 
 class Baron(ActionCard):
@@ -159,8 +170,55 @@ class Steward(ActionCard):
     cost = 3
 
 
-from domination.cards.base import Moat
+class SecretChamber(ReactionCard):
+    name = _("Secret Chamber")
+    edition = Intrigue
+    cost = 2
+
+    def activate_action(self, game, player):
+        cards = yield SelectHandCards(
+            game, player,
+            msg=_("Which cards do you want to discard?"))
+        if not cards:
+            return
+        player.virtual_money += len(cards)
+        for card in cards:
+            player.hand.remove(card)
+            player.discard_pile.append(card)
+
+    def defend_action(self, game, player, card):
+        player.draw_cards(2)
+        cards = yield SelectHandCards(
+            game, player, count_lower=2, count_upper=2,
+            msg=_("Which cards do you want to put on your deck?"))
+        if not cards:
+            return
+        for card in cards:
+            player.hand.remove(card)
+            player.deck.append(card)
+
+
+from domination.cards.base import (
+    Bureaucrat, Cellar, Chancellor, CouncilRoom, Festival, Library, Mine,
+    Militia, Remodel, Spy, Thief, ThroneRoom, Witch)
 
 card_sets = [
-    CardSet(_('Test'), [Duke, Moat]),
+    CardSet(_('Victory Dance'),
+            [Bridge, Duke, GreatHall, Harem, Ironworks, Masquerade, Nobles,
+             Pawn, Scout, Upgrade]),
+    CardSet(_('Secret Schemes'),
+            [Conspirator, Harem, Ironworks, Pawn, Saboteur, ShantyTown,
+             Steward, Swindler, TradingPost, Tribute]),
+    CardSet(_('Best Wishes'),
+            [Coppersmith, Courtyard, Masquerade, Scout, ShantyTown, Steward,
+             Torturer, TradingPost, Upgrade, WishingWell]),
+    CardSet(_('Deconstruction'),
+            [Bridge, MiningVillage, Remodel, Saboteur, SecretChamber, Spy,
+             Swindler, Thief, ThroneRoom, Torturer]),
+    CardSet(_('Hand Madness'),
+            [Bureaucrat, Chancellor, CouncilRoom, Courtyard, Mine, Militia,
+             Minion, Nobles, Steward, Torturer]),
+    CardSet(_('Underlings'),
+            [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
+             Pawn, Steward, Witch]),
 ]

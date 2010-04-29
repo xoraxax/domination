@@ -1,7 +1,7 @@
 from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
      AttackCard, ReactionCard, CardTypeRegistry, CardSet, BaseGame
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
-     YesNoQuestion, ActivateNextActionMultipleTimes
+     YesNoQuestion, ActivateNextActionMultipleTimes, Defended
 from domination.tools import _
 
 
@@ -120,12 +120,15 @@ class Militia(AttackCard):
     def activate_action(self, game, player):
         player.virtual_money += 2
         for other_player in game.following_players(player):
-            defends = False
-            for item in self.defends_check(game, other_player,
-                    _("%s defends against the Militia with:")):
-                defends = True
-                yield item
-            if defends:
+            try:
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
+            except Defended:
                 continue
             count = len(other_player.hand) - 3
             if count <= 0:
@@ -180,8 +183,9 @@ class Moat(ReactionCard):
     def activate_action(self, game, player):
         player.draw_cards(2)
 
-    def defends(self, game, player, card):
-        return True
+    def defend_action(self, game, player, card):
+        # Moat always defends
+        raise Defended
 
 class Remodel(ActionCard):
     name = _("Remodel")
@@ -273,12 +277,15 @@ class Bureaucrat(AttackCard):
         if silver_cards:
             player.deck.append(silver_cards.pop(-1))
         for other_player in game.following_players(player):
-            defends = False
-            for item in self.defends_check(game, other_player,
-                    _("%s defends against the Bureaucrat with:")):
-                defends = True
-                yield item
-            if defends:
+            try:
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
+            except Defended:
                 continue
             victory_cards = [c for c in other_player.hand if isinstance(c, VictoryCard)]
             if victory_cards:
@@ -405,12 +412,15 @@ class Spy(AttackCard):
         player.draw_cards(1)
         player.remaining_actions += 1
         for other_player in game.players:
-            defends = False
-            for item in self.defends_check(game, other_player,
-                    _("%s defends against the Spy with:")):
-                defends = True
-                yield item
-            if defends:
+            try:
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
+            except Defended:
                 continue
             other_player.draw_cards(1)
             card = other_player.hand.pop()
@@ -441,12 +451,15 @@ class Thief(AttackCard):
     def activate_action(self, game, player):
         trashed = []
         for other_player in game.following_players(player):
-            defends = False
-            for item in self.defends_check(game, other_player,
-                    _("%s defends against the Thief with:")):
-                defends = True
-                yield item
-            if defends:
+            try:
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
+            except Defended:
                 continue
             cards = []
             other_player.draw_cards(2)
@@ -499,12 +512,15 @@ class Witch(AttackCard):
         curse_cards = game.supply["Curse"]
         for other_player in game.following_players(player):
             if curse_cards:
-                defends = False
-                for item in self.defends_check(game, other_player,
-                        _("%s defends against the Witch with:")):
-                    defends = True
-                    yield item
-                if defends:
+                try:
+                    gen = self.defends_check(game, other_player)
+                    item = None
+                    while True:
+                        try:
+                            item = (yield gen.send(item))
+                        except StopIteration:
+                            break
+                except Defended:
                     continue
                 other_player.discard_pile.append(curse_cards.pop())
                 yield InfoRequest(game, other_player,
