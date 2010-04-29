@@ -13,7 +13,7 @@
         if (! $(this).attr("checked")) {
           $(".edition-" + key).parent().hide()
                               .find("input").attr("checked", false);
-          $(".needs-" + key).hide()
+          $(".needs-" + key).hide();
         } else {
           $(".edition-" + $(this).attr("value")).parent().show();
           // XXX convoluted loop to make sure only valid sets are visible
