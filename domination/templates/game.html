@@ -180,4 +180,15 @@
       {% endif %}
     {% endif %}
   {% endif %}
+  {% if req_type != "SelectDeal" %}
+    <div id="supply">
+      <h3>Supply</h3>
+      {% for key, cards in game.supply | dictsort %}
+        {% call macros.render_card(cards[0]) %}
+          <span class="{% if not game.supply[key] %}importantfigure{% endif %}">
+            {{ game.supply[key] | count }} left</span>
+        {% endcall %}
+      {% endfor %}
+    </div>
+  {% endif%}
 {% endblock %}
