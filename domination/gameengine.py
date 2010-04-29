@@ -329,7 +329,6 @@ class DominationGame(Game):
             province_cards = 12
         curse_cards = (no_players - 1) * 10
 
-        province_cards = 0
         game.add_supply(Curse, curse_cards)
         game.add_supply(Estate, victory_cards)
         game.add_supply(Duchy, victory_cards)
