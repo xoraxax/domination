@@ -5,11 +5,6 @@ class Edition(object):
     def __init__(self, name):
         self.name = name
 
-Promo = Edition(_("Promo Cards"))
-BaseGame = Edition(_("Base game"))
-Seaside = Edition(_("Seaside expansion"))
-Alchemy = Edition(_("Alchemy expansion"))
-
 
 class CardTypeRegistry(type):
     card_classes = {}
