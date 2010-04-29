@@ -160,3 +160,6 @@ class Steward(ActionCard):
     name = _("Steward")
     edition = Intrigue
     cost = 3
+
+
+card_sets = []

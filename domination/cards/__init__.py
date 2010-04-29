@@ -103,3 +103,10 @@ class TreasureCard(Card):
 class CurseCard(Card):
     abstract = True
     points = None
+
+
+class CardSet(object):
+    def __init__(self, name, card_classes):
+        self.name = name
+        self.editions = set(cls.edition for cls in card_classes)
+        self.card_classes = card_classes

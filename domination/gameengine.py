@@ -405,25 +405,7 @@ from domination.cards.base import (Copper, Silver, Gold, Curse,
                                    Estate, Duchy, Province, Gardens)
 
 
-from domination.cards import base, intrigue
+from domination.cards.base import card_sets as card_sets_base
+from domination.cards.intrigue import card_sets as card_sets_intrigue
 
-card_sets = {
-    _('First game'): (base.Cellar, base.Market, base.Militia, base.Mine,
-                      base.Moat, base.Remodel, base.Smithy, base.Village,
-                      base.Woodcutter, base.Workshop),
-    _('Big Money'): (base.Adventurer, base.Bureaucrat, base.Chancellor,
-                     base.Chapel, base.Feast, base.Laboratory, base.Market,
-                     base.Mine, base.Moneylender, base.ThroneRoom),
-    _('Interaction'): (base.Bureaucrat, base.Chancellor, base.CouncilRoom,
-                       base.Festival, base.Library, base.Militia, base.Moat,
-                       base.Spy, base.Thief, base.Village),
-    _('Size Distortion'): (base.Cellar, base.Chapel, base.Feast, base.Gardens,
-                           base.Laboratory, base.Thief, base.Village,
-                           base.Witch, base.Woodcutter, base.Workshop),
-    _('Village Square'): (base.Bureaucrat, base.Cellar, base.Festival,
-                          base.Library, base.Market, base.Remodel, base.Smithy,
-                          base.ThroneRoom, base.Village, base.Woodcutter),
-    "Test": (base.Workshop, base.Woodcutter, base.Witch, base.ThroneRoom,
-             base.Thief),
-}
-
+card_sets = card_sets_base + card_sets_intrigue

@@ -1,5 +1,5 @@
 from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
-     AttackCard, ReactionCard, BaseGame, CardTypeRegistry
+     AttackCard, ReactionCard, BaseGame, CardTypeRegistry, CardSet
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      YesNoQuestion, ActivateNextActionMultipleTimes
 from domination.tools import _
@@ -529,3 +529,22 @@ class Workshop(ActionCard):
         for info_player in game.following_players(player):
             yield InfoRequest(game, info_player,
                     _("%s gains:") % (player.name, ), [new_card])
+
+
+card_sets = [
+    CardSet(_('First Game'),
+            [Cellar, Market, Militia, Mine, Moat, Remodel, Smithy,
+             Village, Woodcutter, Workshop]),
+    CardSet(_('Big Money'),
+            [Adventurer, Bureaucrat, Chancellor, Chapel, Feast,
+             Laboratory, Market, Mine, Moneylender, ThroneRoom]),
+    CardSet(_('Interaction'),
+            [Bureaucrat, Chancellor, CouncilRoom, Festival, Library,
+             Militia, Moat, Spy, Thief, Village]),
+    CardSet(_('Size Distortion'),
+            [Cellar, Chapel, Feast, Gardens, Laboratory, Thief, Village,
+             Witch, Woodcutter, Workshop]),
+    CardSet(_('Village Square'),
+            [Bureaucrat, Cellar, Festival, Library, Market, Remodel,
+             Smithy, ThroneRoom, Village, Woodcutter]),
+]
