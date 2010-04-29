@@ -12,7 +12,7 @@ app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
 
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
-        YesNoQuestion, card_sets, editions
+        YesNoQuestion, Question, card_sets, editions
 from domination.tools import _
 
 
@@ -67,6 +67,8 @@ def get_response(req):
             assert 0, "Invalid choice!"
     elif isinstance(req, YesNoQuestion):
         return request.form["answer"] == "yes"
+    elif isinstance(req, Question):
+        return request.form["answer"]
     elif isinstance(req, SelectHandCards):
         if "canceled" in request.form and req.count_lower == 0:
             return None

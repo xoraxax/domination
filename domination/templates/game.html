@@ -154,6 +154,14 @@
         <input type="hidden" name="answer" value="no">
         <input type="submit" value="No">
       </form>
+    {% elif req_type == "Question" %}
+      {% for option in req.options %}
+      <form action="" method="post">
+        <input type="hidden" name="req_id" value="{{ req_id }}">
+        <input type="hidden" name="answer" value="{{ option[0] }}">
+        <input type="submit" value="{{ option[1] }}">
+      </form>
+      {% endfor %}
     {% else %}
       Unknown request {{ req | string }}!
     {% endif %}
