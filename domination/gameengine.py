@@ -30,6 +30,11 @@ class YesNoQuestion(Request):
     def __init__(self, game, player, msg):
         Request.__init__(self, game, player, msg)
 
+class Question(Request):
+    def __init__(self, game, player, msg, options):
+        Request.__init__(self, game, player, msg)
+        self.options = options
+
 class SelectHandCards(Request):
     def __init__(self, game, player, msg, cls=None, count_lower=0, count_upper=None,
                  not_selectable=()):

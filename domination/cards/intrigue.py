@@ -1,8 +1,7 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
 from domination.cards.base import Duchy
-from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
-     YesNoQuestion
+from domination.gameengine import SelectHandCards, Question
 from domination.tools import _
 
 
@@ -37,12 +36,25 @@ class Nobles(ActionCard, VictoryCard):
     cost = 6
     points = 2
 
+    def activate_action(self, game, player):
+        answer = yield Question(game, player, _("What do you want to get?"),
+                                [("cards", _("+3 Cards")),
+                                 ("actions", _("+2 Actions"))])
+        if answer == "cards":
+            player.draw_cards(3)
+        else:
+            player.remaining_actions += 2
+
 
 class GreatHall(ActionCard, VictoryCard):
     name = _("Great Hall")
     edition = Intrigue
     cost = 3
     points = 1
+
+    def activate_action(self, game, player):
+        player.draw_cards(1)
+        player.remaining_actions += 1
 
 
 class Duke(VictoryCard):
@@ -54,7 +66,8 @@ class Duke(VictoryCard):
     desc = _("Worth one point for every duchy you have.")
 
     def get_points(self, game, player):
-        return sum(isinstance(card, Duchy) for card in player.deck)
+        return sum(isinstance(card, Duchy) for card in
+                   player.deck + player.hand + player.discard_pile)
 
 
 class Harem(TreasureCard, VictoryCard):
