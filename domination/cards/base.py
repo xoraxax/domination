@@ -163,7 +163,7 @@ class Mine(ActionCard):
             card_cls = yield SelectCard(game, player, card_classes=card_classes,
                 msg=_("Select a treasure card that you want to have."), show_supply_count=True)
             card.trash(game, player)
-            new_card = game.supply[card_cls.__name__].pop(-1)
+            new_card = game.supply[card_cls.__name__].pop()
             player.hand.append(new_card)
             for info_player in game.players:
                 if info_player is not player:
@@ -171,6 +171,8 @@ class Mine(ActionCard):
                             _("%s trashes:") % (player.name, ), [card])
                     yield InfoRequest(game, info_player,
                             _("%s gains:") % (player.name, ), [new_card])
+            for val in game.check_empty_pile(card_cls.__name__):
+                yield val
 
 class Moat(ReactionCard):
     name = _("Moat")
@@ -207,7 +209,7 @@ class Remodel(ActionCard):
                 if c.cost <= card.cost + 2 and game.supply.get(c.__name__)],
                 msg=_("Select a card that you want to have."), show_supply_count=True)
             card.trash(game, player)
-            new_card = game.supply[card_cls.__name__].pop(-1)
+            new_card = game.supply[card_cls.__name__].pop()
             player.discard_pile.append(new_card)
 
             for info_player in game.players:
@@ -216,6 +218,8 @@ class Remodel(ActionCard):
                             _("%s trashes:") % (player.name, ), [card])
                     yield InfoRequest(game, info_player,
                             _("%s gains:") % (player.name, ), [new_card])
+            for val in game.check_empty_pile(card_cls.__name__):
+                yield val
 
 class Smithy(ActionCard):
     name = _("Smithy")
@@ -275,7 +279,9 @@ class Bureaucrat(AttackCard):
     def activate_action(self, game, player):
         silver_cards = game.supply["Silver"]
         if silver_cards:
-            player.deck.append(silver_cards.pop(-1))
+            player.deck.append(silver_cards.pop())
+            for val in game.check_empty_pile("Silver"):
+                yield val
         for other_player in game.following_players(player):
             try:
                 gen = self.defends_check(game, other_player)
@@ -337,11 +343,13 @@ class Feast(ActionCard):
             CardTypeRegistry.card_classes.itervalues() if c.cost <= 5 and
             game.supply.get(c.__name__)],
             msg=_("Select a card that you want to have."), show_supply_count=True)
-        new_card = game.supply[card_cls.__name__].pop(-1)
+        new_card = game.supply[card_cls.__name__].pop()
         player.discard_pile.append(new_card)
         for info_player in game.following_players(player):
             yield InfoRequest(game, info_player,
                     _("%s gains:") % (player.name, ), [new_card])
+        for val in game.check_empty_pile(card_cls.__name__):
+            yield val
 
 class Festival(ActionCard):
     name = _("Festival")
@@ -525,6 +533,8 @@ class Witch(AttackCard):
                 other_player.discard_pile.append(curse_cards.pop())
                 yield InfoRequest(game, other_player,
                         _("%s curses you. You gain a curse card.") % (player.name, ), [])
+                for val in game.check_empty_pile("Curse"):
+                    yield val
 
 class Woodcutter(ActionCard):
     name = _("Woodcutter")
@@ -547,11 +557,13 @@ class Workshop(ActionCard):
             CardTypeRegistry.card_classes.itervalues() if c.cost <= 4 and
             game.supply.get(c.__name__)],
             msg=_("Select a card that you want to have."), show_supply_count=True)
-        new_card = game.supply[card_cls.__name__].pop(-1)
+        new_card = game.supply[card_cls.__name__].pop()
         player.discard_pile.append(new_card)
         for info_player in game.following_players(player):
             yield InfoRequest(game, info_player,
                     _("%s gains:") % (player.name, ), [new_card])
+        for val in game.check_empty_pile(card_cls.__name__):
+            yield val
 
 
 card_sets = [

@@ -174,7 +174,8 @@ class Game(object):
                 while player.remaining_actions and [c for c in player.hand
                         if isinstance(c, ActionCard)] and not break_selection:
                     action_cards = (yield SelectActionCard(self, player,
-                        _("Which action card do you want to play?")))
+                        _("Which action card do you want to play? (%i actions left)")
+                            % (player.remaining_actions, )))
                     if action_cards is None:
                         break_selection = True
                     else:
@@ -223,8 +224,9 @@ class Game(object):
                         break_selection = True
                     else:
                         player.remaining_deals -= 1
-                        cards = self.supply[card_key]
-                        card, cards[:] = cards[-1], cards[:-1]
+                        card = self.supply[card_key].pop()
+                        for val in self.check_empty_pile(card_key):
+                            yield val
                         player.used_money += card.cost
                         player.discard_pile.append(card)
                         for other_player in self.players:
@@ -275,6 +277,12 @@ class Game(object):
         players = self.players
         return players[players.index(current_player) + 1:] + \
                 players[:players.index(current_player)]
+
+    def check_empty_pile(self, key):
+        if not self.supply[key]:
+            for player in self.players:
+                card_name = CardTypeRegistry.keys2classes((key, ))[0].name
+                yield InfoRequest(self, player, _("The pile %s is empty.") % (card_name, ), [])
 
 
 class DominationGame(Game):
