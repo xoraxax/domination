@@ -129,8 +129,7 @@ def create_game(): # XXX check for at most 10 sets
     def transform_sets(sets):
         result = []
         for set in sets:
-            result.append((set.name, [c.__name__ for c in set.card_classes]))
-        result.sort()
+            result.append((set, [c.__name__ for c in set.card_classes]))
         return result
     return render_template("create_game.html", editions=editions,
                            card_sets=transform_sets(card_sets))

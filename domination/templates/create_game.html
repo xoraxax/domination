@@ -9,11 +9,28 @@
     });
     var update_sets = function() {
       $("input[name=edition]").each(function(i) {
+        var key = $(this).attr("value");
         if (! $(this).attr("checked")) {
-          $(".edition-" + $(this).attr("value")).parent().hide()
-                                                .find("input").attr("checked", false);
+          $(".edition-" + key).parent().hide()
+                              .find("input").attr("checked", false);
+          $(".needs-" + key).hide()
         } else {
           $(".edition-" + $(this).attr("value")).parent().show();
+          // XXX convoluted loop to make sure only valid sets are visible
+          $(".needs-" + key).each(function(i) {
+            var enable = true;
+            var classes = $(this).attr("class").split(/\s+/);
+            for (cls in classes) {
+              if (classes[cls] == "") continue;
+              if (! $("input[name=edition][value=" +
+                      classes[cls].substr(6) + "]").attr("checked")) {
+                enable = false;
+                break;
+              }
+            }
+            if (enable)
+              $(this).show();
+          });
         }
       });
       update_button();
@@ -37,7 +54,8 @@
     }
     function select_random_set() {
       $("input[name=card_key]:checked").attr("checked", false);
-      $("input[name=card_key]").random(10).each(function() {
+      $("div.card:visible").children("input[name=card_key]")
+                           .random(10).each(function() {
           $(this).attr("checked", true);
       });
       update_button();
@@ -59,8 +77,9 @@
     <p>Sets:
       <a href="javascript:;" onclick='select_set([])'>Empty</a>
       <a href="javascript:;" onclick='select_random_set()'>Random</a>
-      {% for name, cards in card_sets %}
-        <a href="javascript:;" onclick='select_set({{cards | tojson | safe}})'>{{ name }}</a>
+      {% for set, cards in card_sets %}
+        <a href="javascript:;" class="{% for ed in set.editions %}needs-{{ ed.key }} {% endfor %}"
+           onclick='select_set({{cards | tojson | safe}})'>{{ set.name }}</a>
       {% endfor %}
       
     <p>Which 10 cards? You selected <span id="noofcards"></span>.

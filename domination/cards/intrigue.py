@@ -1,5 +1,5 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
-     AttackCard, Intrigue
+     AttackCard, CardSet, Intrigue
 from domination.cards.base import Duchy
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      YesNoQuestion
@@ -159,4 +159,8 @@ class Steward(ActionCard):
     cost = 3
 
 
-card_sets = []
+from domination.cards.base import Moat
+
+card_sets = [
+    CardSet(_('Test'), [Duke, Moat]),
+]
