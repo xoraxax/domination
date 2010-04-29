@@ -200,7 +200,7 @@
   {% endif %}
   {% if req_type != "SelectDeal" %}
     <div id="supply">
-      <h3 onclick="toggle_supply()">Supply</h3>
+      <h3 onclick="show_supply();">Supply</h3>
       <div id="supplycards">
         {% for key, cards in game.supply | dictsort %}
           {% if cards %}
