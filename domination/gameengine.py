@@ -2,7 +2,6 @@ import sys
 from random import SystemRandom
 from threading import Thread, Condition
 
-from domination.cards import CardTypeRegistry, ActionCard
 from domination.tools import _
 
 
@@ -15,6 +14,9 @@ class EndOfGameException(Exception):
 class ActivateNextActionMultipleTimes(Exception):
     def __init__(self, times):
         self.times = times
+
+class Defended(Exception):
+    pass
 
 class Request(object):
     def __init__(self, game, player, msg):
@@ -29,13 +31,17 @@ class YesNoQuestion(Request):
         Request.__init__(self, game, player, msg)
 
 class SelectHandCards(Request):
-    def __init__(self, game, player, msg, cls=None, count_lower=0, count_upper=None):
+    def __init__(self, game, player, msg, cls=None, count_lower=0, count_upper=None,
+                 not_selectable=()):
         Request.__init__(self, game, player, msg)
         self.cls = cls
         self.count_lower = count_lower
         self.count_upper = count_upper
+        self.not_selectable = not_selectable
 
     def is_selectable(self, card):
+        if card in self.not_selectable:
+            return False
         if self.cls is None:
             return True
         return isinstance(card, self.cls)
@@ -401,13 +407,14 @@ class Player(object):
         return shuffled
 
 
+# import necessary objects from cards here because of circular importing
+
+from domination.cards import editions
+from domination.cards import CardTypeRegistry, ActionCard
 from domination.cards.base import (Copper, Silver, Gold, Curse,
                                    Estate, Duchy, Province, Gardens)
-
 
 from domination.cards.base import card_sets as card_sets_base
 from domination.cards.intrigue import card_sets as card_sets_intrigue
 
 card_sets = card_sets_base + card_sets_intrigue
-
-from domination.cards import editions

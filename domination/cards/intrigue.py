@@ -175,6 +175,28 @@ class SecretChamber(ReactionCard):
     edition = Intrigue
     cost = 2
 
+    def activate_action(self, game, player):
+        cards = yield SelectHandCards(
+            game, player,
+            msg=_("Which cards do you want to discard?"))
+        if not cards:
+            return
+        player.virtual_money += len(cards)
+        for card in cards:
+            player.hand.remove(card)
+            player.discard_pile.append(card)
+
+    def defend_action(self, game, player, card):
+        player.draw_cards(2)
+        cards = yield SelectHandCards(
+            game, player, count_lower=2, count_upper=2,
+            msg=_("Which cards do you want to put on your deck?"))
+        if not cards:
+            return
+        for card in cards:
+            player.hand.remove(card)
+            player.deck.append(card)
+
 
 from domination.cards.base import (
     Bureaucrat, Cellar, Chancellor, CouncilRoom, Festival, Library, Mine,
