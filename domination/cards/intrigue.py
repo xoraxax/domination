@@ -1,7 +1,7 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
 from domination.cards.base import Duchy
-from domination.gameengine import SelectHandCards, Question
+from domination.gameengine import SelectHandCards, Question, MultipleChoice
 from domination.tools import _
 
 
@@ -22,6 +22,25 @@ class Pawn(ActionCard):
     edition = Intrigue
     cost = 2
 
+    def activate_action(self, game, player):
+        while True:
+            choice = yield MultipleChoice(game, player, _("Choose two:"),
+                                          [("card",   _("+1 Card")),
+                                           ("action", _("+1 Action")),
+                                           ("buy",    _("+1 Buy")),
+                                           ("money",  _("+1 Money"))])
+            if len(choice) == 2:
+                break
+        for item in choice:
+            if item == "card":
+                player.draw_cards(1)
+            elif item == "action":
+                player.remaining_actions += 1
+            elif item == "buy":
+                player.remaining_deals += 1
+            elif item == "money":
+                player.virtual_money += 1
+
 
 class Scout(ActionCard):
     name = _("Scout")
@@ -38,7 +57,7 @@ class Nobles(ActionCard, VictoryCard):
 
     def activate_action(self, game, player):
         answer = yield Question(game, player, _("What do you want to get?"),
-                                [("cards", _("+3 Cards")),
+                                [("cards",   _("+3 Cards")),
                                  ("actions", _("+2 Actions"))])
         if answer == "cards":
             player.draw_cards(3)
