@@ -13,15 +13,12 @@ handle_page_refresh = function () {
 };
 
 function your_turn_reminder() {
-    var oldTitle = document.title;
-    var msg = "Your turn!";
-    var timeoutId = setInterval(function() {
-        document.title = document.title == msg ? ' ' : msg;
-    }, 1000);
+    var intervalId = setInterval(function() {
+        $('body').css('background-color', '#ffffdd');
+    }, 2000);
     window.onmousemove = function() {
-        clearInterval(timeoutId);
-        document.title = oldTitle;
-        window.onmousemove = null;
+        $('body').css('background-color', 'transparent');
+        clearInterval(intervalId);
     };
 }
 
