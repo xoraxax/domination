@@ -2,7 +2,7 @@ import sys
 from random import SystemRandom
 from threading import Thread, Condition
 
-from domination.cards import CardTypeRegistry, ActionCard, card_class
+from domination.cards import CardTypeRegistry, ActionCard
 from domination.tools import _
 
 
@@ -268,8 +268,8 @@ class DominationGame(Game):
         self.selected_cards = selected_cards # cards chosen for the game
 
     def deal_cards(self):
-        self.deal_initial_decks() # the players' decks are initialized
-        self.deal_supply_cards(self.selected_cards) # the supply is equipped with cards
+        self.deal_initial_decks()
+        self.deal_supply_cards(self.selected_cards)
 
     def deal_supply_cards(game, selected_cards):
         no_players = len(game.players) # number of players
@@ -278,13 +278,13 @@ class DominationGame(Game):
 
         # add treasure cards
         if no_players > 4:
-            game.add_supply(card_class('Copper'), 120)
-            game.add_supply(card_class('Silver'), 80)
-            game.add_supply(card_class('Gold'), 60)
+            game.add_supply(Copper, 120)
+            game.add_supply(Silver, 80)
+            game.add_supply(Gold, 60)
         else:
-            game.add_supply(card_class('Copper'), 60)
-            game.add_supply(card_class('Silver'), 40)
-            game.add_supply(card_class('Gold'), 30)
+            game.add_supply(Copper, 60)
+            game.add_supply(Silver, 40)
+            game.add_supply(Gold, 30)
 
         # add victory cards (except victory kingdom cards)
         if no_players == 2:
@@ -301,12 +301,10 @@ class DominationGame(Game):
         province_cards = 12
         curse_cards = (no_players - 1) * 10
 
-        game.add_supply(card_class('Curse'), curse_cards)
-        game.add_supply(card_class('Estate'), victory_cards)
-        game.add_supply(card_class('Duchy'), victory_cards)
-        game.add_supply(card_class('Province'), province_cards)
-
-        Gardens = card_class('Gardens')
+        game.add_supply(Curse, curse_cards)
+        game.add_supply(Estate, victory_cards)
+        game.add_supply(Duchy, victory_cards)
+        game.add_supply(Province, province_cards)
 
         # add kingdom cards
         for selected_card in selected_cards:
@@ -318,8 +316,8 @@ class DominationGame(Game):
     def deal_initial_decks(game): # deal the starting hands
         for player in game.players: # every player...
             assert not player.deck # ...does not have a deck...
-            player.deck.extend(card_class('Copper')() for _ in xrange(7)) # ...gets 7 Copper
-            player.deck.extend(card_class('Estate')() for _ in xrange(3)) # ...and 3 Estates.
+            player.deck.extend(Copper() for _ in xrange(7)) # ...gets 7 Copper
+            player.deck.extend(Estate() for _ in xrange(3)) # ...and 3 Estates.
             random.shuffle(player.deck) # then his deck is shuffled
 
     def check_end_of_game(self):
@@ -403,7 +401,11 @@ class Player(object):
         return shuffled
 
 
-from domination.cards import base
+from domination.cards.base import (Copper, Silver, Gold, Curse,
+                                   Estate, Duchy, Province, Gardens)
+
+
+from domination.cards import base, intrigue
 
 card_sets = {
     _('First game'): (base.Cellar, base.Market, base.Militia, base.Mine,

@@ -7,7 +7,6 @@ class Edition(object):
 
 Promo = Edition(_("Promo Cards"))
 BaseGame = Edition(_("Base game"))
-Intrigue = Edition(_("Intrigue game"))
 Seaside = Edition(_("Seaside expansion"))
 Alchemy = Edition(_("Alchemy expansion"))
 
@@ -31,9 +30,6 @@ class CardTypeRegistry(type):
             cls = CardTypeRegistry.card_classes[key]
             classes.append(cls)
         return classes
-
-def card_class(key):
-    return CardTypeRegistry.card_classes[key]
 
 
 class Card(object):
