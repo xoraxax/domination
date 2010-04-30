@@ -143,7 +143,8 @@ class Pawn(ActionCard):
                                           [("card",   _("+1 Card")),
                                            ("action", _("+1 Action")),
                                            ("buy",    _("+1 Buy")),
-                                           ("money",  _("+1 Money"))])
+                                           ("money",  _("+1 Money"))],
+                                          2, 2)
             if len(choice) == 2:
                 break
         for item in choice:
