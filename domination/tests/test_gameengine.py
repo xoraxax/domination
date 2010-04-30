@@ -29,6 +29,7 @@ class TestRandomRunner(object):
             try:
                 req = gen.send(reply)
             except EndOfGameException:
+                print game.end_of_game_reason
                 break
             if isinstance(req, InfoRequest):
                 continue

@@ -19,7 +19,7 @@ class Defended(Exception):
     pass
 
 class Request(object):
-    choices = NotImplemented
+    choices = NotImplemented # used for AI and testing
     wise_slice = None
     def __init__(self, game, player, msg):
         self.player = player
@@ -91,8 +91,22 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
 
     @property
     def choices(self):
+        def key(c):
+            factor = 1
+            functokens = c.activate_action.im_func.func_code.co_names
+            if "trash" in self.msg and c.points == 1:
+                factor = -50
+            elif "want to play" in self.msg:
+                if ("remaining_actions" in functokens or
+                     "ActivateNextActionMultipleTimes" in functokens):
+                    factor = -4
+                else:
+                    factor = -1
+            elif "Militia" in self.msg and isinstance(c, VictoryCard):
+                factor = -10
+            return c.cost * factor
         return sorted([c for c in self.player.hand if self.is_selectable(c)],
-                key=lambda c: c.cost)
+                key=key)
 
     def is_selectable(self, card):
         if card in self.not_selectable:
@@ -114,7 +128,7 @@ class SelectDeal(Request):
 
     @property
     def choices(self):
-        l = [c for c in self.cards if self.is_buyable(c)]
+        l = [c for c in self.cards if self.is_buyable(c) and c.points != -1 and c.worth != 1]
         random.shuffle(l)
         # we want to buy the most expensive card but not the same one every time
         l.sort(key=lambda c: c.cost, reverse=True)
@@ -513,7 +527,7 @@ class AIPlayer(Player):
 # import necessary objects from cards here because of circular importing
 
 from domination.cards import editions
-from domination.cards import CardTypeRegistry, ActionCard
+from domination.cards import CardTypeRegistry, ActionCard, VictoryCard
 from domination.cards.base import (Copper, Silver, Gold, Curse,
                                    Estate, Duchy, Province, Gardens)
 
