@@ -34,7 +34,6 @@ class Coppersmith(ActionCard):
 
 
 class Courtyard(ActionCard):
-    # XXX to be implemented
     name = _("Courtyard")
     edition = Intrigue
     cost = 2
