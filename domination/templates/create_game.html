@@ -83,13 +83,16 @@
            onclick='select_set({{cards | tojson | safe}})'>{{ set.name }}</a>
       {% endfor %}
 
-    <p>Which 10 cards? You selected <span id="noofcards"></span>.
-      {% for cls in app.card_classes %}
-        {% call macros.render_card(cls) %}
-          <span id="card-{{ cls.__name__ }}"></span>
-          <span class="edition-{{ cls.edition.key }}"></span>
-          <input type="checkbox" name="card_key" value="{{ cls.__name__ }}">
-        {% endcall %}
+    <p>Which 10 cards? You selected <span id="noofcards"></span>.</p>
+      {% for edition, cards in app.card_classes | groupby("edition") %}
+        <h3>{{ edition.name }}<span class="edition-{{ edition.key }}"></span></h3>
+        {% for cls in cards %}
+          {% call macros.render_card(cls) %}
+            <span id="card-{{ cls.__name__ }}"></span>
+            <span class="edition-{{ cls.edition.key }}"></span>
+            <input type="checkbox" name="card_key" value="{{ cls.__name__ }}">
+          {% endcall %}
+        {% endfor %}
       {% endfor %}
     <p><input type="submit" value="Create game"></p>
   </form>

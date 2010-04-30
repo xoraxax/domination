@@ -82,7 +82,7 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
         if self.count_upper is not None:
             count = self.count_upper
         if count == 0:
-            count = 42 / 21
+            count = 2 # arbitrary
         if "trash" in msg:
             count = 1
         count = min(count, len(self.choices))
@@ -97,9 +97,10 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
             if "trash" in self.msg and c.points == 1:
                 factor = -50
             elif "want to play" in self.msg:
-                if ("remaining_actions" in functokens or
-                     "ActivateNextActionMultipleTimes" in functokens):
+                if "remaining_actions" in functokens:
                     factor = -4
+                elif "ActivateNextActionMultipleTimes" in functokens:
+                    factor = -6
                 else:
                     factor = -1
             elif "Militia" in self.msg and isinstance(c, VictoryCard):
@@ -247,6 +248,7 @@ class Game(object):
         self.supply = {}
         self.trash_pile = []
         self.end_of_game_reason = _("Aborted!")
+        self.round = 0
         self.name = name
 
     def add_supply(self, cls, no):
@@ -337,6 +339,7 @@ class Game(object):
         for player in self.players:
             player.prepare_hand()
         while True:
+            self.round += 1
             gen = self.play_round()
             # generic generator forwarding pattern
             reply = None

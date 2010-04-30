@@ -21,7 +21,8 @@
 {% endblock %}
 {% block content %}
 <a id="game"></a>
-<h2>Game: {{ game.name }}{% if runner.startable(runner.owner) %} (stopped){% endif %}</h2>
+<h2>{{ game.name }}{% if runner.startable(runner.owner) %} (stopped){% endif %}
+  {% if game.round %} (round {{ game.round }}){% endif %}</h2>
   <ul>
     {% if game not in store.games and runner.joinable %}
       <li><a href="{{ url_for("join_game", name=game.name) }}">Join</a></li>
