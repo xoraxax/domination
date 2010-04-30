@@ -81,7 +81,7 @@
         <a href="javascript:;" class="{% for ed in set.editions %}needs-{{ ed.key }} {% endfor %}"
            onclick='select_set({{cards | tojson | safe}})'>{{ set.name }}</a>
       {% endfor %}
-      
+
     <p>Which 10 cards? You selected <span id="noofcards"></span>.
       {% for cls in app.card_classes %}
         {% call macros.render_card(cls) %}

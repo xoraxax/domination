@@ -64,7 +64,7 @@
     </ul>
     Your cards:
     {% for card in player.deck %}
-      {{ macros.render_card(card) }}  
+      {{ macros.render_card(card) }}
     {% endfor %}
   {% endif %}
 
@@ -74,7 +74,7 @@
       <li class="infoitem">
         <h3>{{ req.msg }}</h3>
         {% for card in req.cards %}
-          {{ macros.render_card(card) }}  
+          {{ macros.render_card(card) }}
         {% endfor %}
       </li>
     {% endfor %}
@@ -194,13 +194,13 @@
       {% if player.activated_cards %}
         <h3>Activated action cards</h3>
         {% for card in player.activated_cards %}
-          {{ macros.render_card(card) }}  
+          {{ macros.render_card(card) }}
         {% endfor %}
       {% endif %}
       {% if req_type != "SelectHandCards" %}
         <h3>Your hand</h3>
         {% for card in player.sorted_hand %}
-          {{ macros.render_card(card) }}  
+          {{ macros.render_card(card) }}
         {% endfor %}
       {% endif %}
     {% endif %}
