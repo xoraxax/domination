@@ -206,7 +206,8 @@ def start_game(game_runner):
 @gets_game
 def cancel_game(game_runner):
     player = get_store()["games"][game_runner.game]
-    assert player is game_runner.owner
+    if player is not game_runner.owner:
+        abort(401)
     game_runner.cancel()
     game = game_runner.game
     return redirect(url_for("game", name=game.name))

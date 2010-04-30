@@ -19,6 +19,8 @@ class Defended(Exception):
     pass
 
 class Request(object):
+    choices = NotImplemented
+    wise_slice = None
     def __init__(self, game, player, msg):
         self.player = player
         self.last_error = ""
@@ -26,7 +28,27 @@ class Request(object):
         self.msg = msg
         self.req_type = type(self).__name__
 
+    def choose_randomly(self):
+        if not self.choices:
+            return
+        return random.choice(self.choices)
+
+    def choose_wisely(self):
+        if not self.choices:
+            return
+        if self.wise_slice is not None:
+            return self.choices[self.wise_slice]
+        return self.choose_randomly()
+
+class MultipleChoicesRequestMixin(object):
+    number_of_choices = -1
+    def choose_randomly(self):
+        assert self.number_of_choices != -1
+        return random.sample(self.choices, self.number_of_choices)
+
+
 class YesNoQuestion(Request):
+    choices = (False, True)
     def __init__(self, game, player, msg):
         Request.__init__(self, game, player, msg)
 
@@ -34,13 +56,20 @@ class Question(Request):
     def __init__(self, game, player, msg, options):
         Request.__init__(self, game, player, msg)
         self.options = options
+        self.choices = [choice for choice, _ in options]
 
-class MultipleChoice(Request):
-    def __init__(self, game, player, msg, options):
+class MultipleChoice(MultipleChoicesRequestMixin, Request):
+    def __init__(self, game, player, msg, options, min_amount=1, max_amount=None):
         Request.__init__(self, game, player, msg)
+        if max_amount is None:
+            max_amount = len(options)
+        self.min_amount = min_amount
+        self.max_amount = max_amount
         self.options = options
+        self.number_of_choices = max_amount
+        self.choices = [choice for choice, _ in self.options]
 
-class SelectHandCards(Request):
+class SelectHandCards(MultipleChoicesRequestMixin, Request):
     def __init__(self, game, player, msg, cls=None, count_lower=0, count_upper=None,
                  not_selectable=()):
         Request.__init__(self, game, player, msg)
@@ -48,6 +77,22 @@ class SelectHandCards(Request):
         self.count_lower = count_lower
         self.count_upper = count_upper
         self.not_selectable = not_selectable
+
+        count = self.count_lower
+        if self.count_upper is not None:
+            count = self.count_upper
+        if count == 0:
+            count = 42 / 21
+        if "trash" in msg:
+            count = 1
+        count = min(count, len(self.choices))
+        self.number_of_choices = count
+        self.wise_slice = slice(0, count)
+
+    @property
+    def choices(self):
+        return sorted([c for c in self.player.hand if self.is_selectable(c)],
+                key=lambda c: c.cost)
 
     def is_selectable(self, card):
         if card in self.not_selectable:
@@ -60,22 +105,33 @@ def SelectActionCard(game, player, msg):
     return SelectHandCards(game, player, msg, ActionCard, 0, 1)
 
 class SelectDeal(Request):
+    wise_slice = 0
     def __init__(self, game, player, msg):
         Request.__init__(self, game, player, msg)
         self.money = self.player.remaining_money
         self.cards = CardTypeRegistry.keys2classes(self.game.supply.keys())
         self.cards.sort(key=lambda c: (c.cost, c.name), reverse=True)
 
+    @property
+    def choices(self):
+        l = [c for c in self.cards if self.is_buyable(c)]
+        random.shuffle(l)
+        # we want to buy the most expensive card but not the same one every time
+        l.sort(key=lambda c: c.cost, reverse=True)
+        return [c.__name__ for c in l]
+
     def is_buyable(self, card):
         return card.cost <= self.money and self.game.supply[card.__name__]
 
 
 class SelectCard(Request):
+    wise_slice = 0
     def __init__(self, game, player, msg, card_classes, show_supply_count=False):
         Request.__init__(self, game, player, msg)
         self.card_classes = card_classes
         self.show_supply_count = show_supply_count
         card_classes.sort(key=lambda x: x.cost, reverse=True)
+        self.choices = self.card_classes
 
 class DebugRequest(Request):
     def __init__(self, exc_info):
@@ -85,12 +141,6 @@ class InfoRequest(Request):
     def __init__(self, game, player, msg, cards):
         Request.__init__(self, game, player, msg)
         self.cards = cards
-
-class EndOfGameRequest(InfoRequest):
-    def __init__(self, game, player, reason):
-        assert not player.discard_pile and not player.hand
-        InfoRequest.__init__(self, game, player, _("The game has ended.")
-                + " " + reason, player.deck)
 
 
 FRESH = "fresh"
@@ -181,7 +231,7 @@ class Game(object):
         self.players = []
         self.supply = {}
         self.trash_pile = []
-        self.end_of_game_reason = "Aborted!"
+        self.end_of_game_reason = _("Aborted!")
         self.name = name
 
     def add_supply(self, cls, no):
