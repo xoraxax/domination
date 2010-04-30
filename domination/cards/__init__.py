@@ -21,6 +21,7 @@ class CardTypeRegistry(type):
         abstract = d.pop("abstract", False)
         if not abstract:
             d['card_type'] = bases[0].__name__
+            d['second_card_type'] = len(bases) > 1 and bases[1].__name__ or ''
         kls = type.__new__(cls, name, bases, d)
         if not abstract:
             CardTypeRegistry.card_classes[name] = kls
