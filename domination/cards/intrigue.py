@@ -59,8 +59,7 @@ class Duke(VictoryCard):
     desc = _("Worth one point for every duchy you have.")
 
     def get_points(self, game, player):
-        return sum(isinstance(card, Duchy) for card in
-                   player.deck + player.hand + player.discard_pile)
+        return sum(isinstance(card, Duchy) for card in player.deck)
 
 
 class GreatHall(ActionCard, VictoryCard):
