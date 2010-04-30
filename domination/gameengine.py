@@ -200,10 +200,11 @@ class GameRunner(Thread):
                 continue
             player.request_queue.append(req)
             self.waiting_for = player
+            player.compute_response() # used for bots
             self.increment_seqno()
 
             player.response_condition.acquire()
-            while not player.response or not self.do_cancel:
+            while not player.response and not self.do_cancel:
                 player.response_condition.wait()
             if not self.do_cancel:
                 reply = player.response[0]
@@ -464,6 +465,12 @@ class Player(object):
         self.activated_cards = []
         self.current = False
 
+    def __repr__(self):
+        return "<Player %r>" % (self.name, )
+
+    def compute_response(self):
+        pass
+
     @property
     def remaining_money(self):
         return self.virtual_money + sum(card.worth for card in self.hand)\
@@ -494,6 +501,13 @@ class Player(object):
             else:
                 return None
         return shuffled
+
+class AIPlayer(Player):
+    def compute_response(self):
+        req = self.request_queue.pop(0)
+        response = req.choose_wisely()
+        self.response.append(response)
+        self.info_queue = []
 
 
 # import necessary objects from cards here because of circular importing

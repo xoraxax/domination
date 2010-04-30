@@ -12,7 +12,8 @@ app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
 
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
-        YesNoQuestion, Question, MultipleChoice, card_sets, editions
+        YesNoQuestion, Question, MultipleChoice, card_sets, editions, \
+        AIPlayer
 from domination.tools import _
 
 
@@ -129,6 +130,9 @@ def create_game(): # XXX check for at most 10 sets
         game.players.append(player)
         app.games[name] = GameRunner(game, player)
         get_store()["games"][game] = player
+        if request.form.get("ai"):
+            player = AIPlayer("CPU0")
+            game.players.append(player)
         return redirect(url_for('game', name=name))
     def transform_sets(sets):
         result = []
