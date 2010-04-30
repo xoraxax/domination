@@ -24,6 +24,7 @@ class TestRandomRunner(object):
         game.players.append(Player("CPU0"))
         game.players.append(Player("CPU1"))
         gen = game.play_game()
+        record = []
         reply = None
         while True:
             try:
@@ -33,11 +34,12 @@ class TestRandomRunner(object):
                 break
             if isinstance(req, InfoRequest):
                 continue
-            #print req.player, " answered ", req,
             reply = req.choose_wisely()
-            #print "with", reply
+            record.append("%s answered %s with %s" % (req.player, type(req), reply))
         for player in game.players:
             print player.name + ":", player.points(game)
+        if min(player.points(game) for player in game.players) < 15:
+            print "\n".join(record)
 
     def test_multiple_runs(self):
         for _ in xrange(2**8):

@@ -94,8 +94,10 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
         def key(c):
             factor = 1
             functokens = c.activate_action.im_func.func_code.co_names
-            if "trash" in self.msg and c.points == 1:
+            if "trash" in self.msg and c.points == 1 and self.count_upper != 1:
                 factor = -50
+            elif "trash" in self.msg and self.count_upper == 1:
+                factor = -1
             elif "want to play" in self.msg:
                 if "remaining_actions" in functokens:
                     factor = -4
@@ -129,7 +131,7 @@ class SelectDeal(Request):
 
     @property
     def choices(self):
-        l = [c for c in self.cards if self.is_buyable(c) and c.points != -1 and c.worth != 1]
+        l = [c for c in self.cards if self.is_buyable(c) and c.points not in (-1, 1) and c.worth != 1]
         random.shuffle(l)
         # we want to buy the most expensive card but not the same one every time
         l.sort(key=lambda c: c.cost, reverse=True)
