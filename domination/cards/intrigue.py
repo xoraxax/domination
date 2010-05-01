@@ -190,8 +190,7 @@ class SecretChamber(ReactionCard):
             return
         player.virtual_money += len(cards)
         for card in cards:
-            player.hand.remove(card)
-            player.discard_pile.append(card)
+            card.discard(player)
         for other_player in game.players:
             if other_player is not player:
                 yield InfoRequest(game, other_player,
