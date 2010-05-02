@@ -1,7 +1,8 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
 from domination.cards.base import Duchy
-from domination.gameengine import SelectHandCards, Question, MultipleChoice
+from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
+     InfoRequest
 from domination.tools import _
 
 
@@ -191,6 +192,10 @@ class SecretChamber(ReactionCard):
         for card in cards:
             player.hand.remove(card)
             player.discard_pile.append(card)
+        for other_player in game.players:
+            if other_player is not player:
+                yield InfoRequest(game, other_player,
+                    _("%s discards these cards:") % (player.name, ), cards)
 
     def defend_action(self, game, player, card):
         player.draw_cards(2)
