@@ -169,7 +169,7 @@ def game(game_runner):
                 cv.release()
             cv = game_runner.seqno_condition
             cv.acquire()
-            while game_runner.seqno == req.seqno:
+            while game_runner.seqno <= req.seqno:
                 cv.wait()
             cv.release()
         req = None
