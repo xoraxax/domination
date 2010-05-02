@@ -167,6 +167,11 @@ def game(game_runner):
                     cv.notify()
             finally:
                 cv.release()
+            cv = game_runner.seqno_condition
+            cv.acquire()
+            while game_runner.seqno == req.seqno:
+                cv.wait()
+            cv.release()
         req = None
         if player.request_queue:
             req = player.request_queue[0]

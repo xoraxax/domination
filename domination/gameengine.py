@@ -215,6 +215,7 @@ class GameRunner(Thread):
                 self.waiting_for = None
                 self.increment_seqno()
                 continue
+            req.seqno = self.seqno + 1
             player.request_queue.append(req)
             self.waiting_for = player
             player.compute_response() # used for bots
