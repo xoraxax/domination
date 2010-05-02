@@ -2,19 +2,21 @@ import os
 import sys
 import random
 
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-
 from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
 
 app = Flask(__name__)
 app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
 
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
         YesNoQuestion, Question, MultipleChoice, card_sets, editions, \
         AIPlayer
 from domination.tools import _
+from domination.gzip_middleware import GzipMiddleware
 
 
 app.games = {}
@@ -248,5 +250,6 @@ def before_request():
 
 if __name__ == '__main__':
     app.secret_key = "insecure"
+    app.wsgi_app = GzipMiddleware(app.wsgi_app)
     app.run(host="0.0.0.0", debug=True, threaded=True)
 
