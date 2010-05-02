@@ -25,6 +25,7 @@ body { margin: 0; padding: 0; }
 .importantfigure { font-weight: bold; color: darkred; }
 
 .VictoryCard { background-color: #7FFF00; }
+.AlsoVictoryCard { border: 3px solid #7FFF00; }
 .CurseCard { background-color: #DA70D6; }
 .TreasureCard { background-color: gold; }
 .ActionCard { background-color: #EEEEEE; }

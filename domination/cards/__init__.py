@@ -54,6 +54,14 @@ class Card(object):
         assert self.points is not None
         assert self.worth is not None
 
+    @classmethod
+    def classnames(cls):
+        if issubclass(cls, VictoryCard) and issubclass(cls, TreasureCard):
+            return _("Victory/Treasure card")
+        if issubclass(cls, VictoryCard) and issubclass(cls, ActionCard):
+            return _("Action/Victory card")
+        return cls.classname
+
     def activate_action(self, game, player):
         raise NotImplementedError
 
@@ -75,10 +83,12 @@ class Card(object):
 class ActionCard(Card):
     optional = True
     abstract = True
+    classname = _("Action card")
 
 
 class AttackCard(ActionCard):
     abstract = True
+    classname = _("Attack card")
 
     def defends_check(self, game, other_player):
         from domination.gameengine import InfoRequest, SelectHandCards
@@ -112,21 +122,25 @@ class AttackCard(ActionCard):
 
 class ReactionCard(ActionCard):
     abstract = True
+    classname = _("Action/Reaction card")
 
 
 class VictoryCard(Card):
     abstract = True
     points = None
+    classname = _("Victory card")
 
 
 class TreasureCard(Card):
     abstract = True
     worth = None
+    classname = _("Treasure card")
 
 
 class CurseCard(Card):
     abstract = True
     points = None
+    classname = _("Curse card")
 
 
 class CardSet(object):

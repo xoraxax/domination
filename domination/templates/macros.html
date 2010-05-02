@@ -9,15 +9,16 @@
       </div>
       {% if card.worth %}
       <div class="worth">
-        Worth: {{ card.worth }}
+        <em>Worth:</em> {{ card.worth }}
       </div>
       {% endif %}
       {% if card.points  %}
       <div class="points">
-        Points: {{ card.points }}
+        <em>Points:</em> {{ card.points }}
       </div>
       {% endif %}
-      Cost: {{ card.cost }}
+      <em>Cost:</em> {{ card.cost }}
+      <p>{{ card.classnames() }}</p>
     </div>
   </div>
   {% if caller %}
