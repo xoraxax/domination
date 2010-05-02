@@ -28,7 +28,7 @@ app.template_context_processors.append(lambda: {'app': app, 'store': get_store()
 def needs_login(func):
     def innerfunc(*args, **kwargs):
         if "username" not in session:
-            abort(401)
+            return redirect(url_for('login', url=request.url))
         return func(*args, **kwargs)
     innerfunc.__name__ = func.__name__
     return innerfunc
@@ -99,7 +99,10 @@ def login():
         if username in app.users:
             return render_error(_("Username already in use."))
         session['username'] = username
-        return redirect(url_for('index'))
+        if request.args.get('url'):
+            return redirect(request.args['url'])
+        else:
+            return redirect(url_for('index'))
     return render_template("login.html")
 
 
