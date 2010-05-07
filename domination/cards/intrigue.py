@@ -84,10 +84,32 @@ class Harem(TreasureCard, VictoryCard):
 
 
 class Ironworks(ActionCard):
-    # XXX to be implemented
     name = _("Ironworks")
     edition = Intrigue
     cost = 4
+    desc = _("Gain a card costing up to 4. If it is an Action card: +1 Action;"
+            " Treasure card: +1 Money; Victory Card: +1 Card")
+
+    def activate_action(self, game, player):
+        # copied from Feast
+        card_cls = yield SelectCard(game, player, card_classes=[c for c in
+            CardTypeRegistry.card_classes.itervalues() if c.cost <= 4 and
+            game.supply.get(c.__name__)],
+            msg=_("Select a card that you want to have."), show_supply_count=True)
+        new_card = game.supply[card_cls.__name__].pop()
+        player.discard_pile.append(new_card)
+        for info_player in game.following_players(player):
+            yield InfoRequest(game, info_player,
+                    _("%s gains:") % (player.name, ), [new_card])
+        for val in game.check_empty_pile(card_cls.__name__):
+            yield val
+
+        if issubclass(card_cls, ActionCard):
+            player.remaining_actions += 1
+        if issubclass(card_cls, TreasureCard):
+            player.virtual_money += 1
+        if issubclass(card_cls, VictoryCard):
+            player.draw_cards(1)
 
 
 class Masquerade(ActionCard):
@@ -297,4 +319,6 @@ card_sets = [
     CardSet(_('Underlings'),
             [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
              Pawn, Steward, Witch]),
+    CardSet('Intrigue Test',
+            [Ironworks]),
 ]
