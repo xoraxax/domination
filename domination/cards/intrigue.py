@@ -113,10 +113,39 @@ class Ironworks(ActionCard):
 
 
 class Masquerade(ActionCard):
-    # XXX to be implemented
     name = _("Masquerade")
     edition = Intrigue
     cost = 3
+    desc = _("+2 Cards, Each player passes a card from his hand to the left at"
+             " once. Then you may trash a card from your hand.")
+
+    def activate_action(self, game, player):
+        player.draw_cards(2)
+        passed_card = {}
+        for other_player in game.players:
+            cards = yield SelectHandCards(
+                game, other_player,
+                _("Which card do you want to pass left?"), None, 1, 1)
+            card = cards[0]
+            passed_card[other_player.left(game)] = card
+            other_player.hand.remove(card)
+        for other_player in game.players:
+            card = passed_cards[other_player]
+            yield InfoRequest(game, other_player,
+                    _("You gained this card from your right:"), [card])
+            other_player.hand.append(card)
+
+        if player.hand:
+            cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
+                    msg=_("Which card do you want to trash?"))
+        else:
+            return
+        # trash cards
+        for card in cards:
+            card.trash(game, player)
+        for other_player in game.following_players(player):
+            yield InfoRequest(game, other_player,
+                    _("%s trashes this card:") % (player.name, ), cards)
 
 
 class MiningVillage(ActionCard):

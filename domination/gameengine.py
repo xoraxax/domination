@@ -525,6 +525,11 @@ class Player(object):
                 return None
         return shuffled
 
+    def left(self, game):
+        gp = game.players
+        i = gp.index(self)
+        return gp[(i + 1) % len(gp)]
+
 class AIPlayer(Player):
     def compute_response(self):
         req = self.request_queue.pop(0)
