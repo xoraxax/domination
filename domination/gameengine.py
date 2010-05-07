@@ -118,6 +118,9 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
             return True
         return isinstance(card, self.cls)
 
+    def fulfillable(self):
+        return bool([c for c in self.player.hand if self.is_selectable(c)])
+
 def SelectActionCard(game, player, msg):
     return SelectHandCards(game, player, msg, ActionCard, 0, 1)
 

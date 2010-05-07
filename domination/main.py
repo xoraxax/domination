@@ -57,7 +57,7 @@ def get_response(req):
             return None
         key = request.form["card"]
         card_cls = CardTypeRegistry.keys2classes((key, ))[0]
-        if card_cls in req.cards:
+        if card_cls in req.cards and req.is_buyable(card_cls):
             return key
         else:
             assert 0, "Invalid choice!"

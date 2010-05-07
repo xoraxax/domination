@@ -96,10 +96,13 @@ class AttackCard(ActionCard):
         while True:
             if not any(isinstance(c, ReactionCard) for c in other_player.hand):
                 break
-            cards = yield SelectHandCards(
+            req = SelectHandCards(
                 game, other_player, count_lower=0, count_upper=1, cls=ReactionCard,
                 msg=_("Do you want to flash a card in response to the attack?"),
                 not_selectable=already_selected)
+            if not req.fulfillable():
+                break
+            cards = yield req
             if cards:
                 card = cards[0]
                 already_selected.add(card)
