@@ -63,7 +63,6 @@ class Duke(VictoryCard):
 
 
 class GreatHall(ActionCard, VictoryCard):
-    # XXX color card appropriately
     name = _("Great Hall")
     edition = Intrigue
     cost = 3
@@ -76,7 +75,6 @@ class GreatHall(ActionCard, VictoryCard):
 
 
 class Harem(TreasureCard, VictoryCard):
-    # XXX color card appropriately
     name = _("Harem")
     edition = Intrigue
     optional = True
@@ -114,7 +112,6 @@ class Minion(AttackCard):
 
 
 class Nobles(ActionCard, VictoryCard):
-    # XXX color card appropriately
     name = _("Nobles")
     edition = Intrigue
     cost = 6
@@ -190,8 +187,7 @@ class SecretChamber(ReactionCard):
             return
         player.virtual_money += len(cards)
         for card in cards:
-            player.hand.remove(card)
-            player.discard_pile.append(card)
+            card.discard(player)
         for other_player in game.players:
             if other_player is not player:
                 yield InfoRequest(game, other_player,
