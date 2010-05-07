@@ -119,9 +119,16 @@ class Nobles(ActionCard, VictoryCard):
     desc = _("Choose one: +3 Cards, or +2 Actions.")
 
     def activate_action(self, game, player):
+        actions = [("cards",   _("+3 Cards")),
+                   ("actions", _("+2 Actions"))]
+
         answer = yield Question(game, player, _("What do you want to get?"),
-                                [("cards",   _("+3 Cards")),
-                                 ("actions", _("+2 Actions"))])
+                                actions)
+
+        for info_player in game.following_players(player):
+            yield InfoRequest(game, info_player,
+                    _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
+
         if answer == "cards":
             player.draw_cards(3)
         else:
@@ -136,15 +143,21 @@ class Pawn(ActionCard):
             " (The choices must be different.)")
 
     def activate_action(self, game, player):
+        choices = [("card",   _("+1 Card")),
+                   ("action", _("+1 Action")),
+                   ("buy",    _("+1 Buy")),
+                   ("money",  _("+1 Money"))]
         while True:
-            choice = yield MultipleChoice(game, player, _("Choose two:"),
-                                          [("card",   _("+1 Card")),
-                                           ("action", _("+1 Action")),
-                                           ("buy",    _("+1 Buy")),
-                                           ("money",  _("+1 Money"))],
+            choice = yield MultipleChoice(game, player, _("Choose two:"), choices,
                                           2, 2)
             if len(choice) == 2:
                 break
+
+        for info_player in game.following_players(player):
+            chosen = ", ".join(_(dict(choices)[c]) for c in choice)
+            yield InfoRequest(game, info_player,
+                    _("%s chooses '%s'") % (player.name, chosen), [])
+
         for item in choice:
             if item == "card":
                 player.draw_cards(1)
