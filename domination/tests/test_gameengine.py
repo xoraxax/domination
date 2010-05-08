@@ -1,5 +1,5 @@
 from random import SystemRandom
-from domination.gameengine import Player, DominationGame, InfoRequest, EndOfGameException
+from domination.gameengine import Player, DominationGame, InfoRequest, EndOfGameException, card_sets
 from domination.cards import CardTypeRegistry
 
 
@@ -20,6 +20,17 @@ class TestRandomRunner(object):
             CardTypeRegistry.card_classes.values() if c.optional
             and doesnt_raise(c())], 10)
         print "Chose ", card_classes
+        self.do_test_run(card_classes)
+
+    def test_intrigue_test_run(self):
+        card_classes = dict(((x.name, x.card_classes) for x in card_sets))['Intrigue Test']
+        card_classes += random.sample([c for c in
+            CardTypeRegistry.card_classes.values() if c.optional
+            and doesnt_raise(c())], 10 - len(card_classes))
+        print "Chose ", card_classes
+        self.do_test_run(card_classes)
+
+    def do_test_run(self, card_classes):
         game = DominationGame("test", card_classes)
         game.players.append(Player("CPU0"))
         game.players.append(Player("CPU1"))
@@ -44,3 +55,8 @@ class TestRandomRunner(object):
     def test_multiple_runs(self):
         for _ in xrange(2**8):
             yield self.test_random_run
+
+    def test_multiple_runs_intrigue_test(self):
+        for _ in xrange(2**8):
+            self.test_intrigue_test_run()
+

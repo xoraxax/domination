@@ -2,7 +2,7 @@ from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
 from domination.cards.base import Duchy
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
-     InfoRequest
+     InfoRequest, SelectCard, CardTypeRegistry
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense
 
@@ -131,7 +131,7 @@ class Masquerade(ActionCard):
             passed_card[other_player.left(game)] = card
             other_player.hand.remove(card)
         for other_player in game.players:
-            card = passed_cards[other_player]
+            card = passed_card[other_player]
             yield InfoRequest(game, other_player,
                     _("You gained this card from your right:"), [card])
             other_player.hand.append(card)
@@ -278,11 +278,11 @@ class ShantyTown(ActionCard):
     def activate_action(self, game, player):
         player.remaining_actions += 2
 
-        for info_player in game.following_players(other_player):
+        for info_player in game.following_players(player):
             yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
                     (player.name, ), player.hand)
 
-        action_cards = [c for c in other_player.hand if isinstance(c, ActionCard)]
+        action_cards = [c for c in player.hand if isinstance(c, ActionCard)]
         if not action_cards:
             player.draw_cards(2)
 
@@ -301,7 +301,7 @@ class Swindler(AttackCard):
                 handle_defense(self, game, player)
             except Defended:
                 continue
-            player.draw_card(1)
+            player.draw_cards(1)
             card = player.hand.pop()
             for info_player in game.players:
                 yield InfoRequest(game, info_player, _("%s trashes:") %
