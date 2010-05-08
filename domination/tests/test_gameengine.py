@@ -40,13 +40,15 @@ class TestRandomRunner(object):
         while True:
             try:
                 req = gen.send(reply)
+                assert len(req.player.total_cards) >= 5, "\n".join(record)
             except EndOfGameException:
                 print game.end_of_game_reason
                 break
             if isinstance(req, InfoRequest):
                 continue
             reply = req.choose_wisely()
-            record.append("%s answered %s with %s" % (req.player, type(req), reply))
+            record.append("%s answered %s with %s" % (req.player, req.msg, reply))
+            record.append("%s has %i cards left" % (req.player, len(req.player.total_cards)))
         for player in game.players:
             print player.name + ":", player.points(game)
         if min(player.points(game) for player in game.players) < 15:
@@ -58,5 +60,5 @@ class TestRandomRunner(object):
 
     def test_multiple_runs_intrigue_test(self):
         for _ in xrange(2**8):
-            self.test_intrigue_test_run()
+            yield self.test_intrigue_test_run
 

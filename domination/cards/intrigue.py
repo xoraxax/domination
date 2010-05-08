@@ -2,9 +2,8 @@ from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
 from domination.cards.base import Duchy
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
-     InfoRequest, SelectCard, CardTypeRegistry
+     InfoRequest, SelectCard, CardTypeRegistry, Defended
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense
 
 
 class Baron(ActionCard):
@@ -124,9 +123,10 @@ class Masquerade(ActionCard):
         player.draw_cards(2)
         passed_card = {}
         for other_player in game.players:
-            cards = yield SelectHandCards(
+            req = SelectHandCards(
                 game, other_player,
                 _("Which card do you want to pass left?"), None, 1, 1)
+            cards = yield req
             card = cards[0]
             passed_card[other_player.left(game)] = card
             other_player.hand.remove(card)
@@ -137,7 +137,7 @@ class Masquerade(ActionCard):
             other_player.hand.append(card)
 
         if player.hand:
-            cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
+            cards = yield SelectHandCards(game, player, count_lower=0, count_upper=1,
                     msg=_("Which card do you want to trash?"))
         # trash cards
         for card in cards:
@@ -307,8 +307,9 @@ class Swindler(AttackCard):
                         break
             except Defended:
                 continue
-            player.draw_cards(1)
-            card = player.hand.pop()
+            if other_player.draw_cards(1) is None:
+                continue
+            card = other_player.hand.pop()
             for info_player in game.players:
                 yield InfoRequest(game, info_player, _("%s trashes:") %
                         (info_player.name, ), [card])

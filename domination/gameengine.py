@@ -84,7 +84,10 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
         if count == 0:
             count = 2 # arbitrary
         if "trash" in msg:
-            count = 1
+            # chapel
+            if (count_upper == 4 and count_lower != 4) or \
+                    (count_upper == 1 and count_lower == 0): # masquerade
+                count = len([c for c in player.hand if c.__name__ == 'Estate'])
         count = min(count, len(self.choices))
         self.number_of_choices = count
         self.wise_slice = slice(0, count)
@@ -266,7 +269,7 @@ class Game(object):
     def play_round(self):
         for player in self.players:
             with player:
-                discarded_cards = []
+                player.aux_cards = discarded_cards = []
                 # action
                 break_selection = False
                 next_times = None
@@ -467,6 +470,7 @@ class Player(object):
         self.deck = []
         self.hand = []
         self.activated_cards = []
+        self.aux_cards = [] # cards lying on the table etc.
         self.remaining_deals = 0
         self.remaining_actions = 0
         self.used_money = 0
@@ -505,6 +509,10 @@ class Player(object):
     @property
     def sorted_hand(self):
         return sorted(self.hand, key=lambda x: x.cost)
+
+    @property
+    def total_cards(self): # does not include activated cards
+        return self.hand + self.discard_pile + self.deck + self.aux_cards
 
     def points(self, game):
         assert not self.discard_pile and not self.hand
