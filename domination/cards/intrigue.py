@@ -298,7 +298,13 @@ class Swindler(AttackCard):
         player.virtual_money += 2
         for other_player in game.following_players(player):
             try:
-                handle_defense(self, game, player)
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
             except Defended:
                 continue
             player.draw_cards(1)
