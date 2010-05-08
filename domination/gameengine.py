@@ -153,6 +153,9 @@ class SelectCard(Request):
         card_classes.sort(key=lambda x: x.cost, reverse=True)
         self.choices = self.card_classes
 
+    def fulfillable(self):
+        return bool(self.card_classes)
+
 class DebugRequest(Request):
     def __init__(self, exc_info):
         self.exc_info = exc_info

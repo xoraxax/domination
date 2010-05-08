@@ -4,6 +4,7 @@ from domination.cards.base import Duchy
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest
 from domination.tools import _
+from domination.macros.__macros__ import handle_defense
 
 
 class Baron(ActionCard):
@@ -138,8 +139,6 @@ class Masquerade(ActionCard):
         if player.hand:
             cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
                     msg=_("Which card do you want to trash?"))
-        else:
-            return
         # trash cards
         for card in cards:
             card.trash(game, player)
@@ -270,24 +269,96 @@ class SecretChamber(ReactionCard):
 
 
 class ShantyTown(ActionCard):
-    # XXX to be implemented
     name = _("Shanty Town")
     edition = Intrigue
     cost = 3
+    desc = _("+2 Actions, Reveal your hand. If you have no action cards in hand,"
+             " +2 Cards.")
+
+    def activate_action(self, game, player):
+        player.remaining_actions += 2
+
+        for info_player in game.following_players(other_player):
+            yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
+                    (player.name, ), player.hand)
+
+        action_cards = [c for c in other_player.hand if isinstance(c, ActionCard)]
+        if not action_cards:
+            player.draw_cards(2)
 
 
 class Swindler(AttackCard):
-    # XXX to be implemented
     name = _("Swindler")
     edition = Intrigue
     cost = 3
+    desc = _("+2 Money, Each other player trashes the top card of his deck and"
+             " gains a card with the same cost that you choose.")
+
+    def activate_action(self, game, player):
+        player.virtual_money += 2
+        for other_player in game.following_players(player):
+            try:
+                handle_defense(self, game, player)
+            except Defended:
+                continue
+            player.draw_card(1)
+            card = player.hand.pop()
+            for info_player in game.players:
+                yield InfoRequest(game, info_player, _("%s trashes:") %
+                        (info_player.name, ), [card])
+
+            req = SelectCard(game, player, card_classes=[c for c in
+                CardTypeRegistry.card_classes.itervalues() if c.cost == card.cost and
+                game.supply.get(c.__name__)],
+                msg=_("Select a card that you want to give."), show_supply_count=True)
+            if not req.fulfillable():
+                continue
+            card_cls = yield req
+            new_card = game.supply[card_cls.__name__].pop()
+            other_player.discard_pile.append(new_card)
+            for info_player in game.following_players(player):
+                yield InfoRequest(game, info_player,
+                        _("%s gains:") % (other_player.name, ), [new_card])
+            for val in game.check_empty_pile(card_cls.__name__):
+                yield val
+
 
 
 class Steward(ActionCard):
-    # XXX to be implemented
     name = _("Steward")
     edition = Intrigue
     cost = 3
+    desc = _("Choose one: +2 Cards; or +2 Money; or trash two cards from your hand.")
+
+    def activate_action(self, game, player):
+        actions = [("cards", _("+2 Cards")),
+                   ("money", _("+2 Money")),
+                   ("trash", _("Trash two cards"))]
+
+        answer = yield Question(game, player, _("What do you want to do?"),
+                                actions)
+
+        for info_player in game.following_players(player):
+            yield InfoRequest(game, info_player,
+                    _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
+
+        if answer == "cards":
+            player.draw_cards(2)
+        elif answer == "money":
+            player.virtual_money += 2
+        elif answer == "trash":
+            if player.hand:
+                cards = yield SelectHandCards(game, player, count_lower=2, count_upper=2,
+                        msg=_("Which cards do you want to trash?"))
+            else:
+                return
+            # trash cards
+            for card in cards:
+                card.trash(game, player)
+            for other_player in game.players:
+                if other_player is not player:
+                    yield InfoRequest(game, other_player,
+                            _("%s trashes these cards:") % (player.name, ), cards)
 
 
 class Torturer(AttackCard):
@@ -349,5 +420,5 @@ card_sets = [
             [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
              Pawn, Steward, Witch]),
     CardSet('Intrigue Test',
-            [Ironworks]),
+            [Ironworks, Masquerade, ShantyTown, Steward, Swindler]),
 ]
