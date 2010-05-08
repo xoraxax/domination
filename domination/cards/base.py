@@ -3,7 +3,6 @@ from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      YesNoQuestion, ActivateNextActionMultipleTimes, Defended
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense
 
 
 class Copper(TreasureCard):
@@ -122,7 +121,13 @@ class Militia(AttackCard):
         player.virtual_money += 2
         for other_player in game.following_players(player):
             try:
-                handle_defense(self, game, player)
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
             except Defended:
                 continue
             count = len(other_player.hand) - 3
@@ -279,7 +284,13 @@ class Bureaucrat(AttackCard):
                 yield val
         for other_player in game.following_players(player):
             try:
-                handle_defense(self, game, player)
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
             except Defended:
                 continue
             victory_cards = [c for c in other_player.hand if isinstance(c, VictoryCard)]
@@ -410,7 +421,13 @@ class Spy(AttackCard):
         player.remaining_actions += 1
         for other_player in game.players:
             try:
-                handle_defense(self, game, player)
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
             except Defended:
                 continue
             other_player.draw_cards(1)
@@ -443,7 +460,13 @@ class Thief(AttackCard):
         trashed = []
         for other_player in game.following_players(player):
             try:
-                handle_defense(self, game, player)
+                gen = self.defends_check(game, other_player)
+                item = None
+                while True:
+                    try:
+                        item = (yield gen.send(item))
+                    except StopIteration:
+                        break
             except Defended:
                 continue
             cards = []
@@ -498,7 +521,13 @@ class Witch(AttackCard):
         for other_player in game.following_players(player):
             if curse_cards:
                 try:
-                    handle_defense(self, game, player)
+                    gen = self.defends_check(game, other_player)
+                    item = None
+                    while True:
+                        try:
+                            item = (yield gen.send(item))
+                        except StopIteration:
+                            break
                 except Defended:
                     continue
                 other_player.discard_pile.append(curse_cards.pop())

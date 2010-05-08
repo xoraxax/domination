@@ -4,9 +4,7 @@ Domination
 Installation
 ------------
 
-You need Flask (http://flask.pocoo.org) and karnickel:
-$ easy_install flask
-$ easy_install karnickel
+You need Flask (http://flask.pocoo.org).
 
 
 Running
