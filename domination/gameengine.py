@@ -88,7 +88,7 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
             if (count_upper == 4 and count_lower != 4) or \
                     (count_upper == 1 and count_lower == 0): # masquerade
                 count = len([c for c in player.hand if c.__name__ == 'Estate'])
-        count = min(count, len(self.choices))
+        count = min(count, len(self.choices), count_upper)
         self.number_of_choices = count
         self.wise_slice = slice(0, count)
 
