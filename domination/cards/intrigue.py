@@ -1,23 +1,55 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
-from domination.cards.base import Duchy
+from domination.cards.base import Duchy, Estate
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, CardTypeRegistry, Defended
 from domination.tools import _
 
 
 class Baron(ActionCard):
-    # XXX to be implemented
     name = _("Baron")
     edition = Intrigue
     cost = 4
+    desc = _("+1 Buy, You may discard an Estate card. If you do, +4 Money."
+            " Otherwise gain an Estate card.")
+
+    def activate_action(self, game, player):
+        player.remaining_deals += 1
+        estate_cards = [c for c in player.hand if isinstance(c, Estate)]
+        if estate_cards:
+            player.virtual_money += 4
+            card = estate_cards[0]
+            card.trash(game, player)
+            for info_player in game.following_players(player):
+                yield InfoRequest(game, info_player,
+                        _("%s trashes:") % (player.name, ), [card])
+        else:
+            estate_pile = game.supply["Estate"]
+            if estate_pile:
+                new_card = estate_pile.pop()
+                player.discard_pile.append(new_card)
+                for val in game.check_empty_pile("Estate"):
+                    yield val
 
 
 class Bridge(ActionCard):
-    # XXX to be implemented
     name = _("Bridge")
     edition = Intrigue
     cost = 4
+    desc = _("+1 Buy, +1 Money, All cards (including cards in players'"
+            " hands) cost 1 Money less this turn, but not less than"
+            " 0 Money.")
+
+    def activate_action(self, game, player):
+        decreased_for_cards = []
+        for card in CardTypeRegistry.card_classes.itervalues():
+            if card.cost != 0:
+                card.cost = card.cost - 1
+                decreased_for_cards.append(card)
+        def restore_cards(player):
+            for card in decreased_for_cards:
+                card.cost += 1
+        player.register_turn_cleanup(restore_cards)
 
 
 class Conspirator(ActionCard):
@@ -312,7 +344,7 @@ class Swindler(AttackCard):
             card = other_player.hand.pop()
             for info_player in game.players:
                 yield InfoRequest(game, info_player, _("%s trashes:") %
-                        (info_player.name, ), [card])
+                        (other_player.name, ), [card])
 
             req = SelectCard(game, player, card_classes=[c for c in
                 CardTypeRegistry.card_classes.itervalues() if c.cost == card.cost and
@@ -397,10 +429,30 @@ class Upgrade(ActionCard):
 
 
 class WishingWell(ActionCard):
-    # XXX to be implemented
     name = _("Wishing Well")
     edition = Intrigue
     cost = 3
+    desc = _("Name a card. Reveal the top card of your deck. If it's the named"
+             " card, put it into your hand.")
+
+    def activate_action(self, game, player):
+        card_cls = yield SelectCard(game, player, card_classes=[c for c in
+            CardTypeRegistry.card_classes.itervalues() if
+            c.__name__ in game.supply],
+            msg=_("Name a card."), show_supply_count=True)
+
+        for info_player in game.players:
+            yield InfoRequest(game, info_player, _("%s names:") % (player.name, ),
+                    [card_cls])
+        player.draw_cards(1)
+        card = player.hand.pop()
+        for info_player in game.players:
+            yield InfoRequest(game, info_player, _("%s reveals:") %
+                    (player.name, ), [card])
+        if isinstance(card, card_cls):
+            player.hand.append(card)
+        else:
+            player.deck.append(card)
 
 
 from domination.cards.base import (
@@ -427,5 +479,6 @@ card_sets = [
             [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
              Pawn, Steward, Witch]),
     CardSet('Intrigue Test',
-            [Ironworks, Masquerade, ShantyTown, Steward, Swindler]),
+            [Masquerade, ShantyTown, Steward, Swindler, WishingWell, Baron,
+             Bridge]),
 ]

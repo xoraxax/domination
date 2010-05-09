@@ -476,6 +476,7 @@ class Player(object):
         self.used_money = 0
         self.virtual_money = 0
         self.current = False
+        self.turn_cleanups = []
 
         self.request_queue = []
         self.info_queue = []
@@ -494,9 +495,15 @@ class Player(object):
         self.used_money = 0
         self.activated_cards = []
         self.current = False
+        for cleanup_func in self.turn_cleanups:
+            cleanup_func(self)
+        self.turn_cleanups = []
 
     def __repr__(self):
         return "<Player %r>" % (self.name, )
+
+    def register_turn_cleanup(self, func):
+        self.turn_cleanups.append(func)
 
     def compute_response(self):
         pass
