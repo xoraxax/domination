@@ -288,10 +288,6 @@ class Game(object):
                                 yield InfoRequest(self, other_player,
                                         _("%s plays:") % (player.name, ), [card])
                         player.hand.remove(card)
-                        if card.trash_after_playing:
-                            self.trash_pile.append(card)
-                        else:
-                            discarded_cards.append(card)
 
                         if next_times is not None:
                             times = next_times
@@ -318,6 +314,10 @@ class Game(object):
                                     except StopIteration:
                                         break
                             next_times = None
+                        if card.trash_after_playing:
+                            self.trash_pile.append(card)
+                        else:
+                            discarded_cards.append(card)
                 # deal
                 break_selection = False
                 while player.remaining_deals and not break_selection:

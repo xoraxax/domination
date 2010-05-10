@@ -1,8 +1,8 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
-from domination.cards.base import Duchy, Estate
+from domination.cards.base import Duchy, Estate, Copper
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
-     InfoRequest, SelectCard, CardTypeRegistry, Defended
+     InfoRequest, SelectCard, CardTypeRegistry, Defended, YesNoQuestion
 from domination.tools import _
 
 
@@ -53,17 +53,31 @@ class Bridge(ActionCard):
 
 
 class Conspirator(ActionCard):
-    # XXX to be implemented
     name = _("Conspirator")
     edition = Intrigue
     cost = 4
+    desc = _("+2 Money, If you've played 3 or more Actions this turn (counting"
+             " this): +1 Card, +1 Action")
+
+    def activate_action(self, game, player):
+        player.virtual_money += 2
+        if len(player.activated_cards) >= 3:
+            player.draw_cards(1)
+            player.remaining_actions += 1
 
 
 class Coppersmith(ActionCard):
-    # XXX to be implemented
     name = _("Coppersmith")
     edition = Intrigue
     cost = 4
+    desc = _("Copper produces an extra 1 Money this turn.")
+
+    def activate_action(self, game, player):
+        Copper.worth += 1
+        def restore_copper(player):
+            Copper.worth -= 1
+        player.register_turn_cleanup(restore_copper)
+
 
 
 class Courtyard(ActionCard):
@@ -180,10 +194,20 @@ class Masquerade(ActionCard):
 
 
 class MiningVillage(ActionCard):
-    # XXX to be implemented
     name = _("Mining Village")
     edition = Intrigue
     cost = 4
+    desc = _("+1 Card, +2 Actions, You may trash this card immediately."
+             " If you do, +2 Money.")
+
+    def activate_action(self, game, player):
+        player.draw_cards(1)
+        player.remaining_actions +=2
+
+        if (yield YesNoQuestion(game, player,
+            _("Do you want to trash your Mining Village?"))):
+            self.trash_after_playing = True
+            player.virtual_money += 2
 
 
 class Minion(AttackCard):
@@ -480,5 +504,5 @@ card_sets = [
              Pawn, Steward, Witch]),
     CardSet('Intrigue Test',
             [Masquerade, ShantyTown, Steward, Swindler, WishingWell, Baron,
-             Bridge]),
+             Bridge, Conspirator, Coppersmith, MiningVillage]),
 ]
