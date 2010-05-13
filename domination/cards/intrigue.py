@@ -41,6 +41,8 @@ class Bridge(ActionCard):
             " 0 Money.")
 
     def activate_action(self, game, player):
+        player.remaining_deals += 1
+        player.virtual_money += 1
         decreased_for_cards = []
         for card in CardTypeRegistry.card_classes.itervalues():
             if card.cost != 0:
@@ -186,11 +188,12 @@ class Masquerade(ActionCard):
             cards = yield SelectHandCards(game, player, count_lower=0, count_upper=1,
                     msg=_("Which card do you want to trash?"))
         # trash cards
-        for card in cards:
-            card.trash(game, player)
-        for other_player in game.following_players(player):
-            yield InfoRequest(game, other_player,
-                    _("%s trashes this card:") % (player.name, ), cards)
+        if cards:
+            for card in cards:
+                card.trash(game, player)
+            for other_player in game.following_players(player):
+                yield InfoRequest(game, other_player,
+                        _("%s trashes this card:") % (player.name, ), cards)
 
 
 class MiningVillage(ActionCard):
@@ -336,7 +339,7 @@ class ShantyTown(ActionCard):
 
         for info_player in game.following_players(player):
             yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
-                    (player.name, ), player.hand)
+                    (player.name, ), player.hand[:])
 
         action_cards = [c for c in player.hand if isinstance(c, ActionCard)]
         if not action_cards:
