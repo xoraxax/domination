@@ -286,10 +286,32 @@ class Saboteur(AttackCard):
 
 
 class Scout(ActionCard):
-    # XXX to be implemented
     name = _("Scout")
     edition = Intrigue
     cost = 4
+    desc = _("+1 Action, Reveal the top 4 cards of your deck. Put the revealed"
+             " Victory cards into your hand. Put the other cards on top of your"
+             " deck in any order.")
+
+    def activate_action(self, game, player):
+        player.remaining_actions += 1
+        player.draw_cards(4)
+        drawn, player.hand = player.hand[-4:], player.hand[:-4]
+
+        for info_player in game.players:
+            yield InfoRequest(game, info_player, _("%s reveals the top 4 cards of his"
+                " deck:") % (player.name, ), drawn)
+        victory_cards = [c for c in drawn if isinstance(c, VictoryCard)]
+        player.hand.extend(victory_cards)
+        drawn = [c for c in drawn if not isinstance(c, VictoryCard)]
+        while drawn:
+            drawn_classes = [type(c) for c in drawn]
+            card_cls = (yield SelectCard(game, player,
+                _("Which card do you want to put onto the deck next?"),
+                card_classes=drawn_classes))
+            card = [c for c in drawn if isinstance(c, card_cls)][0]
+            drawn.remove(card)
+            player.deck.append(card)
 
 
 class SecretChamber(ReactionCard):
@@ -506,6 +528,6 @@ card_sets = [
             [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
              Pawn, Steward, Witch]),
     CardSet('Intrigue Test',
-            [Masquerade, ShantyTown, Steward, Swindler, WishingWell, Baron,
-             Bridge, Conspirator, Coppersmith, MiningVillage]),
+            [Masquerade, ShantyTown, Swindler, WishingWell, Baron,
+             Bridge, Conspirator, Coppersmith, MiningVillage, Scout]),
 ]
