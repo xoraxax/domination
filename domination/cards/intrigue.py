@@ -19,10 +19,10 @@ class Baron(ActionCard):
         if estate_cards:
             player.virtual_money += 4
             card = estate_cards[0]
-            card.trash(game, player)
+            card.discard(player)
             for info_player in game.following_players(player):
                 yield InfoRequest(game, info_player,
-                        _("%s trashes:") % (player.name, ), [card])
+                        _("%s discards:") % (player.name, ), [card])
         else:
             estate_pile = game.supply["Estate"]
             if estate_pile:
