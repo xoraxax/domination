@@ -189,7 +189,7 @@ def game(game_runner):
             req=req, req_id=id(req), player=player, req_type=type(req).__name__,
             seqno=seqno)
 
-@app.route("/game/join/<name>")
+@app.route("/game/join/<name>", methods=["POST"])
 @needs_login
 @gets_game
 def join_game(game_runner):
@@ -206,7 +206,7 @@ def join_game(game_runner):
     game_runner.increment_seqno()
     return redirect(url_for("game", name=game.name))
 
-@app.route("/game/start/<name>")
+@app.route("/game/start/<name>", methods=["POST"])
 @needs_login
 @gets_game
 def start_game(game_runner):
