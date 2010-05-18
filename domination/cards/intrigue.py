@@ -214,10 +214,62 @@ class MiningVillage(ActionCard):
 
 
 class Minion(AttackCard):
-    # XXX to be implemented
     name = _("Minion")
     edition = Intrigue
     cost = 5
+    desc = _("Choose one: +2 Money, or discard your hand, +4 Cards, and each"
+            " other player with at least 5 cards in hand discards his hand"
+            " and draws 4 cards.")
+
+    def activate_action(self, game, player):
+        actions = [("money", _("+2 Money")),
+                   ("cards", _("Discard hand and draw 4 cards, "
+                               "attack other players"))]
+        answer = yield Question(game, player, _("What do you want to do?"),
+                                actions)
+
+        for info_player in game.following_players(player):
+            yield InfoRequest(game, info_player,
+                    _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
+
+        if answer == "money":
+            player.virtual_money += 2
+        else:
+            original_hand = player.hand[:]
+            for card in original_hand:
+                card.discard(player)
+            player.draw_cards(4)
+            for info_player in game.following_players(player):
+                yield InfoRequest(
+                    game, info_player,
+                    _("%s discards this hand and draws 4 cards:") %
+                    (player.name, ), original_hand)
+
+            for other_player in game.following_players(player):
+                if len(other_player.hand) < 5:
+                    continue
+                try:
+                    gen = self.defends_check(game, other_player)
+                    item = None
+                    while True:
+                        try:
+                            item = (yield gen.send(item))
+                        except StopIteration:
+                            break
+                except Defended:
+                    continue
+                original_hand = other_player.hand[:]
+                for card in original_hand:
+                    card.discard(other_player)
+                other_player.draw_cards(4)
+                yield InfoRequest(
+                    game, other_player,
+                    _("You discard your hand and draw 4 cards."), [])
+                for info_player in game.following_players(other_player):
+                    yield InfoRequest(
+                        game, info_player,
+                        _("%s discards this hand and draws 4 cards:") %
+                        (other_player.name, ), original_hand)
 
 
 class Nobles(ActionCard, VictoryCard):
