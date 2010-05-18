@@ -25,10 +25,14 @@
   {% if game.round %} (round {{ game.round }}){% endif %}</h2>
   <ul>
     {% if game not in store.games and runner.joinable %}
-      <li><a href="{{ url_for("join_game", name=game.name) }}">Join</a></li>
+      <li><form action="{{ url_for("join_game", name=game.name) }}" method="post">
+        <input type="submit" value="Join">
+      </form></li>
     {% endif %}
     {% if runner.startable(store.games[game]) %}
-      <li><a href="{{ url_for("start_game", name=game.name) }}">Start</a></li>
+      <li><form action="{{ url_for("start_game", name=game.name) }}" method="post">
+        <input type="submit" value="Start">
+      </form></li>
     {% endif %}
     {% if runner.state != "ended" and player == runner.owner %}
       <li><form action="{{ url_for("cancel_game", name=game.name) }}" method="post">
