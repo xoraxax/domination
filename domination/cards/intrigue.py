@@ -4,6 +4,7 @@ from domination.cards.base import Duchy, Estate, Copper
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, CardTypeRegistry, Defended, YesNoQuestion
 from domination.tools import _
+from domination.macros.__macros__ import handle_defense
 
 
 class Baron(ActionCard):
@@ -249,13 +250,7 @@ class Minion(AttackCard):
                 if len(other_player.hand) < 5:
                     continue
                 try:
-                    gen = self.defends_check(game, other_player)
-                    item = None
-                    while True:
-                        try:
-                            item = (yield gen.send(item))
-                        except StopIteration:
-                            break
+                    handle_defense(self, game, other_player)
                 except Defended:
                     continue
                 original_hand = other_player.hand[:]
@@ -431,13 +426,7 @@ class Swindler(AttackCard):
         player.virtual_money += 2
         for other_player in game.following_players(player):
             try:
-                gen = self.defends_check(game, other_player)
-                item = None
-                while True:
-                    try:
-                        item = (yield gen.send(item))
-                    except StopIteration:
-                        break
+                handle_defense(self, game, other_player)
             except Defended:
                 continue
             if other_player.draw_cards(1) is None:
