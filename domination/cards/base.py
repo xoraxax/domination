@@ -371,7 +371,7 @@ class Library(ActionCard):
 
     def activate_action(self, game, player):
         set_aside_cards = []
-        while len(player.hand) != 7 and (player.discard_pile or player.deck):
+        while len(player.hand) <= 7 and (player.discard_pile or player.deck):
             player.draw_cards(1)
             drawn_card = player.hand[-1]
             if isinstance(drawn_card, ActionCard) and (yield YesNoQuestion(game,
