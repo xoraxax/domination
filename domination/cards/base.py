@@ -483,7 +483,6 @@ class ThroneRoom(ActionCard):
     desc = _("Choose an action card in your hand. Play it twice.")
 
     def activate_action(self, game, player):
-        player.remaining_actions += 1
         raise ActivateNextActionMultipleTimes(2)
 
 class Witch(AttackCard):
