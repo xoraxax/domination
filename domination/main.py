@@ -24,7 +24,7 @@ app.users = {}
 app.card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues()
                     if cls.optional]
 app.card_classes.sort(key=lambda x: x.name)
-app.template_context_processors.append(lambda: {'app': app, 'store': get_store()})
+app.template_context_processors[None].append(lambda: {'app': app, 'store': get_store()})
 
 
 def needs_login(func):
