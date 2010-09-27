@@ -14,7 +14,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
         YesNoQuestion, Question, MultipleChoice, card_sets, editions, \
-        AIPlayer
+        AIPlayer, Kibitzer
 from domination.tools import _
 from domination.gzip_middleware import GzipMiddleware
 
@@ -155,6 +155,7 @@ def game(game_runner):
     seqno = game_runner.seqno
     if game_runner.game in get_store()["games"]:
         player = get_store()["games"][game_runner.game]
+        info_queue = player.info_queue
         if request.method == 'POST':
             cv = player.response_condition
             cv.acquire()
@@ -182,12 +183,19 @@ def game(game_runner):
                 del app.games[game.name]
                 raise req.exc_info[0], req.exc_info[1], req.exc_info[2]
     else:
+        for kibitzer in game.kibitzers:
+            if kibitzer.name == session["username"]:
+                break
+        else:
+            kibitzer = Kibitzer(session["username"])
+            game.kibitzers.append(kibitzer)
         player = None
+        info_queue = kibitzer.info_queue
         req = None
 
     return render_template("game.html", runner=game_runner, game=game,
             req=req, req_id=id(req), player=player, req_type=type(req).__name__,
-            seqno=seqno)
+            seqno=seqno, info_queue=info_queue)
 
 @app.route("/game/join/<name>", methods=["POST"])
 @needs_login
@@ -203,6 +211,10 @@ def join_game(game_runner):
     if len(game.players) > game.MAX_PLAYERS:
         game.players.remove(player)
         return render_error(_("Too many players in the game!"))
+    for kibitzer in game.kibitzers:
+        if kibitzer.name == session["username"]:
+            game.kibitzers.remove(kibitzer)
+            break
     game_runner.increment_seqno()
     return redirect(url_for("game", name=game.name))
 
@@ -213,6 +225,25 @@ def start_game(game_runner):
     game_runner.start()
     game = game_runner.game
     game_runner.increment_seqno()
+    return redirect(url_for("game", name=game.name))
+
+
+@app.route("/game/clear_info/<name>", methods=["POST"])
+@needs_login
+@gets_game
+def clear_info(game_runner):
+    game = game_runner.game
+    if game_runner.game in get_store()["games"]:
+        player = get_store()["games"][game_runner.game]
+        info_queue = player.info_queue
+    else:
+        for kibitzer in game.kibitzers:
+            if kibitzer.name == session["username"]:
+                break
+        else:
+            return render_error(_("You are not a kibitzer!"))
+        info_queue = kibitzer.info_queue
+    info_queue[:] = []
     return redirect(url_for("game", name=game.name))
 
 @app.route("/game/cancel/<name>", methods=["POST"])

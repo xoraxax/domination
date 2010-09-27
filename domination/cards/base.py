@@ -75,7 +75,7 @@ class Chapel(ActionCard):
         # trash cards
         for card in cards:
             card.trash(game, player)
-        for other_player in game.players:
+        for other_player in game.participants:
             if other_player is not player:
                 yield InfoRequest(game, other_player,
                         _("%s trashes these cards:") % (player.name, ), cards)
@@ -95,7 +95,7 @@ class Cellar(ActionCard):
             for card in cards:
                 card.discard(player)
             player.draw_cards(len(cards))
-            for other_player in game.players:
+            for other_player in game.participants:
                 if other_player is not player:
                     yield InfoRequest(game, other_player,
                             _("%s discards these cards:") % (player.name, ), cards)
@@ -132,7 +132,7 @@ class Militia(AttackCard):
                     msg=_("%s played Militia. Which cards do you want to discard?") % (player.name, ))
             for card in cards:
                 card.discard(other_player)
-            for info_player in game.players:
+            for info_player in game.participants:
                 if info_player is not other_player:
                     # TODO: info players may only see one of the discarded cards
                     yield InfoRequest(game, info_player,
@@ -160,7 +160,7 @@ class Mine(ActionCard):
             card.trash(game, player)
             new_card = game.supply[card_cls.__name__].pop()
             player.hand.append(new_card)
-            for info_player in game.players:
+            for info_player in game.participants:
                 if info_player is not player:
                     yield InfoRequest(game, info_player,
                             _("%s trashes:") % (player.name, ), [card])
@@ -207,7 +207,7 @@ class Remodel(ActionCard):
             new_card = game.supply[card_cls.__name__].pop()
             player.discard_pile.append(new_card)
 
-            for info_player in game.players:
+            for info_player in game.participants:
                 if info_player is not player:
                     yield InfoRequest(game, info_player,
                             _("%s trashes:") % (player.name, ), [card])
@@ -253,7 +253,7 @@ class Adventurer(ActionCard):
             if shuffled == 2: # we shuffled our discard_pile 2 times, abort
                 break
             card = player.hand.pop()
-            for info_player in game.players:
+            for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ), [card])
             if isinstance(card, TreasureCard):
                 player.hand.append(card)
@@ -415,7 +415,7 @@ class Spy(AttackCard):
                 continue
             other_player.draw_cards(1)
             card = other_player.hand.pop()
-            for info_player in game.players:
+            for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:") %
                         (other_player.name, ), [card])
             if (yield YesNoQuestion(game, player,
@@ -450,7 +450,7 @@ class Thief(AttackCard):
             other_player.draw_cards(2)
             cards.append(other_player.hand.pop())
             cards.append(other_player.hand.pop())
-            for info_player in game.players:
+            for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s reveals the top 2 cards of his deck:") %
                         (other_player.name, ), cards[:])
             treasure_cards = [c for c in cards if isinstance(c, TreasureCard)]

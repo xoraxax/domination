@@ -345,7 +345,7 @@ class Scout(ActionCard):
         player.draw_cards(4)
         drawn, player.hand = player.hand[-4:], player.hand[:-4]
 
-        for info_player in game.players:
+        for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s reveals the top 4 cards of his"
                 " deck:") % (player.name, ), drawn)
         victory_cards = [c for c in drawn if isinstance(c, VictoryCard)]
@@ -379,7 +379,7 @@ class SecretChamber(ReactionCard):
         player.virtual_money += len(cards)
         for card in cards:
             card.discard(player)
-        for other_player in game.players:
+        for other_player in game.participants:
             if other_player is not player:
                 yield InfoRequest(game, other_player,
                     _("%s discards these cards:") % (player.name, ), cards)
@@ -432,7 +432,7 @@ class Swindler(AttackCard):
             if other_player.draw_cards(1) is None:
                 continue
             card = other_player.hand.pop()
-            for info_player in game.players:
+            for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s trashes:") %
                         (other_player.name, ), [card])
 
@@ -484,7 +484,7 @@ class Steward(ActionCard):
             # trash cards
             for card in cards:
                 card.trash(game, player)
-            for other_player in game.players:
+            for other_player in game.participants:
                 if other_player is not player:
                     yield InfoRequest(game, other_player,
                             _("%s trashes these cards:") % (player.name, ), cards)
@@ -531,12 +531,12 @@ class WishingWell(ActionCard):
             c.__name__ in game.supply],
             msg=_("Name a card."), show_supply_count=True)
 
-        for info_player in game.players:
+        for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s names:") % (player.name, ),
                     [card_cls])
         player.draw_cards(1)
         card = player.hand.pop()
-        for info_player in game.players:
+        for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s reveals:") %
                     (player.name, ), [card])
         if isinstance(card, card_cls):

@@ -219,7 +219,7 @@ class GameRunner(Thread):
             except StopIteration:
                 break
             player = req.player
-            assert not player.request_queue and not player.response
+            assert not getattr(player, "request_queue", None) and not player.response
             if isinstance(req, InfoRequest):
                 player.info_queue.append(req)
                 self.waiting_for = None
@@ -249,7 +249,7 @@ class GameRunner(Thread):
                 self.game.end_of_game()
             except EndOfGameException:
                 pass
-        for player in self.game.players:
+        for player in self.game.players + self.game.kibitzers:
             cv = player.response_condition
             cv.acquire()
             cv.notifyAll()
@@ -258,11 +258,16 @@ class GameRunner(Thread):
 class Game(object):
     def __init__(self, name):
         self.players = []
+        self.kibitzers = []
         self.supply = {}
         self.trash_pile = []
         self.end_of_game_reason = _("Aborted!")
         self.round = 0
         self.name = name
+
+    @property
+    def participants(self):
+        return self.players + self.kibitzers
 
     def add_supply(self, cls, no):
         self.supply.setdefault(cls.__name__, []).extend(cls() for _ in xrange(no))
@@ -284,7 +289,7 @@ class Game(object):
                     else:
                         player.remaining_actions -= 1
                         card = action_cards[0]
-                        for other_player in self.players:
+                        for other_player in self.players + self.kibitzers:
                             if other_player is not player:
                                 yield InfoRequest(self, other_player,
                                         _("%s plays:") % (player.name, ), [card])
@@ -333,7 +338,7 @@ class Game(object):
                         player.used_money += card.cost
                         player.used_potion += card.potioncost
                         player.discard_pile.append(card)
-                        for other_player in self.players:
+                        for other_player in self.players + self.kibitzers:
                             if other_player is not player:
                                 yield InfoRequest(self, other_player,
                                         _("%s buys:") % (player.name, ), [card])
@@ -377,13 +382,15 @@ class Game(object):
         raise EndOfGameException
 
     def following_players(self, current_player):
+        """ Returns all other players in the correct order and adds
+        the kibitzers."""
         players = self.players
         return players[players.index(current_player) + 1:] + \
-                players[:players.index(current_player)]
+                players[:players.index(current_player)] + self.kibitzers
 
     def check_empty_pile(self, key):
         if not self.supply[key]:
-            for player in self.players:
+            for player in self.players + self.kibitzers:
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
                 yield InfoRequest(self, player, _("The pile %s is empty.") % (card_name, ), [])
 
@@ -470,6 +477,15 @@ class DominationGame(Game):
                             CardTypeRegistry.keys2classes(empty_batches))
 
 
+class Kibitzer(object):
+    def __init__(self, name):
+        self.name = name
+
+        self.info_queue = []
+        self.response_condition = Condition()
+        self.response = []
+
+
 class Player(object):
     def __init__(self, name):
         self.name = name
@@ -536,7 +552,6 @@ class Player(object):
         return self.hand + self.discard_pile + self.deck + self.aux_cards
 
     def points(self, game):
-        assert not self.discard_pile and not self.hand
         return sum(card.get_points(game, self) for card in self.deck)
 
     def prepare_hand(self):
