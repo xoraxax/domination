@@ -318,7 +318,8 @@ class CouncilRoom(ActionCard):
         player.draw_cards(4)
         player.remaining_deals += 1
         for other_player in game.following_players(player):
-            other_player.draw_cards(1)
+            if other_player not in game.kibitzers:
+                other_player.draw_cards(1)
 
 class Feast(ActionCard):
     name = _("Feast")
