@@ -90,7 +90,8 @@
           {% call macros.render_card(cls) %}
             <span id="card-{{ cls.__name__ }}"></span>
             <span class="edition-{{ cls.edition.key }}"></span>
-            <input type="checkbox" name="card_key" value="{{ cls.__name__ }}">
+            <input type="checkbox" name="card_key" value="{{ cls.__name__ }}"
+            {% if not cls.implemented %}checked="checked" disabled="disabled"{% endif %}>
           {% endcall %}
         {% endfor %}
       {% endfor %}

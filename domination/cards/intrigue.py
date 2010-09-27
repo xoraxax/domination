@@ -491,30 +491,30 @@ class Steward(ActionCard):
 
 
 class Torturer(AttackCard):
-    # XXX to be implemented
     name = _("Torturer")
     edition = Intrigue
+    implemented = False #FIXME not implemented completely
     cost = 5
 
 
 class TradingPost(ActionCard):
-    # XXX to be implemented
     name = _("Trading Post")
     edition = Intrigue
+    implemented = False #FIXME not implemented completely
     cost = 5
 
 
 class Tribute(ActionCard):
-    # XXX to be implemented
     name = _("Tribute")
     edition = Intrigue
+    implemented = False #FIXME not implemented completely
     cost = 5
 
 
 class Upgrade(ActionCard):
-    # XXX to be implemented
     name = _("Upgrade")
     edition = Intrigue
+    implemented = False #FIXME not implemented completely
     cost = 5
 
 

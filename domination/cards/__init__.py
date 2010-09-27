@@ -38,12 +38,13 @@ class CardTypeRegistry(type):
 
 class Card(object):
     __metaclass__ = CardTypeRegistry
-    name = "UNKNOWN"  # card name
-    cost = None       # card cost
-    points = 0        # victory points
-    worth = 0         # monetary worth
-    optional = False  # one of the mandatory cards?
-    abstract = True   # abstract template?
+    name = "UNKNOWN"   # card name
+    cost = None        # card cost
+    points = 0         # victory points
+    worth = 0          # monetary worth
+    optional = False   # one of the mandatory cards?
+    implemented = True # show card for selection
+    abstract = True    # abstract template?
     trash_after_playing = False  # does it go to trash after playing?
     __slots__ = ()
 
