@@ -414,7 +414,7 @@ class DominationGame(Game):
             game.add_supply(Silver, 40)
             game.add_supply(Gold, 30)
 
-        if True in map(lambda isalchemy: isalchemy.edition == Alchemy, selected_cards):
+        if any(map(lambda isalchemy: isalchemy.edition == Alchemy, selected_cards)):
             game.add_supply(Potion, 30) #FIXME how many Potions per player?
 
         # add victory cards (except victory kingdom cards)
