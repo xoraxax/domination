@@ -132,6 +132,7 @@ class SelectDeal(Request):
     def __init__(self, game, player, msg):
         Request.__init__(self, game, player, msg)
         self.money = self.player.remaining_money
+        self.potion = self.player.remaining_potion
         self.cards = CardTypeRegistry.keys2classes(self.game.supply.keys())
         self.cards.sort(key=lambda c: (c.cost, c.name), reverse=True)
 
@@ -144,7 +145,7 @@ class SelectDeal(Request):
         return [c.__name__ for c in l]
 
     def is_buyable(self, card):
-        return card.cost <= self.money and self.game.supply[card.__name__]
+        return card.cost <= self.money and card.potioncost <= self.potion and self.game.supply[card.__name__]
 
 
 class SelectCard(Request):
@@ -330,6 +331,7 @@ class Game(object):
                         for val in self.check_empty_pile(card_key):
                             yield val
                         player.used_money += card.cost
+                        player.used_potion += card.potioncost
                         player.discard_pile.append(card)
                         for other_player in self.players:
                             if other_player is not player:
@@ -385,6 +387,7 @@ class Game(object):
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
                 yield InfoRequest(self, player, _("The pile %s is empty.") % (card_name, ), [])
 
+from domination.cards import Alchemy
 
 class DominationGame(Game):
     MAX_PLAYERS = 6 # maximum allowed number of players
@@ -410,6 +413,9 @@ class DominationGame(Game):
             game.add_supply(Copper, 60)
             game.add_supply(Silver, 40)
             game.add_supply(Gold, 30)
+
+        if True in map(lambda isalchemy: isalchemy.edition == Alchemy, selected_cards):
+            game.add_supply(Potion, 30) #FIXME how many Potions per player?
 
         # add victory cards (except victory kingdom cards)
         if no_players == 2:
@@ -437,6 +443,7 @@ class DominationGame(Game):
             if selected_card is Gardens: # modify for additional victory cards
                 amount = victory_cards
             game.add_supply(selected_card, amount)
+            # FIXME number of vineyard dependend on playercount, too?
 
     def deal_initial_decks(game): # deal the starting hands
         for player in game.players: # every player...
@@ -475,6 +482,7 @@ class Player(object):
         self.remaining_actions = 0
         self.used_money = 0
         self.virtual_money = 0
+        self.used_potion = 0
         self.current = False
         self.turn_cleanups = []
 
@@ -493,6 +501,7 @@ class Player(object):
         self.remaining_actions = 0
         self.virtual_money = 0
         self.used_money = 0
+        self.used_potion = 0
         self.activated_cards = []
         self.current = False
         for cleanup_func in self.turn_cleanups:
@@ -510,8 +519,13 @@ class Player(object):
 
     @property
     def remaining_money(self):
-        return self.virtual_money + sum(card.worth for card in self.hand)\
+        return self.virtual_money + sum(card.get_worth(self) for card in self.hand)\
                 - self.used_money
+
+    @property
+    def remaining_potion(self):
+        return sum(card.potion for card in self.hand)\
+                - self.used_potion
 
     @property
     def sorted_hand(self):
@@ -562,8 +576,11 @@ from domination.cards import editions
 from domination.cards import CardTypeRegistry, ActionCard, VictoryCard
 from domination.cards.base import (Copper, Silver, Gold, Curse,
                                    Estate, Duchy, Province, Gardens)
+from domination.cards.alchemy import Potion
 
 from domination.cards.base import card_sets as card_sets_base
 from domination.cards.intrigue import card_sets as card_sets_intrigue
+from domination.cards.alchemy import card_sets as card_sets_alchemy
 
 card_sets = card_sets_base + card_sets_intrigue
+card_sets = card_sets_base + card_sets_alchemy

@@ -10,8 +10,9 @@ class Edition(object):
 
 BaseGame = Edition('base', _("Base game"), optional=False)
 Intrigue = Edition('intrigue', _("Intrigue game"))
+Alchemy = Edition('alchemy', _("Alchemy game"))
 
-editions = [BaseGame, Intrigue]
+editions = [BaseGame, Intrigue, Alchemy]
 
 
 class CardTypeRegistry(type):
@@ -42,6 +43,8 @@ class Card(object):
     cost = None        # card cost
     points = 0         # victory points
     worth = 0          # monetary worth
+    potion = 0         # potion worth (alchemy)
+    potioncost = 0     # potion cost (alchemy)
     optional = False   # one of the mandatory cards?
     implemented = True # show card for selection
     abstract = True    # abstract template?
@@ -54,6 +57,7 @@ class Card(object):
         assert self.cost is not None
         assert self.points is not None
         assert self.worth is not None
+        assert self.potion is not None
 
     @classmethod
     def classnames(cls):
@@ -68,6 +72,9 @@ class Card(object):
 
     def get_points(self, game, player):
         return self.points
+
+    def get_worth(self, player):
+        return self.worth
 
     def discard(self, player):
         player.hand.remove(self)
