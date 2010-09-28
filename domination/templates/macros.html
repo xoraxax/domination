@@ -12,12 +12,17 @@
         <em>Worth:</em> {{ card.worth }}
       </div>
       {% endif %}
+      {% if card.potion %}
+      <div class="potion">
+        <em>Potion:</em> {{ card.potion }}
+      </div>
+      {% endif %}
       {% if card.points  %}
       <div class="points">
         <em>Points:</em> {{ card.points }}
       </div>
       {% endif %}
-      <em>Cost:</em> {{ card.cost }}
+      <em>Cost:</em> {{ card.cost }} Money{% if card.potioncost %} and {{ card.potioncost }} Potion {% endif %}
       <p>{{ card.classnames() }}</p>
     </div>
   </div>

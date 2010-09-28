@@ -104,7 +104,7 @@
       <div class="errormessage">{{ req.last_error }}</div>
     {% endif %}
     {% if req_type == "SelectDeal" %}
-    <p>You have {{ player.remaining_money }} Money and {{ player.remaining_deals }} buys remaining!</p>
+    <p>You have {{ player.remaining_money }} Money{% if player.remaining_potion %}, {{ player.remaining_potion }} Potion{% endif %} and {{ player.remaining_deals }} buys remaining!</p>
       {% for card in req.cards %}
         {% call macros.render_card(card) %}
           <span class="{% if not game.supply[card.__name__] %}importantfigure{% endif %}">
