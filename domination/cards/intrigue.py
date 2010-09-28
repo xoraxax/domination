@@ -172,10 +172,9 @@ class Masquerade(ActionCard):
         player.draw_cards(2)
         passed_card = {}
         for other_player in game.players:
-            req = SelectHandCards(
+            cards = yield SelectHandCards(
                 game, other_player,
                 _("Which card do you want to pass left?"), None, 1, 1)
-            cards = yield req
             card = cards[0]
             passed_card[other_player.left(game)] = card
             other_player.hand.remove(card)
