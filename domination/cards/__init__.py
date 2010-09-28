@@ -11,8 +11,8 @@ class Edition(object):
 BaseGame = Edition('base', _("Base game"), optional=False)
 Intrigue = Edition('intrigue', _("Intrigue game"))
 Alchemy = Edition('alchemy', _("Alchemy game"))
-
-editions = [BaseGame, Intrigue, Alchemy]
+Seaside = Edition('seaside', _("Seaside game"))
+editions = [BaseGame, Intrigue, Alchemy, Seaside]
 
 
 class CardTypeRegistry(type):
@@ -84,6 +84,10 @@ class Card(object):
         player.hand.remove(self)
         game.trash_pile.append(self)
 
+    def backondeck(self, game, player):
+        player.hand.remove(self)
+        player.deck.append(self)
+
     def defend_action(self, game, player, card):
         raise NotImplementedError
 
@@ -92,6 +96,12 @@ class ActionCard(Card):
     optional = True
     abstract = True
     classname = _("Action card")
+
+
+class DurationCard(Card):
+    optional = True
+    abstract = True
+    classname = _("Duration card")
 
 
 class AttackCard(ActionCard):

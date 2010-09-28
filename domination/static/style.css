@@ -27,6 +27,7 @@ body { margin: 0; padding: 0; }
 
 .VictoryCard { background-color: #7FFF00; }
 .AlsoVictoryCard { border: 3px solid #7FFF00; }
+.AlsoDurationCard { border: 3px solid #FF6E00; }
 .CurseCard { background-color: #DA70D6; }
 .TreasureCard { background-color: gold; }
 .ActionCard { background-color: #EEEEEE; }

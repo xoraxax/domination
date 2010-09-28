@@ -96,16 +96,17 @@ class Familiar(AttackCard):
         player.draw_cards(1)
         curse_cards = game.supply["Curse"]
         for other_player in game.following_players(player):
-            if curse_cards:
-                try:
-                    handle_defense(self, game, other_player)
-                except Defended:
-                    continue
-                other_player.discard_pile.append(curse_cards.pop())
-                yield InfoRequest(game, other_player,
-                        _("%s curses you. You gain a curse card.") % (player.name, ), [])
-                for val in game.check_empty_pile("Curse"):
-                    yield val
+            if other_player not in game.kibitzers:
+                if curse_cards:
+                    try:
+                        handle_defense(self, game, other_player)
+                    except Defended:
+                        continue
+                    other_player.discard_pile.append(curse_cards.pop())
+                    yield InfoRequest(game, other_player,
+                            _("%s curses you. You gain a curse card.") % (player.name, ), [])
+                    for val in game.check_empty_pile("Curse"):
+                        yield val
 
 
 class Golem(ActionCard):

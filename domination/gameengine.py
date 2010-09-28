@@ -494,6 +494,7 @@ class Player(object):
         self.hand = []
         self.activated_cards = []
         self.aux_cards = [] # cards lying on the table etc.
+        self.duration_cards = [] # duration_cards from seaside
         self.remaining_deals = 0
         self.remaining_actions = 0
         self.used_money = 0
@@ -596,5 +597,6 @@ from domination.cards.alchemy import Potion
 from domination.cards.base import card_sets as card_sets_base
 from domination.cards.intrigue import card_sets as card_sets_intrigue
 from domination.cards.alchemy import card_sets as card_sets_alchemy
+from domination.cards.seaside import card_sets as card_sets_seaside
 
-card_sets = card_sets_base + card_sets_intrigue + card_sets_alchemy
+card_sets = card_sets_base + card_sets_intrigue + card_sets_alchemy + card_sets_seaside
