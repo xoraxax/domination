@@ -49,7 +49,7 @@ class Apothecary(ActionCard):
     implemented = False #FIXME not implemented completely
     cost = 2
     potioncost = 1
-    desc = _("+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed Coppers and Potions into your hand. Put the other cartds back on top of your deck in any order.")
+    desc = _("+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed Coppers and Potions into your hand. Put the other cards back on top of your deck in any order.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
@@ -171,13 +171,43 @@ class ScryingPool(AttackCard):
 class Transmute(ActionCard):
     name = _("Transmute")
     edition = Alchemy
-    implemented = False #FIXME not implemented completely
     cost = 0
     potioncost = 1
     desc = _("Trash a card from your hand. If it is an Action Card, gain a Duchy. If it is a Treasure card, gain a Transmute. If it is a Victory Card, gain a Gold.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
+                msg=_("Which card do you want to trash?"))
+        if cards:
+            card = cards[0]
+            for other_player in game.following_players(player):
+                yield InfoRequest(game, other_player,
+                        _("%s trashes this card:") % (player.name, ), cards)
+            card.trash(game, player)
+            if isinstance(card, ActionCard):
+                new_card = game.supply["Duchy"].pop()
+                for val in game.check_empty_pile("Duchy"):
+                    yield val
+                player.discard_pile.append(new_card)
+                for info_player in game.following_players(player):
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:") % (other_player.name, ), [new_card])
+            if isinstance(card, TreasureCard):
+                new_card = game.supply["Transmute"].pop()
+                for val in game.check_empty_pile("Transmute"):
+                    yield val
+                player.discard_pile.append(new_card)
+                for info_player in game.following_players(player):
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:") % (other_player.name, ), [new_card])
+            if isinstance(card, VictoryCard):
+                new_card = game.supply["Gold"].pop()
+                for val in game.check_empty_pile("Gold"):
+                    yield val
+                player.discard_pile.append(new_card)
+                for info_player in game.following_players(player):
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:") % (other_player.name, ), [new_card])
 
 
 class University(ActionCard):
