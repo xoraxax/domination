@@ -241,9 +241,38 @@ def clear_info(game_runner):
             if kibitzer.name == session["username"]:
                 break
         else:
-            return render_error(_("You are not a kibitzer!"))
+            return redirect(url_for("game", name=game.name))
         info_queue = kibitzer.info_queue
     info_queue[:] = []
+    return redirect(url_for("game", name=game.name))
+
+@app.route("/game/kick_player/<name>/<playername>", methods=["POST"])
+@needs_login
+@gets_game
+def kick_player(game_runner, playername):
+    game = game_runner.game
+    if game_runner.game in get_store()["games"]:
+        player = get_store()["games"][game_runner.game]
+        if player == game_runner.owner:
+            kickee = [x for x in game.players if x.name == playername][0]
+            if kickee == player:
+                return render_error(_("You cannot kick yourself!"))
+            cv = kickee.response_condition
+            cv.acquire()
+            try:
+                if not game_runner.waiting_for == kickee:
+                    return render_error(_("You can only kick a player if you are waiting for him!"))
+                if len(game.players) <= 2:
+                    # can be lifted as soon we have an impersonation feature
+                    return render_error(_("You cannot kick your last opponent!"))
+                if not kickee.is_ai:
+                    games = get_store(playername)["games"]
+                    del games[game_runner.game]
+                game.kick(player, kickee)
+                cv.notify()
+            finally:
+                cv.release()
+
     return redirect(url_for("game", name=game.name))
 
 @app.route("/game/cancel/<name>", methods=["POST"])

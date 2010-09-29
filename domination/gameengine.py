@@ -237,6 +237,12 @@ class GameRunner(Thread):
             if not self.do_cancel:
                 reply = player.response[0]
             player.response = []
+            if player.kicked_by:
+                for participant in self.game.participants:
+                    participant.info_queue.append(InfoRequest(self.game, participant,
+                        _("%(kicker)s kicked %(kickee)s.") % {"kicker": player.kicked_by.name,
+                            "kickee": player.name}, []))
+                player.name += _(" (kicked)")
             player.response_condition.release()
 
     def cancel(self):
@@ -394,6 +400,19 @@ class Game(object):
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
                 yield InfoRequest(self, player, _("The pile %s is empty.") % (card_name, ), [])
 
+    def kick(self, kicker, kickee):
+        cv = kickee.response_condition
+        cv.acquire()
+        try:
+            req = kickee.request_queue.pop(0)
+            response = req.choose_wisely()
+            kickee.response.append(response)
+            kickee.kicked_by = kicker
+            del self.players[self.players.index(kickee)]
+            cv.notify()
+        finally:
+            cv.release()
+
 from domination.cards import Alchemy
 
 class DominationGame(Game):
@@ -487,6 +506,7 @@ class Kibitzer(object):
 
 
 class Player(object):
+    is_ai = False
     def __init__(self, name):
         self.name = name
         self.discard_pile = []
@@ -501,6 +521,7 @@ class Player(object):
         self.virtual_money = 0
         self.used_potion = 0
         self.current = False
+        self.kicked_by = None
         self.turn_cleanups = []
 
         self.request_queue = []
@@ -579,6 +600,7 @@ class Player(object):
         return gp[(i + 1) % len(gp)]
 
 class AIPlayer(Player):
+    is_ai = True
     def compute_response(self):
         req = self.request_queue.pop(0)
         response = req.choose_wisely()

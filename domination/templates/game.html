@@ -43,9 +43,15 @@
   <div id="players">
     <h3>Players</h3>
     <ul>
-      {% for player in game.players %}
-      <li class="{% if player.current %}activeplayer{% endif %}">{{ player.name }} ({{ player.hand | count }} of {{ (player.hand + player.deck + player.discard_pile) | count }} cards in hand)
-      {% if runner.waiting_for == player %} (waiting for this player){% endif %}
+      {% for p in game.players %}
+      <li class="{% if p.current %}activeplayer{% endif %}">{{ p.name }} ({{ p.hand | count }} of {{ (p.hand + p.deck + p.discard_pile) | count }} cards in hand)
+      {% if runner.waiting_for == p %} (waiting for this player)
+      {% if player == runner.owner and p != player and game.players | count > 2 %}
+        <form action="{{ url_for("kick_player", name=game.name, playername=p.name) }}" method="post">
+          <input type="submit" value="Kick">
+        </form>
+      {% endif %}
+      {% endif %}
       </li>
       {% endfor %}
     </ul>
