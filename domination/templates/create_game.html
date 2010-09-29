@@ -48,13 +48,16 @@
     function select_set(cards) {
       $("input[name=card_key]:checked").attr("checked", false);
       $.each(cards, function(index, value) {
-        $("input[name=card_key][value='" + value + "']").attr("checked", true);
+        var elems = $("input[name=card_key][value='" + value + "']");
+        if (elems.attr("disabled"))
+          return;
+        elems.attr("checked", true);
       });
       update_button();
     }
     function select_random_set() {
       $("input[name=card_key]:checked").attr("checked", false);
-      $("div.card:visible").children("input[name=card_key]")
+      $("div.card:visible").children("input[name=card_key][disabled!='disabled']")
                            .random(10).each(function() {
           $(this).attr("checked", true);
       });
