@@ -1,6 +1,7 @@
 import os
 import sys
 import random
+import pickle
 
 from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
@@ -8,8 +9,8 @@ from flask import Flask, render_template, session, redirect, url_for, \
 app = Flask(__name__)
 app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
 
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(root_dir)
 
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
@@ -22,6 +23,8 @@ from domination.gzip_middleware import GzipMiddleware
 # init app object
 app.games = {}
 app.users = {}
+app.game_storage_prefix = os.path.join(root_dir, "game-")
+app.game_storage_postfix = ".pickle"
 app.card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues()
                     if cls.optional]
 app.card_classes.sort(key=lambda x: x.name)
@@ -168,7 +171,7 @@ def game(game_runner):
             cv.acquire()
             try:
                 req = player.request_queue[0]
-                assert id(req) == int(request.form["req_id"])
+                assert hash(req) == int(request.form["req_id"])
                 response = get_response(req)
                 if response is not Ellipsis:
                     player.response.append(response)
@@ -201,7 +204,7 @@ def game(game_runner):
         req = None
 
     return render_template("game.html", runner=game_runner, game=game,
-            req=req, req_id=id(req), player=player, req_type=type(req).__name__,
+            req=req, req_id=hash(req), player=player, req_type=type(req).__name__,
             seqno=seqno, info_queue=info_queue)
 
 @app.route("/game/join/<name>", methods=["POST"])
@@ -312,14 +315,30 @@ def before_request():
         app.users[session["username"]] = {"games": {}}
 
 
+def restore_games(files):
+    for filename in files:
+        f = file(filename, "rb")
+        game_runner = pickle.load(f)
+        game = game_runner.game
+        app.games[game.name] = game_runner
+        for player in game_runner.game.players:
+            app.users.setdefault(player.name, {}).setdefault("games", {})[game] = player
+        game_runner.daemon = True
+        game_runner.start()
+
+
 if __name__ == '__main__':
     args = sys.argv
     debug = "-p" not in args
+    restore = "-r" in args
+    restore_filenames = [a for a in args[1:] if not a.startswith("-")]
     if debug:
         @app.route("/crash")
         def crash():
             1/0
         app.secret_key = "insecure"
+    if restore:
+        restore_games(restore_filenames)
     app.wsgi_app = GzipMiddleware(app.wsgi_app)
     app.run(host="0.0.0.0", debug=debug, threaded=True)
 

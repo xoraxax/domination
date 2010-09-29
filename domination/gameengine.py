@@ -1,11 +1,21 @@
 import sys
+import pickle
 from random import SystemRandom
-from threading import Thread, Condition
+from threading import Thread
+from threading import _Condition as PristineCondition
 
 from domination.tools import _
 
 
 random = SystemRandom()
+
+
+class Condition(PristineCondition):
+    def __getstate__(self):
+        return True
+
+    def __setstate__(self, *args):
+        PristineCondition.__init__(self)
 
 
 class EndOfGameException(Exception):
@@ -28,6 +38,11 @@ class Request(object):
         self.msg = msg
         self.req_type = type(self).__name__
 
+    def __hash__(self):
+        data = dict(player=self.player, game=self.game, msg=self.msg,
+                req_type=self.req_type).items()
+        return hash(tuple(sorted(data)))
+
     def choose_randomly(self):
         if not self.choices:
             return
@@ -39,6 +54,10 @@ class Request(object):
         if self.wise_slice is not None:
             return self.choices[self.wise_slice]
         return self.choose_randomly()
+
+class Checkpoint(Request):
+    def __init__(self, game):
+        Request.__init__(self, game, None, None)
 
 class MultipleChoicesRequestMixin(object):
     number_of_choices = -1
@@ -175,15 +194,22 @@ RUNNING = "running"
 ENDED = "ended"
 
 class GameRunner(Thread):
-    def __init__(self, game, owner):
+    def __init__(self, game, owner, seqno=0, waiting_for=None, state=FRESH):
         Thread.__init__(self)
         self.game = game
-        self.seqno = 0
+        self.seqno = seqno
         self.seqno_condition = Condition()
-        self.waiting_for = None
+        self.waiting_for = waiting_for
         self.owner = owner
-        self.state = FRESH
+        self.state = state
         self.do_cancel = False
+        self.starting_from_checkpoint = seqno != 0
+
+    def __getstate__(self):
+        return (self.game, self.owner, self.seqno, self.waiting_for, self.state)
+
+    def __setstate__(self, args):
+        GameRunner.__init__(self, *args)
 
     def startable(self, player):
         return self.state is FRESH and player is self.owner and not self.is_alive()\
@@ -210,8 +236,9 @@ class GameRunner(Thread):
         self.seqno_condition.release()
 
     def _run(self):
-        self.state = RUNNING
-        gen = self.game.play_game()
+        if not self.starting_from_checkpoint:
+            self.state = RUNNING
+        gen = self.game.play_game(self.starting_from_checkpoint)
         reply = None
         while not self.do_cancel:
             try:
@@ -219,11 +246,16 @@ class GameRunner(Thread):
             except StopIteration:
                 break
             player = req.player
-            assert not getattr(player, "request_queue", None) and not player.response
+            if player is not None:
+                assert not getattr(player, "request_queue", None) and not player.response
             if isinstance(req, InfoRequest):
                 player.info_queue.append(req)
                 self.waiting_for = None
                 self.increment_seqno()
+                continue
+            if isinstance(req, Checkpoint):
+                self.waiting_for = None
+                self.store()
                 continue
             req.seqno = self.seqno + 1
             player.request_queue.append(req)
@@ -261,6 +293,13 @@ class GameRunner(Thread):
             cv.notifyAll()
             cv.release()
 
+    def store(self):
+        from domination.main import app
+        f = file(app.game_storage_prefix + self.game.name + app.game_storage_postfix, "wb")
+        pickle.dump(self, f, -1)
+        f.close()
+
+
 class Game(object):
     def __init__(self, name):
         self.players = []
@@ -270,6 +309,9 @@ class Game(object):
         self.end_of_game_reason = _("Aborted!")
         self.round = 0
         self.name = name
+
+    def __hash__(self):
+        return hash(self.name)
 
     @property
     def participants(self):
@@ -359,11 +401,13 @@ class Game(object):
                 player.hand = []
                 player.prepare_hand()
 
-    def play_game(self):
-        self.deal_cards()
-        for player in self.players:
-            player.prepare_hand()
+    def play_game(self, starting_from_checkpoint):
+        if not starting_from_checkpoint:
+            self.deal_cards()
+            for player in self.players:
+                player.prepare_hand()
         while True:
+            yield Checkpoint(self)
             self.round += 1
             gen = self.play_round()
             # generic generator forwarding pattern
@@ -528,6 +572,9 @@ class Player(object):
         self.info_queue = []
         self.response_condition = Condition()
         self.response = []
+
+    def __hash__(self):
+        return hash(self.name)
 
     def __enter__(self):
         self.remaining_actions = 1
