@@ -66,7 +66,7 @@
 {% block content %}
   <h2>Create new game</h2>
   <form action="" method="post">
-    <p>Name of Game: <input type="text" name="name" value="Game of {{ session.username }}"></p>
+    <p>Name of Game: <input type="text" name="name" value="{{ name }}"></p>
     <p><input type="checkbox" name="ai" value="yes">Add an AI player</p>
     <p>Editions:
       {% for edition in editions %}

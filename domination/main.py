@@ -144,8 +144,14 @@ def create_game(): # XXX check for at most 10 sets
         for set in sets:
             result.append((set, [c.__name__ for c in set.card_classes]))
         return result
+    name = _("Game of %s") % (session["username"], )
+    newname = name
+    ctr = 0
+    while newname in app.games:
+        ctr += 1
+        newname = "%s (%i)" % (name, ctr)
     return render_template("create_game.html", editions=editions,
-                           card_sets=transform_sets(card_sets))
+                           card_sets=transform_sets(card_sets), name=newname)
 
 @app.route("/game/<name>", methods=['GET', 'POST'])
 @needs_login
