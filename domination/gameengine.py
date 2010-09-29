@@ -349,15 +349,15 @@ class Game(object):
                                 yield InfoRequest(self, other_player,
                                         _("%s buys:") % (player.name, ), [card])
 
+                    reason = self.check_end_of_game()
+                    if reason:
+                        self.end_of_game_reason = reason
+                        self.end_of_game()
                 # cleanup
                 player.discard_pile.extend(discarded_cards)
                 player.discard_pile.extend(player.hand)
                 player.hand = []
                 player.prepare_hand()
-            reason = self.check_end_of_game()
-            if reason:
-                self.end_of_game_reason = reason
-                self.end_of_game()
 
     def play_game(self):
         self.deal_cards()
