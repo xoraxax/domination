@@ -129,11 +129,15 @@
       <input type="submit" value="Cancel">
       </form>
     {% elif req_type == "SelectHandCards" %}
+      {% if req.count_upper == req.count_lower != none %}
+        You should select exactly {{ req.count_lower }} cards.
+      {% else %}
       {% if req.count_upper != 1 and req.count_upper != none %}
         You may select at most {{ req.count_upper }} cards.
       {% endif %}
       {% if not req.count_lower in (0, 1) %}
         You need to select at least {{ req.count_lower }} cards.
+      {% endif %}
       {% endif %}
       {% if req.count_upper != 1 %}
         <form action="" method="post">
