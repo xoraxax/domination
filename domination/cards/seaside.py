@@ -154,15 +154,21 @@ class Cutpurse(AttackCard):
                 handle_defense(self, game, other_player)
             except Defended:
                 continue
-            cards = yield SelectHandCards(game, other_player, count_lower=1, count_upper=1,
-                    msg=_("%s played Cutpurse. Which Copper do you want to discard?") % (player.name, ), cls=Copper)
-            for card in cards:
-                card.discard(other_player)
-            for other_player in game.participants:
-                if info_player is not other_player:
-                    # TODO: info players may only see one of the discarded cards
-                    yield InfoRequest(game, info_player,
-                            _("%s discards these cards:") % (other_player.name, ), cards)
+            copper_cards = [c for c in other_player.hand if isinstance(c, Copper)]
+            if copper_cards:
+                cards = yield SelectHandCards(game, other_player, count_lower=1, count_upper=1,
+                        msg=_("%s played Cutpurse. Which Copper do you want to discard?") % (player.name, ), cls=Copper)
+                for card in cards:
+                    card.discard(other_player)
+                    for other_player in game.participants:
+                        if other_player is not player:
+                            yield InfoRequest(game, other_player,
+                                _("%s discards these cards:") % (other_player.name, ), cards)
+            else:
+                for info_player in game.following_players(player):
+                    yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
+                            (other_player.name, ), other_player.hand[:])
+
 
 class Embargo(ActionCard):
     name = _("Embargo")
@@ -206,7 +212,7 @@ class GhostShip(AttackCard):
                 cards = yield SelectHandCards(game, other_player, count_lower=count, count_upper=count,
                         msg=_("%s played Ghost Ship. Which cards do you want to put on the top of your deck?") % (player.name, ))
                 for card in cards:
-                    card.backondeck(other_player)
+                    card.backondeck(game, other_player)
 
 #http://www.boardgamegeek.com/image/586408/dominion-seaside?size=large
 
@@ -335,20 +341,20 @@ class TreasureMap(ActionCard):
     name = _("TreasureMap")
     edition = Seaside
     cost = 4
+    trash_after_playing = True
     desc = _("Trash this and another copy of Treasure map from your hand. If you do trash two Treasure maps, gain 4 Gold cards, putting them on top of your deck.")
 
     def activate_action(self, game, player):
         treasure_map_cards = [c for c in player.hand if isinstance(c, TreasureMap)]
-        if len(treasure_map_cards) >= 2:
-            for i in range(0, 4):
-                card = treasure_map_cards[0]
-                card.trash(game, player)
-                for other_player in game.participants:
-                    yield InfoRequest(game, other_player,
+        if len(treasure_map_cards) >= 1: # only need one other treasure map in hand, because the other has already been played
+            card = treasure_map_cards[0]
+            card.trash(game, player)
+            for other_player in game.participants:
+                yield InfoRequest(game, other_player,
                             _("%s trashes:") % (player.name, ), [card])
             for i in range(0, 4):
                 new_card = game.supply["Gold"].pop()
-                player.discard_pile.append(new_card)
+                player.deck.append(new_card)
                 for other_player in game.participants:
                     yield InfoRequest(game, other_player,
                             _("%s gains:") % (player.name, ), [new_card])
