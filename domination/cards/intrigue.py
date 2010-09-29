@@ -325,7 +325,7 @@ class Pawn(ActionCard):
 
 
 class Saboteur(AttackCard):
-    # XXX to be implemented
+    implemented = False # FIXME not implemented completely
     name = _("Saboteur")
     edition = Intrigue
     cost = 5
