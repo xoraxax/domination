@@ -19,6 +19,7 @@ from domination.tools import _
 from domination.gzip_middleware import GzipMiddleware
 
 
+# init app object
 app.games = {}
 app.users = {}
 app.card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues()
@@ -304,9 +305,6 @@ def check_seqno(game_runner):
     cv.release()
     return jsonify()
 
-@app.route("/crash")
-def crash():
-    1/0
 
 @app.before_request
 def before_request():
@@ -315,7 +313,13 @@ def before_request():
 
 
 if __name__ == '__main__':
-    app.secret_key = "insecure"
+    args = sys.argv
+    debug = "-p" not in args
+    if debug:
+        @app.route("/crash")
+        def crash():
+            1/0
+        app.secret_key = "insecure"
     app.wsgi_app = GzipMiddleware(app.wsgi_app)
-    app.run(host="0.0.0.0", debug=True, threaded=True)
+    app.run(host="0.0.0.0", debug=debug, threaded=True)
 
