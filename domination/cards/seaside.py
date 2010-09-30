@@ -6,13 +6,13 @@ from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense
 
-#http://www.boardgamegeek.com/image/586409/dominion-seaside?size=large
+
 class Lookout(ActionCard):
     name = _("Lookout")
     edition = Seaside
     implemented = False #FIXME not implemented completely
     cost = 3
-    desc = _("+1 Action. Look at the top 3 Cards of your deck. Trash one of them. Discard one of them. Put the other on top of your deck.")
+    desc = _("+1 Action. Look at the top 3 Cards of your deck. Trash one of them. Discard one of them. Put the other one on top of your deck.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
@@ -79,7 +79,7 @@ class Salvager(ActionCard):
     name = _("Salvager")
     edition = Seaside
     cost = 4
-    desc = _("+1 Buy. Trash a Card from your hand. + Money equal to its costs.")
+    desc = _("+1 Buy. Trash a Card from your hand. +Money equal to its costs.")
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
@@ -181,12 +181,12 @@ class Embargo(ActionCard):
         player.virtual_money += 2
         pass #FIXME
 
-class LigthHouse(ActionCard, DurationCard):
-    name = _("Ligthhouse")
+class Lighthouse(ActionCard, DurationCard):
+    name = _("Lighthouse")
     edition = Seaside
     implemented = False #FIXME not implemented completely
     cost = 2
-    desc = _("+1 Action. Now and at the Start of your next turn: +1 Money. While this is in play, when another player plays an Attack cardm it doesn't afffect you.")
+    desc = _("+1 Action. Now and at the start of your next turn: +1 Money. While this is in play, when another player plays an Attack card it doesn't affect you.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
@@ -221,7 +221,7 @@ class Haven(ActionCard, DurationCard):
     edition = Seaside
     implemented = False #FIXME not implemented completely
     cost = 2
-    desc = _("+1 Card, + 1 Action. Set aside a Card from your hand face down. At the start of your next turn, put it into your hand.")
+    desc = _("+1 Card, + 1 Action. Set aside a card from your hand face down. At the start of your next turn, put it into your hand.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
@@ -233,7 +233,7 @@ class Explorer(ActionCard):
     edition = Seaside
     implemented = False #FIXME not implemented completely
     cost = 5
-    desc = _("You may reveal a Province card from your hand. If you do, gain a gold card, putting it into your hand. Otherwise, gain a silver card, putting it into your hand.")
+    desc = _("You may reveal a Province card from your hand. If you do, gain a Gold card, putting it into your hand. Otherwise, gain a Silver card, putting it into your hand.")
 
     def activate_action(self, game, player):
         pass #FIXME
@@ -289,7 +289,8 @@ class Island(ActionCard, VictoryCard):
     implemented = False #FIXME not implemented completely
     cost = 4
     points = 2
-    desc = _("Set aside the survivors of Oceanic fligth 815 from your hand. Return them to your deck at the end of the game.")
+    desc = _("Set aside this and another card from your hand. Return them to"
+             " your deck at the end of the game.")
 
     def activate_action(self, game, player):
         pass #FIXME
@@ -362,11 +363,28 @@ class TreasureMap(ActionCard):
                     yield val
 
 
-from domination.cards.base import (
-    Cellar, CouncilRoom, Festival, Mine)
+from domination.cards.base import \
+    Cellar, CouncilRoom, Festival, Mine, Adventurer, Spy, Village,\
+    Chancellor, Festival, Militia, Workshop, Library, Market, Moneylender,\
+    Witch
 
 card_sets = [
-    CardSet('Seaside Test',
-            [Salvager, Bazaar, Cutpurse, GhostShip, Warehouse, TreasureMap,
-             Mine, Cellar, CouncilRoom, Festival])
+    CardSet(u"High Seas [S]",
+        [Bazaar, Caravan, Embargo, Explorer, Haven, Island, Lookout, PirateShip,
+            Smugglers, Wharf]),
+    CardSet(u"Buried Treasure [S]",
+        [Ambassador, Cutpurse, FishingVillage, Lighthouse, Outpost, PearlDiver,
+            Tactician, TreasureMap, Warehouse, Wharf]),
+    CardSet(u"Shipwrecks [S]",
+        [GhostShip, MerchantShip, NativeVillage, Navigator, PearlDiver, Salvager,
+            SeaHag, Smugglers, Treasury, Warehouse]),
+    CardSet(u"Reach for Tomorrow [S&D]",
+        [Adventurer, Cellar, CouncilRoom, Cutpurse, GhostShip, Lookout, SeaHag,
+            Spy, TreasureMap, Village]),
+    CardSet(u"Repetition [S&D]",
+        [Caravan, Chancellor, Explorer, Festival, Militia, Outpost, PearlDiver,
+            PirateShip, Treasury, Workshop]),
+    CardSet(u"Give and Take [S&D]",
+        [Ambassador, FishingVillage, Haven, Island, Library, Market, Moneylender,
+            Salvager, Smugglers, Witch]),
 ]

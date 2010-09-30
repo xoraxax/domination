@@ -446,7 +446,6 @@ class DominationGame(Game):
 
     def deal_supply_cards(game, selected_cards):
         no_players = len(game.players) # number of players
-        # debug check that there are 10 kinds of kingdom cards in selected_cards
         assert len(selected_cards) == 10
 
         # add treasure cards
@@ -459,8 +458,8 @@ class DominationGame(Game):
             game.add_supply(Silver, 40)
             game.add_supply(Gold, 30)
 
-        if any(map(lambda isalchemy: isalchemy.edition == Alchemy, selected_cards)):
-            game.add_supply(Potion, 30) #FIXME how many Potions per player?
+        if any([c.potioncost + (c.__name__ == "BlackMarket") for c in selected_cards]):
+            game.add_supply(Potion, 16)
 
         # add victory cards (except victory kingdom cards)
         if no_players == 2:
@@ -485,10 +484,9 @@ class DominationGame(Game):
         # add kingdom cards
         for selected_card in selected_cards:
             amount = 10
-            if selected_card is Gardens: # modify for additional victory cards
+            if selected_card in (Gardens, Vineyard): # modify for additional victory cards
                 amount = victory_cards
             game.add_supply(selected_card, amount)
-            # FIXME number of vineyard dependend on playercount, too?
 
     def deal_initial_decks(game): # deal the starting hands
         for player in game.players: # every player...
@@ -636,7 +634,7 @@ from domination.cards import editions
 from domination.cards import CardTypeRegistry, ActionCard, VictoryCard
 from domination.cards.base import (Copper, Silver, Gold, Curse,
                                    Estate, Duchy, Province, Gardens)
-from domination.cards.alchemy import Potion
+from domination.cards.alchemy import Potion, Vineyard
 
 from domination.cards.base import card_sets as card_sets_base
 from domination.cards.intrigue import card_sets as card_sets_intrigue

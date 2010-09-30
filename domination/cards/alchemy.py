@@ -6,7 +6,6 @@ from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense
 
-#http://www.boardgamegeek.com/image/709729/dominion-alchemy?size=large
 
 class Potion(TreasureCard):
     name = _("Potion")
@@ -139,10 +138,10 @@ class PhilosophersStone(TreasureCard): #Fehlt
     edition = Alchemy
     cost = 3
     potioncost = 1
-    desc = _("")
+    desc = _("Worth 1 Point for every three Action cards in your deck (rounded down).")
 
     def get_worth(self, player):
-        return (len(player.hand) + len(player.discard_pile))/5
+        return (len(player.hand) + len(player.discard_pile)) / 3
 
 
 class Possession(ActionCard):
@@ -237,11 +236,34 @@ class University(ActionCard):
             yield val
 
 
-from domination.cards.base import (
-    Bureaucrat, Cellar, CouncilRoom, Library, Mine, ThroneRoom)
+from domination.cards.base import \
+    Bureaucrat, Cellar, CouncilRoom, Library, Mine, ThroneRoom,\
+    Gardens, Laboratory, Thief, Chancellor, Festival, Militia, Smithy,\
+    Market, Moat, Remodel, Witch, Woodcutter
+
+from domination.cards.intrigue import \
+    GreatHall, Minion, Pawn, Steward, Bridge, Masquerade, Nobles, ShantyTown,\
+    Torturer, Baron, WishingWell, Conspirator, Coppersmith, Ironworks,\
+    TradingPost
 
 card_sets = [
-    CardSet('Alchemy Test',
-            [Apprentice, Potion, Familiar, PhilosophersStone, University,
-             Mine, CouncilRoom, Cellar, Library, ThroneRoom])
+        CardSet(u"Forbidden Arts [A&D]",
+            [Apprentice, Familiar, Possession, University, Cellar, CouncilRoom,
+                Gardens, Laboratory, Thief, ThroneRoom]),
+        CardSet(u"Potion Mixers [A&D]",
+            [Alchemist, Apothecary, Golem, Herbalist, Transmute, Cellar, Chancellor,
+                Festival, Militia, Smithy]),
+        CardSet(u"Chemistry Lesson [A&D]",
+            [Alchemist, Golem, PhilosophersStone, University, Bureaucrat, Market,
+                Moat, Remodel, Witch, Woodcutter]),
+        CardSet(u"Servants [A&I]",
+            [Golem, Possession, ScryingPool, Transmute, Vineyard, Conspirator,
+                GreatHall, Minion, Pawn, Steward]),
+        CardSet(u"Secret Research [A&I]",
+            [Familiar, Herbalist, PhilosophersStone, University, Bridge,
+                Masquerade, Minion, Nobles, ShantyTown, Torturer]),
+        CardSet(u"Pools, Tools, and Fools [A&I]",
+            [Apothecary, Apprentice, Golem, ScryingPool, Baron, Coppersmith,
+                Ironworks, Nobles, TradingPost, WishingWell]),
 ]
+
