@@ -358,7 +358,7 @@ class TreasureMap(ActionCard):
                 player.deck.append(new_card)
                 for other_player in game.participants:
                     yield InfoRequest(game, other_player,
-                            _("%s gains:") % (player.name, ), [new_card])
+                            _("%s gains on top of his deck:") % (player.name, ), [new_card])
                 for val in game.check_empty_pile("Gold"):
                     yield val
 
