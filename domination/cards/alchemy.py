@@ -115,17 +115,16 @@ class Familiar(AttackCard):
         player.draw_cards(1)
         curse_cards = game.supply["Curse"]
         for other_player in game.following_players(player):
-            if other_player not in game.kibitzers:
-                if curse_cards:
-                    try:
-                        handle_defense(self, game, other_player)
-                    except Defended:
-                        continue
-                    other_player.discard_pile.append(curse_cards.pop())
-                    yield InfoRequest(game, other_player,
-                            _("%s curses you. You gain a curse card.") % (player.name, ), [])
-                    for val in game.check_empty_pile("Curse"):
-                        yield val
+            if curse_cards:
+                try:
+                    handle_defense(self, game, other_player)
+                except Defended:
+                    continue
+                other_player.discard_pile.append(curse_cards.pop())
+                yield InfoRequest(game, other_player,
+                        _("%s curses you. You gain a curse card.") % (player.name, ), [])
+                for val in game.check_empty_pile("Curse"):
+                    yield val
 
 
 class Golem(ActionCard):
@@ -200,7 +199,7 @@ class Transmute(ActionCard):
                 msg=_("Which card do you want to trash?"))
         if cards:
             card = cards[0]
-            for other_player in game.following_players(player):
+            for other_player in game.following_participants(player):
                 yield InfoRequest(game, other_player,
                         _("%s trashes this card:") % (player.name, ), cards)
             card.trash(game, player)
@@ -209,7 +208,7 @@ class Transmute(ActionCard):
                 for val in game.check_empty_pile("Duchy"):
                     yield val
                 player.discard_pile.append(new_card)
-                for info_player in game.following_players(player):
+                for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player,
                             _("%s gains:") % (other_player.name, ), [new_card])
             if isinstance(card, TreasureCard):
@@ -217,7 +216,7 @@ class Transmute(ActionCard):
                 for val in game.check_empty_pile("Transmute"):
                     yield val
                 player.discard_pile.append(new_card)
-                for info_player in game.following_players(player):
+                for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player,
                             _("%s gains:") % (other_player.name, ), [new_card])
             if isinstance(card, VictoryCard):
@@ -225,7 +224,7 @@ class Transmute(ActionCard):
                 for val in game.check_empty_pile("Gold"):
                     yield val
                 player.discard_pile.append(new_card)
-                for info_player in game.following_players(player):
+                for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player,
                             _("%s gains:") % (other_player.name, ), [new_card])
 

@@ -407,11 +407,16 @@ class Game(object):
         raise EndOfGameException
 
     def following_players(self, current_player):
-        """ Returns all other players in the correct order and adds
-        the kibitzers."""
+        """ Returns all other players in the correct order.
+        """
         players = self.players
         return players[players.index(current_player) + 1:] + \
-                players[:players.index(current_player)] + self.kibitzers
+                players[:players.index(current_player)]
+
+    def following_participants(self, current_player):
+        """ Returns all other players in the correct order and adds
+        the kibitzers."""
+        return self.following_players(current_player) + self.kibitzers
 
     def check_empty_pile(self, key):
         if not self.supply[key]:

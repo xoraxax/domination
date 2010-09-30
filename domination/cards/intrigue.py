@@ -21,7 +21,7 @@ class Baron(ActionCard):
             player.virtual_money += 4
             card = estate_cards[0]
             card.discard(player)
-            for info_player in game.following_players(player):
+            for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
                         _("%s discards:") % (player.name, ), [card])
         else:
@@ -147,7 +147,7 @@ class Ironworks(ActionCard):
             msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop()
         player.discard_pile.append(new_card)
-        for info_player in game.following_players(player):
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s gains:") % (player.name, ), [new_card])
         for val in game.check_empty_pile(card_cls.__name__):
@@ -191,7 +191,7 @@ class Masquerade(ActionCard):
         if cards:
             for card in cards:
                 card.trash(game, player)
-            for other_player in game.following_players(player):
+            for other_player in game.following_participants(player):
                 yield InfoRequest(game, other_player,
                         _("%s trashes this card:") % (player.name, ), cards)
 
@@ -228,7 +228,7 @@ class Minion(AttackCard):
         answer = yield Question(game, player, _("What do you want to do?"),
                                 actions)
 
-        for info_player in game.following_players(player):
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
 
@@ -239,7 +239,7 @@ class Minion(AttackCard):
             for card in original_hand:
                 card.discard(player)
             player.draw_cards(4)
-            for info_player in game.following_players(player):
+            for info_player in game.following_participants(player):
                 yield InfoRequest(
                     game, info_player,
                     _("%s discards this hand and draws 4 cards:") %
@@ -259,7 +259,7 @@ class Minion(AttackCard):
                 yield InfoRequest(
                     game, other_player,
                     _("You discard your hand and draw 4 cards."), [])
-                for info_player in game.following_players(other_player):
+                for info_player in game.following_participants(other_player):
                     yield InfoRequest(
                         game, info_player,
                         _("%s discards this hand and draws 4 cards:") %
@@ -280,7 +280,7 @@ class Nobles(ActionCard, VictoryCard):
         answer = yield Question(game, player, _("What do you want to get?"),
                                 actions)
 
-        for info_player in game.following_players(player):
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
 
@@ -308,7 +308,7 @@ class Pawn(ActionCard):
             if len(choice) == 2:
                 break
 
-        for info_player in game.following_players(player):
+        for info_player in game.following_participants(player):
             chosen = ", ".join(_(dict(choices)[c]) for c in choice)
             yield InfoRequest(game, info_player,
                     _("%s chooses '%s'") % (player.name, chosen), [])
@@ -405,7 +405,7 @@ class ShantyTown(ActionCard):
     def activate_action(self, game, player):
         player.remaining_actions += 2
 
-        for info_player in game.following_players(player):
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
                     (player.name, ), player.hand[:])
 
@@ -444,7 +444,7 @@ class Swindler(AttackCard):
             card_cls = yield req
             new_card = game.supply[card_cls.__name__].pop()
             other_player.discard_pile.append(new_card)
-            for info_player in game.following_players(player):
+            for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
                         _("%s gains:") % (other_player.name, ), [new_card])
             for val in game.check_empty_pile(card_cls.__name__):
@@ -466,7 +466,7 @@ class Steward(ActionCard):
         answer = yield Question(game, player, _("What do you want to do?"),
                                 actions)
 
-        for info_player in game.following_players(player):
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
 

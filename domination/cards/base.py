@@ -289,10 +289,10 @@ class Bureaucrat(AttackCard):
                     _("Select a Victory card you want to reveal"), VictoryCard, 1, 1))[0]
                 other_player.deck.append(card)
                 other_player.hand.remove(card)
-                for info_player in game.following_players(other_player):
+                for info_player in game.following_participants(other_player):
                     yield InfoRequest(game, info_player, _("%s reveals a card:") % (other_player.name, ), [card])
             else:
-                for info_player in game.following_players(other_player):
+                for info_player in game.following_participants(other_player):
                     yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
                             (other_player.name, ), other_player.hand)
 
@@ -319,8 +319,7 @@ class CouncilRoom(ActionCard):
         player.draw_cards(4)
         player.remaining_deals += 1
         for other_player in game.following_players(player):
-            if other_player not in game.kibitzers:
-                other_player.draw_cards(1)
+            other_player.draw_cards(1)
 
 class Feast(ActionCard):
     name = _("Feast")
@@ -337,7 +336,7 @@ class Feast(ActionCard):
             msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop()
         player.discard_pile.append(new_card)
-        for info_player in game.following_players(player):
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s gains:") % (player.name, ), [new_card])
         for val in game.check_empty_pile(card_cls.__name__):
@@ -396,7 +395,7 @@ class Moneylender(ActionCard):
             player.virtual_money += 3
             card = copper_cards[0]
             card.trash(game, player)
-            for info_player in game.following_players(player):
+            for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
                         _("%s trashes:") % (player.name, ), [card])
 
@@ -425,7 +424,7 @@ class Spy(AttackCard):
                 _("Do you want to discard %(name)s's card '%(cardname)s'?") %
                 {"cardname": card.name, "name": other_player.name})):
                 other_player.discard_pile.append(card)
-                for info_player in game.following_players(player):
+                for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player,
                             _("%(playername)s discarded %(player2name)s's card:") %
                             {"playername": player.name, "player2name": other_player.name},
@@ -465,7 +464,7 @@ class Thief(AttackCard):
                 card = [c for c in treasure_cards if isinstance(c, card_cls)][0]
                 trashed.append(card)
                 cards.remove(card)
-                for info_player in game.following_players(player):
+                for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player, _("%s trashes:") %
                             (player.name, ), [card])
             other_player.discard_pile.extend(cards)
@@ -473,7 +472,7 @@ class Thief(AttackCard):
             if (yield YesNoQuestion(game, player,
                 _("Do you want to have the card '%s'?") % (card.name, ))):
                 player.discard_pile.append(card)
-                for info_player in game.following_players(player):
+                for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player, _("%s picks up this card from trash:") %
                             (player.name, ), [card])
             else:
@@ -549,7 +548,7 @@ class Workshop(ActionCard):
             msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop()
         player.discard_pile.append(new_card)
-        for info_player in game.following_players(player):
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s gains:") % (player.name, ), [new_card])
         for val in game.check_empty_pile(card_cls.__name__):

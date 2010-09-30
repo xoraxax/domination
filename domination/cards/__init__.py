@@ -126,7 +126,7 @@ class AttackCard(ActionCard):
                 card = cards[0]
                 already_selected.add(card)
                 # notify other players
-                for info_player in game.following_players(other_player):
+                for info_player in game.following_participants(other_player):
                     yield InfoRequest(
                         game, info_player,
                         _("%s reacts with:") % (other_player.name, ), [card])

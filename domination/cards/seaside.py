@@ -165,7 +165,7 @@ class Cutpurse(AttackCard):
                             yield InfoRequest(game, other_player,
                                 _("%s discards these cards:") % (other_player.name, ), cards)
             else:
-                for info_player in game.following_players(player):
+                for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
                             (other_player.name, ), other_player.hand[:])
 
@@ -201,20 +201,18 @@ class GhostShip(AttackCard):
     def activate_action(self, game, player):
         player.draw_cards(2)
         for other_player in game.following_players(player):
-            if other_player not in game.kibitzers:
-                try:
-                    handle_defense(self, game, other_player)
-                except Defended:
-                    continue
-                if len(other_player.hand) < 4:
-                    continue
-                count = len(other_player.hand) - 3
-                cards = yield SelectHandCards(game, other_player, count_lower=count, count_upper=count,
-                        msg=_("%s played Ghost Ship. Which cards do you want to put on the top of your deck?") % (player.name, ))
-                for card in cards:
-                    card.backondeck(game, other_player)
+            try:
+                handle_defense(self, game, other_player)
+            except Defended:
+                continue
+            if len(other_player.hand) < 4:
+                continue
+            count = len(other_player.hand) - 3
+            cards = yield SelectHandCards(game, other_player, count_lower=count, count_upper=count,
+                    msg=_("%s played Ghost Ship. Which cards do you want to put on the top of your deck?") % (player.name, ))
+            for card in cards:
+                card.backondeck(game, other_player)
 
-#http://www.boardgamegeek.com/image/586408/dominion-seaside?size=large
 
 class Haven(ActionCard, DurationCard):
     name = _("Haven")
