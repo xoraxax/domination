@@ -1,6 +1,7 @@
 from random import SystemRandom
 from domination.gameengine import Player, DominationGame, InfoRequest, EndOfGameException, card_sets, Checkpoint
 from domination.cards import CardTypeRegistry
+from domination.cards.base import ThroneRoom, Smithy
 
 
 random = SystemRandom()
@@ -62,3 +63,6 @@ class TestRandomRunner(object):
         for _ in xrange(2**8):
             yield self.test_intrigue_test_run
 
+    def test_throne_room(self):
+        for _ in xrange(2**6):
+            yield self.do_test_run, [ThroneRoom] * 9 + [Smithy]

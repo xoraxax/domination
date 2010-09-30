@@ -1,9 +1,9 @@
 from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
      AttackCard, ReactionCard, CardTypeRegistry, CardSet, BaseGame
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
-     YesNoQuestion, ActivateNextActionMultipleTimes, Defended
+     YesNoQuestion, Defended, SelectActionCard
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense
+from domination.macros.__macros__ import handle_defense, generator_forward
 
 
 class Copper(TreasureCard):
@@ -490,6 +490,7 @@ class ThroneRoom(ActionCard):
                 % (player.remaining_actions, )))
         if action_cards:
             card = action_cards[0]
+            player.hand.remove(card)
             gen = game.play_action_card(player, card)
             generator_forward(gen)
             if card.trash_after_playing and not card.throne_room_duplicates:

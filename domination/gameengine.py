@@ -124,7 +124,7 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
             elif "want to play" in self.msg:
                 if "remaining_actions" in functokens:
                     factor = -4
-                elif "ActivateNextActionMultipleTimes" in functokens:
+                elif "SelectActionCard" in functokens: # throne room
                     factor = -6
                 else:
                     factor = -1
@@ -326,7 +326,6 @@ class Game(object):
             if other_player is not player:
                 yield InfoRequest(self, other_player,
                         _("%s plays:") % (player.name, ), [card])
-        player.hand.remove(card)
 
         player.activated_cards.append(card)
         gen = card.activate_action(self, player)
@@ -346,6 +345,7 @@ class Game(object):
                         break
                     player.remaining_actions -= 1
                     card = action_cards[0]
+                    player.hand.remove(card)
                     gen = self.play_action_card(player, card)
                     generator_forward(gen)
                     if card.trash_after_playing:
