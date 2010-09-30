@@ -2,6 +2,7 @@ import os
 import sys
 import random
 import pickle
+import optparse
 
 from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
@@ -327,18 +328,33 @@ def restore_games(files):
         game_runner.start()
 
 
-if __name__ == '__main__':
-    args = sys.argv
-    debug = "-p" not in args
-    restore = "-r" in args
-    restore_filenames = [a for a in args[1:] if not a.startswith("-")]
-    if debug:
+def main(argv):
+    parser = optparse.OptionParser()
+    parser.add_option('-i', '--server-ip', dest='server_ip', action='store', type="string",
+            help='ip/hostname to run the server on', default="0.0.0.0")
+    parser.add_option('-p', '--server-port', dest='server_port', action='store',
+            type="int", help='port to run the server on', default=8080)
+    parser.add_option('-r', '--restore', dest='restore', action='append',
+            type="string", help='File to restore a game from', default=[])
+    parser.add_option('-D', '--debug', dest='debug', action='store_true',
+            help='Debug mode', default=None)
+
+    options, args = parser.parse_args()
+    if args:
+        parser.error("don't know what to do with additional arguments")
+
+    if options.debug:
         @app.route("/crash")
         def crash():
             1/0
         app.secret_key = "insecure"
-    if restore:
-        restore_games(restore_filenames)
+
+    for file in options.restore:
+        restore_games(file)
+
     app.wsgi_app = GzipMiddleware(app.wsgi_app)
-    app.run(host="0.0.0.0", debug=debug, threaded=True)
+    app.run(host=options.server_ip, port=options.server_port, debug=options.debug, threaded=True)
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
 
