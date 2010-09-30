@@ -485,6 +485,8 @@ class ThroneRoom(ActionCard):
     desc = _("Choose an action card in your hand. Play it twice.")
 
     def activate_action(self, game, player):
+        if not [c for c in player.hand if isinstance(c, ActionCard)]:
+            return
         action_cards = (yield SelectActionCard(self, player,
             _("Which action card do you want to play on the throne room? (%i actions left)")
                 % (player.remaining_actions, )))
