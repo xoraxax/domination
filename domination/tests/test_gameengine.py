@@ -1,5 +1,5 @@
 from random import SystemRandom
-from domination.gameengine import Player, DominationGame, InfoRequest, EndOfGameException, card_sets
+from domination.gameengine import Player, DominationGame, InfoRequest, EndOfGameException, card_sets, Checkpoint
 from domination.cards import CardTypeRegistry
 
 
@@ -34,18 +34,18 @@ class TestRandomRunner(object):
         game = DominationGame("test", card_classes)
         game.players.append(Player("CPU0"))
         game.players.append(Player("CPU1"))
-        gen = game.play_game()
+        gen = game.play_game(False)
         record = []
         reply = None
         while True:
             try:
                 req = gen.send(reply)
-                assert len(req.player.total_cards) >= 5, "\n".join(record)
             except EndOfGameException:
                 print game.end_of_game_reason
                 break
-            if isinstance(req, InfoRequest):
+            if isinstance(req, InfoRequest) or isinstance(req, Checkpoint):
                 continue
+            assert len(req.player.total_cards) >= 5, "\n".join(record)
             reply = req.choose_wisely()
             record.append("%s answered %s with %s" % (req.player, req.msg, reply))
             record.append("%s has %i cards left" % (req.player, len(req.player.total_cards)))
