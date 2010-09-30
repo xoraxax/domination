@@ -220,7 +220,7 @@ class University(ActionCard):
     def activate_action(self, game, player):
         player.remaining_actions += 2
         card_classes = [c for c in CardTypeRegistry.card_classes.itervalues()
-                        if c.cost <= 5 and
+                        if c.cost <= 5 and c.potioncost == 0 and
                         game.supply.get(c.__name__) and
                         issubclass(c, ActionCard)]
         card_cls = yield SelectCard(game, player, card_classes=card_classes,
