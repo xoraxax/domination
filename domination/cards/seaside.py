@@ -258,7 +258,7 @@ class Warehouse(ActionCard):
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
-        player.draw_cards(2)
+        player.draw_cards(3)
         cards = yield SelectHandCards(game, player, count_lower=3, count_upper=3,
                 msg=_("Which 3 cards do you want to discard?"))
         # discard cards
@@ -338,7 +338,7 @@ class Wharf(ActionCard, DurationCard):
         pass #FIXME
 
 class TreasureMap(ActionCard):
-    name = _("TreasureMap")
+    name = _("Treasure Map")
     edition = Seaside
     cost = 4
     trash_after_playing = True

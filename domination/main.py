@@ -166,7 +166,6 @@ def game(game_runner):
     seqno = game_runner.seqno
     if game_runner.game in get_store()["games"]:
         player = get_store()["games"][game_runner.game]
-        info_queue = player.info_queue
         if request.method == 'POST':
             cv = player.response_condition
             cv.acquire()
@@ -193,6 +192,7 @@ def game(game_runner):
                 # cleanup XXX more
                 del app.games[game.name]
                 raise req.exc_info[0], req.exc_info[1], req.exc_info[2]
+        info_queue = player.info_queue
     else:
         for kibitzer in game.kibitzers:
             if kibitzer.name == session["username"]:
