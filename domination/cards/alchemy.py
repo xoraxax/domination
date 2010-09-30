@@ -31,15 +31,19 @@ class Vineyard(VictoryCard):
 class Alchemist(ActionCard):
     name = _("Alchemist")
     edition = Alchemy
-    implemented = False #FIXME not implemented completely
     cost = 3
     potioncost = 1
-    desc = _("+2 Cards, + 1 Action. When you discard this from play, you may put this on top of your deck if you have a Potion in play.")
+    desc = _("+2 Cards, + 1 Action. When you discard this from play, you may put"
+             " this on top of your deck if you have a Potion in play.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(2)
-        pass #FIXME
+        if any(isinstance(c, Potion) for c in player.hand):
+            if (yield YesNoQuestion(game, player, _("Do you want to put your alchemist card"
+                " onto your deck?"))):
+                player.aux_cards.remove(self)
+                player.deck.append(self)
 
 
 class Apothecary(ActionCard):
@@ -48,13 +52,29 @@ class Apothecary(ActionCard):
     implemented = False #FIXME not implemented completely
     cost = 2
     potioncost = 1
-    desc = _("+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed Coppers and Potions into your hand. Put the other cards back on top of your deck in any order.")
+    desc = _("+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed"
+             " Coppers and Potions into your hand. Put the other cards back on top of"
+             " your deck in any order.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(1)
-        pass #FIXME
-
+        player.draw_cards(4)
+        player.hand, new_cards = player.hand[:-4], player.hand[-4:]
+        for info_player in game.participants:
+            yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ),
+                    [new_cards])
+        copper_and_potions = [c for c in new_cards if isinstance(c, (Copper, Potion))]
+        remaining_cards = [c for c in new_cards if not isinstance(c, (Copper, Potion))]
+        player.hand.extend(copper_and_potions)
+        while remaining_cards:
+            card_classes = [type(c) for c in remaining_cards]
+            card_cls = (yield SelectCard(game, player,
+                _("Which card do you want to put onto your deck next?"),
+                card_classes=card_classes))
+            card = [c for c in remaining_cards if isinstance(c, card_cls)][0]
+            remaining_cards.remove(card)
+            player.deck.append(card)
 
 class Apprentice(ActionCard):
     name = _("Apprentice")
