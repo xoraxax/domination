@@ -316,16 +316,15 @@ def before_request():
         app.users[session["username"]] = {"games": {}}
 
 
-def restore_games(files):
-    for filename in files:
-        f = file(filename, "rb")
-        game_runner = pickle.load(f)
-        game = game_runner.game
-        app.games[game.name] = game_runner
-        for player in game_runner.game.players:
-            app.users.setdefault(player.name, {}).setdefault("games", {})[game] = player
-        game_runner.daemon = True
-        game_runner.start()
+def restore_game(filename):
+    f = file(filename, "rb")
+    game_runner = pickle.load(f)
+    game = game_runner.game
+    app.games[game.name] = game_runner
+    for player in game_runner.game.players:
+        app.users.setdefault(player.name, {}).setdefault("games", {})[game] = player
+    game_runner.daemon = True
+    game_runner.start()
 
 
 def main(argv):
@@ -349,8 +348,8 @@ def main(argv):
             1/0
         app.secret_key = "insecure"
 
-    for file in options.restore:
-        restore_games(file)
+    for filename in options.restore:
+        restore_game(filename)
 
     app.wsgi_app = GzipMiddleware(app.wsgi_app)
     app.run(host=options.server_ip, port=options.server_port, debug=options.debug, threaded=True)
