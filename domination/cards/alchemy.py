@@ -133,7 +133,7 @@ class Herbalist(ActionCard):
         pass #FIXME
 
 
-class PhilosophersStone(TreasureCard): #Fehlt
+class PhilosophersStone(TreasureCard):
     name = _("Philosophers Stone")
     edition = Alchemy
     cost = 3
