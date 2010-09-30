@@ -5,6 +5,7 @@ from threading import Thread
 from threading import _Condition as PristineCondition
 
 from domination.tools import _
+from domination.macros.__macros__ import generator_forward
 
 
 random = SystemRandom()
@@ -320,58 +321,38 @@ class Game(object):
     def add_supply(self, cls, no):
         self.supply.setdefault(cls.__name__, []).extend(cls() for _ in xrange(no))
 
+    def play_action_card(self, player, card):
+        for other_player in self.participants:
+            if other_player is not player:
+                yield InfoRequest(self, other_player,
+                        _("%s plays:") % (player.name, ), [card])
+        player.hand.remove(card)
+
+        player.activated_cards.append(card)
+        gen = card.activate_action(self, player)
+        generator_forward(gen)
+
     def play_round(self):
         for player in self.players:
             with player:
-                player.aux_cards = discarded_cards = []
+                player.aux_cards = []
                 # action
-                break_selection = False
-                next_times = None
                 while player.remaining_actions and [c for c in player.hand
-                        if isinstance(c, ActionCard)] and not break_selection:
+                        if isinstance(c, ActionCard)]:
                     action_cards = (yield SelectActionCard(self, player,
                         _("Which action card do you want to play? (%i actions left)")
                             % (player.remaining_actions, )))
                     if action_cards is None:
-                        break_selection = True
+                        break
+                    player.remaining_actions -= 1
+                    card = action_cards[0]
+                    gen = self.play_action_card(player, card)
+                    generator_forward(gen)
+                    if card.trash_after_playing:
+                        self.trash_pile.append(card)
                     else:
-                        player.remaining_actions -= 1
-                        card = action_cards[0]
-                        for other_player in self.players + self.kibitzers:
-                            if other_player is not player:
-                                yield InfoRequest(self, other_player,
-                                        _("%s plays:") % (player.name, ), [card])
-                        player.hand.remove(card)
+                        player.aux_cards.append(card)
 
-                        if next_times is not None:
-                            times = next_times
-                            next_times = None
-                        else:
-                            times = 1
-
-                        while times > 0:
-                            times -= 1
-                            player.activated_cards.append(card)
-                            try:
-                                gen = card.activate_action(self, player)
-                            except ActivateNextActionMultipleTimes, e:
-                                if next_times is None:
-                                    next_times = 0
-                                next_times += e.times
-                                continue
-                            if gen is not None:
-                                reply = None
-                                # generic generator forwarding pattern
-                                while True:
-                                    try:
-                                        reply = (yield gen.send(reply))
-                                    except StopIteration:
-                                        break
-                            next_times = None
-                        if card.trash_after_playing:
-                            self.trash_pile.append(card)
-                        else:
-                            discarded_cards.append(card)
                 # deal
                 break_selection = False
                 while player.remaining_deals and not break_selection:
@@ -396,7 +377,7 @@ class Game(object):
                         self.end_of_game_reason = reason
                         self.end_of_game()
                 # cleanup
-                player.discard_pile.extend(discarded_cards)
+                player.discard_pile.extend(player.aux_cards)
                 player.discard_pile.extend(player.hand)
                 player.hand = []
                 player.prepare_hand()
@@ -410,13 +391,7 @@ class Game(object):
             yield Checkpoint(self)
             self.round += 1
             gen = self.play_round()
-            # generic generator forwarding pattern
-            reply = None
-            while True:
-                try:
-                    reply = (yield gen.send(reply))
-                except StopIteration:
-                    break
+            generator_forward(gen)
 
     def deal_cards(self):
         raise NotImplementedError

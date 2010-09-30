@@ -13,3 +13,13 @@ def handle_defense(self, game, player):
         except StopIteration:
             break
 
+@macro
+def generator_forward(gen):
+    if gen is not None:
+        reply = None
+        # generic generator forwarding pattern
+        while True:
+            try:
+                reply = (yield gen.send(reply))
+            except StopIteration:
+                break

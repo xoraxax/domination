@@ -96,6 +96,7 @@ class ActionCard(Card):
     optional = True
     abstract = True
     classname = _("Action card")
+    throne_room_duplicates = False
 
 
 class DurationCard(Card):

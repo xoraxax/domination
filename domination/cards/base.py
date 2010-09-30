@@ -326,6 +326,7 @@ class Feast(ActionCard):
     edition = BaseGame
     cost = 4
     trash_after_playing = True
+    throne_room_duplicates = True
     desc = _("Trash this card, gain a card costing up to 5.")
 
     def activate_action(self, game, player):
@@ -484,7 +485,21 @@ class ThroneRoom(ActionCard):
     desc = _("Choose an action card in your hand. Play it twice.")
 
     def activate_action(self, game, player):
-        raise ActivateNextActionMultipleTimes(2)
+        action_cards = (yield SelectActionCard(self, player,
+            _("Which action card do you want to play on the throne room? (%i actions left)")
+                % (player.remaining_actions, )))
+        if action_cards:
+            card = action_cards[0]
+            gen = game.play_action_card(player, card)
+            generator_forward(gen)
+            if card.trash_after_playing and not card.throne_room_duplicates:
+                game.trash_pile.append(card)
+            else:
+                player.aux_cards.append(card)
+                gen = game.play_action_card(player, card)
+                generator_forward(gen)
+                if card.trash_after_playing:
+                    game.trash_pile.append(card)
 
 class Witch(AttackCard):
     name = _("Witch")
