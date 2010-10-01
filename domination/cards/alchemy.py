@@ -65,7 +65,7 @@ class Apothecary(ActionCard):
         player.hand, new_cards = player.hand[:-4], player.hand[-4:]
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ),
-                    [new_cards])
+                    new_cards)
         copper_and_potions = [c for c in new_cards if isinstance(c, (Copper, Potion))]
         remaining_cards = [c for c in new_cards if not isinstance(c, (Copper, Potion))]
         player.hand.extend(copper_and_potions)
@@ -189,10 +189,13 @@ class Herbalist(ActionCard):
         player.remaining_deals += 1
         player.virtual_money += 1
         def handle_discard_action(p):
-            cards = yield SelectHandCards(game, player, count_lower=0, count_upper=1,
-                    msg=_("Which treasure do you want to put on top of your deck?"))
-            if cards:
-                card = cards[0]
+            treasure_cards = [c for c in player.hand if isinstance(c, TreasureCard)]
+            treasure_card_classes = [type(c) for c in treasure_cards]
+            if treasure_card_classes:
+                card_cls = (yield SelectCard(game, player,
+                    _("Which treasure do you want to put on top of your deck?"),
+                    card_classes=treasure_card_classes))
+                card = [c for c in treasure_cards if isinstance(c, card_cls)][0]
                 player.deck.append(card)
                 player.hand.remove(card)
         player.register_turn_cleanup(handle_discard_action)
