@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+{% block title %}Welcome{% endblock %}
 {% block content %}
-  <h2>Login</h2>
+  <h2>Welcome to Domination!</h2>
   <form action="" method="post">
     <input type="hidden" name="url" value="{{ request.args.url }}">
-    <p>Username: <input type=text name=username></p>
-    <p><input type=submit value=Login></p>
+    <p>Select a username: <input type="text" name="username"></p>
+    <p><input type="submit" value="Start"></p>
   </form>
 {% endblock %}
 
