@@ -190,9 +190,10 @@ class InfoRequest(Request):
         self.cards = cards
 
 
-FRESH = "fresh"
-RUNNING = "running"
-ENDED = "ended"
+FRESH = "Fresh"
+RUNNING = "Running"
+ENDED = "Ended"
+STATES = [FRESH, RUNNING, ENDED]
 
 class GameRunner(Thread):
     def __init__(self, game, owner, seqno=0, waiting_for=None, state=FRESH):
@@ -334,7 +335,6 @@ class Game(object):
     def play_round(self):
         for player in self.players:
             with player:
-                player.aux_cards = []
                 try:
                     # action
                     while player.remaining_actions and [c for c in player.hand
@@ -385,6 +385,7 @@ class Game(object):
 
                 # cleanup pt. 2
                 player.discard_pile.extend(player.aux_cards)
+                player.aux_cards = []
                 player.discard_pile.extend(player.hand)
                 player.hand = []
                 player.prepare_hand()
@@ -444,6 +445,10 @@ class Game(object):
         finally:
             cv.release()
 
+    @property
+    def player_names(self):
+        return ", ".join(p.name for p in self.players)
+
 from domination.cards import Alchemy
 
 class DominationGame(Game):
@@ -451,6 +456,10 @@ class DominationGame(Game):
     def __init__(self, name, selected_cards):
         Game.__init__(self, name)
         self.selected_cards = selected_cards # cards chosen for the game
+
+    @property
+    def selected_cards_str(self):
+        return ", ".join(c.__name__ for c in self.selected_cards)
 
     def deal_cards(self):
         self.deal_initial_decks()

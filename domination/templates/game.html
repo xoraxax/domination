@@ -34,7 +34,7 @@
         <input type="submit" value="Start">
       </form></li>
     {% endif %}
-    {% if runner.state != "ended" and player == runner.owner %}
+    {% if runner.state != ENDED and player == runner.owner %}
       <li><form action="{{ url_for("cancel_game", name=game.name) }}" method="post">
         <input type="submit" value="Abort game">
       </form></li>
@@ -74,7 +74,7 @@
   {% endif %}
   <div id="infosep"></div>
 
-  {% if runner.state == "ended" %}
+  {% if runner.state == ENDED %}
   <h3>The game has ended. {{ game.end_of_game_reason }}</h3>
     <ul>
     {% for player in game.players %}
@@ -212,7 +212,7 @@
     {% endif %}
   {% endif %}
   {% if player %}
-    {% if not player.deck and not player.hand and runner.state != "ended" %}
+    {% if not player.deck and not player.hand and runner.state != ENDED %}
       {% if game.players | count == 1 %}
         Waiting for further players ...
       {% else %}

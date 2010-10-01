@@ -16,7 +16,7 @@ sys.path.append(root_dir)
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
         YesNoQuestion, Question, MultipleChoice, card_sets, editions, \
-        AIPlayer, Kibitzer
+        AIPlayer, Kibitzer, FRESH, ENDED, RUNNING, STATES
 from domination.tools import _
 from domination.gzip_middleware import GzipMiddleware
 
@@ -119,7 +119,9 @@ def login():
 def index():
     if "username" not in session:
         return redirect(url_for('login'))
-    return render_template('index.html')
+    runners = app.games.values()
+    runners.sort(key=lambda runner: (STATES.index(runner.state), runner.game.name))
+    return render_template('index.html', runners=runners)
 
 @app.route('/logout')
 def logout():
@@ -215,7 +217,7 @@ def game(game_runner):
 
     return render_template("game.html", runner=game_runner, game=game,
             req=req, req_id=hash(req), player=player, req_type=type(req).__name__,
-            seqno=seqno, info_queue=info_queue)
+            seqno=seqno, info_queue=info_queue, FRESH=FRESH, ENDED=ENDED, RUNNING=RUNNING)
 
 @app.route("/game/join/<name>", methods=["POST"])
 @needs_login
