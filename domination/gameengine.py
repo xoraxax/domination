@@ -347,12 +347,12 @@ class Game(object):
                         player.remaining_actions -= 1
                         card = action_cards[0]
                         player.hand.remove(card)
-                        gen = self.play_action_card(player, card)
-                        generator_forward(gen)
                         if card.trash_after_playing:
                             self.trash_pile.append(card)
                         else:
                             player.aux_cards.append(card)
+                        gen = self.play_action_card(player, card)
+                        generator_forward(gen)
 
                     # deal
                     break_selection = False
