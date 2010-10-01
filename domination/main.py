@@ -20,6 +20,7 @@ from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
 from domination.tools import _
 from domination.gzip_middleware import GzipMiddleware
 
+AI_NAMES = ['Alan', 'Grace', 'Linus', 'Guido', 'Konrad', 'Donald']
 
 # init app object
 app.games = {}
@@ -141,8 +142,15 @@ def create_game(): # XXX check for at most 10 sets
         app.games[name] = GameRunner(game, player)
         get_store()["games"][game] = player
         if request.form.get("ai"):
-            player = AIPlayer("CPU0")
-            game.players.append(player)
+            names = AI_NAMES[:]
+            random.shuffle(names)
+            try:
+                n = min(len(names), int(request.form.get("numai", 1)))
+            except ValueError:
+                n = 1
+            for i in range(n):
+                player = AIPlayer(names[i])
+                game.players.append(player)
         return redirect(url_for('game', name=name))
     def transform_sets(sets):
         result = []
