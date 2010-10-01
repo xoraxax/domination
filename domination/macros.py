@@ -20,3 +20,12 @@ def generator_forward(gen):
                 reply = (yield gen.send(reply))
             except StopIteration:
                 break
+
+@macro
+def fetch_card_from_supply(game, t):
+    cards = game.supply[t.__name__]
+    if cards:
+        new_card = cards.pop()
+        for val in game.check_empty_pile(t.__name__):
+            yield val
+        __body__

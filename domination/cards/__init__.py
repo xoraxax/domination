@@ -55,8 +55,8 @@ class Card(object):
         self.__name__ = type(self).__name__
         assert self.name != "UNKNOWN"
         assert self.cost is not None
-        assert self.points is not None
-        assert self.worth is not None
+        assert self.points is not None or self.__class__.__dict__.get("get_points")
+        assert self.worth is not None or self.__class__.__dict__.get("get_worth")
         assert self.potion is not None
 
     @classmethod

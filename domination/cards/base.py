@@ -502,6 +502,7 @@ class ThroneRoom(ActionCard):
                 gen = game.play_action_card(player, card)
                 generator_forward(gen)
                 if card.trash_after_playing:
+                    player.aux_cards.remove(card)
                     game.trash_pile.append(card)
 
 class Witch(AttackCard):

@@ -47,9 +47,11 @@ class TestRandomRunner(object):
             if isinstance(req, InfoRequest) or isinstance(req, Checkpoint):
                 continue
             assert len(req.player.total_cards) >= 5, "\n".join(record)
+            assert game.round < 100, "\n".join(record)
             reply = req.choose_wisely()
             record.append("%s answered %s with %s" % (req.player, req.msg, reply))
             record.append("%s has %i cards left" % (req.player, len(req.player.total_cards)))
+            #print "\n".join(record); record = []
         for player in game.players:
             print player.name + ":", player.points(game)
         if min(player.points(game) for player in game.players) < 15:
@@ -62,6 +64,19 @@ class TestRandomRunner(object):
     def test_multiple_runs_intrigue_test(self):
         for _ in xrange(2**8):
             yield self.test_intrigue_test_run
+
+    def test_alchemy(self):
+        from domination.cards.alchemy import Potion, Vineyard, Alchemist, Apothecary,\
+                Apprentice, Familiar, Golem, Herbalist, PhilosophersStone, Possession,\
+                ScryingPool, Transmute, University
+
+        def sample_alchemy():
+            return random.sample([Vineyard, Alchemist, Apothecary,
+                Apprentice, Familiar, Golem, Herbalist, PhilosophersStone, Possession,
+                ScryingPool, Transmute, University], 10)
+
+        for _ in xrange(2**8):
+            yield self.do_test_run, sample_alchemy()
 
     def test_throne_room(self):
         for _ in xrange(2**6):

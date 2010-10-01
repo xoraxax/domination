@@ -1,10 +1,11 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Alchemy
-from domination.cards.base import Duchy, Estate, Copper
+from domination.cards.base import Duchy, Estate, Copper, Gold
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, CardTypeRegistry, Defended, YesNoQuestion
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense
+from domination.macros.__macros__ import handle_defense, generator_forward,\
+        fetch_card_from_supply
 
 
 class Potion(TreasureCard):
@@ -20,7 +21,6 @@ class Vineyard(VictoryCard):
     edition = Alchemy
     optional = True
     cost = 2
-    points = 0
     desc = _("Worth 1 point for every 3 Action Cards in your deck (rounded down)")
 
     def get_points(self, game, player):
@@ -39,17 +39,19 @@ class Alchemist(ActionCard):
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(2)
+        def remove_from_aux_cards(p):
+            player.deck.append(self)
+            player.aux_cards.remove(self)
+
         if any(isinstance(c, Potion) for c in player.hand):
             if (yield YesNoQuestion(game, player, _("Do you want to put your alchemist card"
-                " onto your deck?"))):
-                player.aux_cards.remove(self)
-                player.deck.append(self)
+                " onto your deck when cleaning up?"))):
+                player.register_turn_cleanup(remove_from_aux_cards)
 
 
 class Apothecary(ActionCard):
     name = _("Apothecary")
     edition = Alchemy
-    implemented = False #FIXME not implemented completely
     cost = 2
     potioncost = 1
     desc = _("+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed"
@@ -80,7 +82,8 @@ class Apprentice(ActionCard):
     name = _("Apprentice")
     edition = Alchemy
     cost = 5
-    desc = _("+1 Action. Trash a card from your hand. +1 Card per Money it costs. +2 Cards if it has potion in its cost.")
+    desc = _("+1 Action. Trash a card from your hand. +1 Card per Money it costs."
+             " +2 Cards if it has potion in its cost.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
@@ -130,26 +133,69 @@ class Familiar(AttackCard):
 class Golem(ActionCard):
     name = _("Golem")
     edition = Alchemy
-    implemented = False #FIXME not implemented completely
     cost = 4
     potioncost = 1
-    desc = _("Reveal cards from your deck until you reveal 2 Action cards other than Golem cards. Discard the other cards, then play the Action cards in any order.")
+    desc = _("Reveal cards from your deck until you reveal 2 Action cards other"
+             " than Golem cards. Discard the other cards, then play the Action"
+             " cards in any order.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        action_cards_found = 0
+        shuffled = 0
+        found_cards = []
+        to_be_discarded = []
+        while True:
+            ret = player.draw_cards(1)
+            if ret is None: # no cards left
+                break
+            shuffled += ret
+            if shuffled == 2: # we shuffled our discard_pile 2 times, abort
+                break
+            card = player.hand.pop()
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ), [card])
+            if isinstance(card, ActionCard) and not isinstance(card, Golem):
+                found_cards.append(card)
+                action_cards_found += 1
+                if action_cards_found == 2:
+                    break
+            else:
+                to_be_discarded.append(card)
+        player.discard_pile.extend(to_be_discarded)
+        while found_cards:
+            card_classes = [type(c) for c in found_cards]
+            card_cls = (yield SelectCard(game, player,
+                _("Which card do you want to play next?"),
+                card_classes=card_classes))
+            card = [c for c in found_cards if isinstance(c, card_cls)][0]
+            found_cards.remove(card)
+
+            player.aux_cards.append(card)
+            gen = game.play_action_card(player, card)
+            generator_forward(gen)
+            if card.trash_after_playing:
+                player.aux_cards.remove(card)
+                game.trash_pile.append(card)
 
 
 class Herbalist(ActionCard):
     name = _("Herbalist")
     edition = Alchemy
-    implemented = False #FIXME not implemented completely
     cost = 2
-    desc = _("+1 Buy, +1 Money. If you discard this from play, you may put one of your Treasures from play on top of your deck.")
+    desc = _("+1 Buy, +1 Money. If you discard this from play, you may put one"
+             " of your Treasures from play on top of your deck.")
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
         player.virtual_money += 1
-        pass #FIXME
+        def handle_discard_action(p):
+            cards = yield SelectHandCards(game, player, count_lower=0, count_upper=1,
+                    msg=_("Which treasure do you want to put on top of your deck?"))
+            if cards:
+                card = cards[0]
+                player.deck.append(card)
+                player.hand.remove(card)
+        player.register_turn_cleanup(handle_discard_action)
 
 
 class PhilosophersStone(TreasureCard):
@@ -169,7 +215,10 @@ class Possession(ActionCard):
     implemented = False #FIXME not implemented completely
     cost = 6
     potioncost = 1
-    desc = _("The player to your left takes an extra turn after this one, in which you can see all the cards he can and make all decisions for him. Any cards he would gain on that turn, you gain instead, any cards of his that are trashed are set aside and returned to his discard pile at the end of turn.")
+    desc = _("The player to your left takes an extra turn after this one, in which you"
+             " can see all the cards he can and make all decisions for him. Any cards"
+             " he would gain on that turn, you gain instead, any cards of his that are"
+             " trashed are set aside and returned to his discard pile at the end of turn.")
 
     def activate_action(self, game, player):
         pass #FIXME
@@ -178,13 +227,51 @@ class Possession(ActionCard):
 class ScryingPool(AttackCard):
     name = _("Scrying Pool")
     edition = Alchemy
-    implemented = False #FIXME not implemented completely
     cost = 2
     potioncost = 1
-    desc = _("Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice. The reveal cards from the top of your deck until you reveal one that is not an Action. Put all your revealed cards into your hand.")
+    desc = _("Each player (including you) reveals the top card of his deck and either"
+             " discards it or puts it back, your choice. Then reveal cards from the top"
+             " of your deck until you reveal one that is not an Action. Put all your"
+             " revealed cards into your hand.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        for other_player in game.players:
+            try:
+                handle_defense(self, game, other_player)
+            except Defended:
+                continue
+            other_player.draw_cards(1)
+            card = other_player.hand.pop()
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:") %
+                        (other_player.name, ), [card])
+            if (yield YesNoQuestion(game, player,
+                _("Do you want to discard %(name)s's card '%(cardname)s'?") %
+                {"cardname": card.name, "name": other_player.name})):
+                other_player.discard_pile.append(card)
+                for info_player in game.following_participants(player):
+                    yield InfoRequest(game, info_player,
+                            _("%(playername)s discarded %(player2name)s's card:") %
+                            {"playername": player.name, "player2name": other_player.name},
+                            [card])
+            else:
+                other_player.deck.append(card)
+
+        shuffled = 0
+        while True:
+            ret = player.draw_cards(1)
+            if ret is None: # no cards left
+                break
+            shuffled += ret
+            if shuffled == 2: # we shuffled our discard_pile 2 times, abort
+                break
+            card = player.hand.pop()
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ),
+                        [card])
+            player.hand.append(card)
+            if not isinstance(card, ActionCard):
+                break
 
 
 class Transmute(ActionCard):
@@ -204,29 +291,23 @@ class Transmute(ActionCard):
                         _("%s trashes this card:") % (player.name, ), cards)
             card.trash(game, player)
             if isinstance(card, ActionCard):
-                new_card = game.supply["Duchy"].pop()
-                for val in game.check_empty_pile("Duchy"):
-                    yield val
-                player.discard_pile.append(new_card)
-                for info_player in game.following_participants(player):
-                    yield InfoRequest(game, info_player,
+                with fetch_card_from_supply(game, Duchy) as new_card:
+                    player.discard_pile.append(new_card)
+                    for info_player in game.following_participants(player):
+                        yield InfoRequest(game, info_player,
                             _("%s gains:") % (other_player.name, ), [new_card])
             if isinstance(card, TreasureCard):
-                new_card = game.supply["Transmute"].pop()
-                for val in game.check_empty_pile("Transmute"):
-                    yield val
-                player.discard_pile.append(new_card)
-                for info_player in game.following_participants(player):
-                    yield InfoRequest(game, info_player,
-                            _("%s gains:") % (other_player.name, ), [new_card])
+                with fetch_card_from_supply(game, Transmute) as new_card:
+                    player.discard_pile.append(new_card)
+                    for info_player in game.following_participants(player):
+                        yield InfoRequest(game, info_player,
+                                _("%s gains:") % (other_player.name, ), [new_card])
             if isinstance(card, VictoryCard):
-                new_card = game.supply["Gold"].pop()
-                for val in game.check_empty_pile("Gold"):
-                    yield val
-                player.discard_pile.append(new_card)
-                for info_player in game.following_participants(player):
-                    yield InfoRequest(game, info_player,
-                            _("%s gains:") % (other_player.name, ), [new_card])
+                with fetch_card_from_supply(game, Gold) as new_card:
+                    player.discard_pile.append(new_card)
+                    for info_player in game.following_participants(player):
+                        yield InfoRequest(game, info_player,
+                                _("%s gains:") % (other_player.name, ), [new_card])
 
 
 class University(ActionCard):
@@ -244,15 +325,16 @@ class University(ActionCard):
                         issubclass(c, ActionCard)]
         card_cls = yield SelectCard(game, player, card_classes=card_classes,
             msg=_("Select a action card that you want to have."), show_supply_count=True)
-        new_card = game.supply[card_cls.__name__].pop()
-        player.discard_pile.append(new_card)
+        if card_cls:
+            new_card = game.supply[card_cls.__name__].pop()
+            player.discard_pile.append(new_card)
 
-        for info_player in game.participants:
-            if info_player is not player:
-                yield InfoRequest(game, info_player,
-                        _("%s gains:") % (player.name, ), [new_card])
-        for val in game.check_empty_pile(card_cls.__name__):
-            yield val
+            for info_player in game.participants:
+                if info_player is not player:
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:") % (player.name, ), [new_card])
+            for val in game.check_empty_pile(card_cls.__name__):
+                yield val
 
 
 from domination.cards.base import \

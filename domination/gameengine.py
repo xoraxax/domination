@@ -335,48 +335,55 @@ class Game(object):
         for player in self.players:
             with player:
                 player.aux_cards = []
-                # action
-                while player.remaining_actions and [c for c in player.hand
-                        if isinstance(c, ActionCard)]:
-                    action_cards = (yield SelectActionCard(self, player,
-                        _("Which action card do you want to play? (%i actions left)")
-                            % (player.remaining_actions, )))
-                    if action_cards is None:
-                        break
-                    player.remaining_actions -= 1
-                    card = action_cards[0]
-                    player.hand.remove(card)
-                    gen = self.play_action_card(player, card)
-                    generator_forward(gen)
-                    if card.trash_after_playing:
-                        self.trash_pile.append(card)
-                    else:
-                        player.aux_cards.append(card)
+                try:
+                    # action
+                    while player.remaining_actions and [c for c in player.hand
+                            if isinstance(c, ActionCard)]:
+                        action_cards = (yield SelectActionCard(self, player,
+                            _("Which action card do you want to play? (%i actions left)")
+                                % (player.remaining_actions, )))
+                        if action_cards is None:
+                            break
+                        player.remaining_actions -= 1
+                        card = action_cards[0]
+                        player.hand.remove(card)
+                        gen = self.play_action_card(player, card)
+                        generator_forward(gen)
+                        if card.trash_after_playing:
+                            self.trash_pile.append(card)
+                        else:
+                            player.aux_cards.append(card)
 
-                # deal
-                break_selection = False
-                while player.remaining_deals and not break_selection:
-                    card_key = (yield SelectDeal(self, player, _("Which card do you want to buy?")))
-                    if card_key is None:
-                        break_selection = True
-                    else:
-                        player.remaining_deals -= 1
-                        card = self.supply[card_key].pop()
-                        for val in self.check_empty_pile(card_key):
-                            yield val
-                        player.used_money += card.cost
-                        player.used_potion += card.potioncost
-                        player.discard_pile.append(card)
-                        for other_player in self.players + self.kibitzers:
-                            if other_player is not player:
-                                yield InfoRequest(self, other_player,
-                                        _("%s buys:") % (player.name, ), [card])
+                    # deal
+                    break_selection = False
+                    while player.remaining_deals and not break_selection:
+                        card_key = (yield SelectDeal(self, player, _("Which card do you want to buy?")))
+                        if card_key is None:
+                            break_selection = True
+                        else:
+                            player.remaining_deals -= 1
+                            card = self.supply[card_key].pop()
+                            for val in self.check_empty_pile(card_key):
+                                yield val
+                            player.used_money += card.cost
+                            player.used_potion += card.potioncost
+                            player.discard_pile.append(card)
+                            for other_player in self.players + self.kibitzers:
+                                if other_player is not player:
+                                    yield InfoRequest(self, other_player,
+                                            _("%s buys:") % (player.name, ), [card])
 
-                    reason = self.check_end_of_game()
-                    if reason:
-                        self.end_of_game_reason = reason
-                        self.end_of_game()
-                # cleanup
+                        reason = self.check_end_of_game()
+                        if reason:
+                            self.end_of_game_reason = reason
+                            self.end_of_game()
+                finally:
+                    # cleanup pt. 1
+                    for cleanup_func in player.turn_cleanups:
+                        gen = cleanup_func(player)
+                        generator_forward(gen)
+
+                # cleanup pt. 2
                 player.discard_pile.extend(player.aux_cards)
                 player.discard_pile.extend(player.hand)
                 player.hand = []
@@ -567,8 +574,6 @@ class Player(object):
         self.used_potion = 0
         self.activated_cards = []
         self.current = False
-        for cleanup_func in self.turn_cleanups:
-            cleanup_func(self)
         self.turn_cleanups = []
 
     def __repr__(self):
