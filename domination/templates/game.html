@@ -139,7 +139,7 @@
         You need to select at least {{ req.count_lower }} cards.
       {% endif %}
       {% endif %}
-      {% if req.count_upper != 1 %}
+      {% if req.count_upper != 1 or req.count_lower == 0 %}
         <form action="" method="post">
           <input type="hidden" name="req_id" value="{{ req_id }}">
       {% endif %}
@@ -161,8 +161,13 @@
           {% endif %}
         {% endcall %}
       {% endfor %}
-      {% if req.count_upper != 1 %}
-          <input type="submit" value="Select">
+      {% if req.count_upper != 1 or req.count_lower == 0%}
+        {% if req.count_lower == 0 %}
+        <input type="submit" name="canceled" value="Cancel">
+        {% endif %}
+        {% if req.count_upper != 1 %}
+        <input type="submit" value="Select">
+        {% endif %}
         </form>
       {% endif %}
     {% elif req_type == "SelectCard" %}
