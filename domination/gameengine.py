@@ -309,17 +309,18 @@ class GameRunner(Thread):
             scv.release()
             if kickee != self.waiting_for:
                 break
-            cv.acquire()
-            if second and kickee.kicked_by is not None:
-                kickee.kicked_by = None
-            try:
-                req = kickee.request_queue.pop(0)
-                response = req.choose_wisely()
-                kickee.response.append(response)
-                cv.notify()
-            finally:
-                cv.release()
-            second = True
+            if kickee.request_queue:
+                cv.acquire()
+                if second and kickee.kicked_by is not None:
+                    kickee.kicked_by = None
+                try:
+                    req = kickee.request_queue.pop(0)
+                    response = req.choose_wisely()
+                    kickee.response.append(response)
+                    cv.notify()
+                finally:
+                    cv.release()
+                second = True
         del self.game.players[self.players.index(kickee)]
 
     def store(self):
