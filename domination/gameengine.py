@@ -417,7 +417,7 @@ class Game(object):
             yield Checkpoint(self)
             self.round += 1
             gen = self.play_round()
-            generator_forward(gen, [PlayerKickedException])
+            generator_forward_ex(gen, [PlayerKickedException])
 
     def deal_cards(self):
         raise NotImplementedError
