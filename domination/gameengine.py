@@ -543,6 +543,7 @@ class DominationGame(Game):
 class Kibitzer(object):
     def __init__(self, name):
         self.name = name
+        self.last_seqno = -1
 
         self.info_queue = []
         self.response_condition = Condition()

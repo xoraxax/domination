@@ -23,6 +23,7 @@ from domination.gzip_middleware import GzipMiddleware
 
 AI_NAMES = ['Alan', 'Grace', 'Linus', 'Guido', 'Konrad', 'Donald',
             'Miranda', 'Ada', 'Hannah', 'Kim']
+MAX_SEQNO_DIFF = 8
 
 # init app object
 app.games = {}
@@ -177,6 +178,9 @@ def game(game_runner):
     game = game_runner.game
     seqno = game_runner.seqno
     if game_runner.game in get_store()["games"]:
+        # remove inactive kibitzers
+        game.kibitzers = [k for k in game.kibitzers
+                if k.last_seqno + MAX_SEQNO_DIFF > seqno]
         player = get_store()["games"][game_runner.game]
         if request.method == 'POST':
             cv = player.response_condition
@@ -209,10 +213,14 @@ def game(game_runner):
     else:
         for kibitzer in game.kibitzers:
             if kibitzer.name == session["username"]:
+                kibitzer.last_seqno = seqno
                 break
         else:
             kibitzer = Kibitzer(session["username"])
+            kibitzer.last_seqno = seqno
             game.kibitzers.append(kibitzer)
+            game_runner.increment_seqno()
+
         player = None
         info_queue = kibitzer.info_queue
         req = None
@@ -321,7 +329,6 @@ def check_seqno(game_runner):
 def before_request():
     if "username" in session and session["username"] not in app.users:
         app.users[session["username"]] = {"games": {}}
-
 
 def restore_game(filename):
     f = file(filename, "rb")
