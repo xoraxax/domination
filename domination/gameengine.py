@@ -303,7 +303,8 @@ class GameRunner(Thread):
         scv = self.seqno_condition
         while kickee == self.waiting_for:
             scv.acquire()
-            while not kickee.request_queue:
+            while not kickee.request_queue and not kickee.info_queue\
+                    and not self.waiting_for != kickee:
                 scv.wait()
             scv.release()
             cv.acquire()
