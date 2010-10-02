@@ -292,7 +292,7 @@ def kick_player(game_runner, playername):
                 if not kickee.is_ai:
                     games = get_store(playername)["games"]
                     del games[game_runner.game]
-                game.kick(player, kickee)
+                game_runner.kick(player, kickee)
                 cv.notify()
             finally:
                 cv.release()

@@ -296,6 +296,24 @@ class GameRunner(Thread):
             cv.notifyAll()
             cv.release()
 
+    def kick(self, kicker, kickee):
+        cv = kickee.response_condition
+        kickee.kicked_by = kicker
+        second = False
+        while kickee == self.waiting_for:
+            cv.acquire()
+            if second and kickee.kicked_by is not None:
+                kickee.kicked_by = None
+            try:
+                req = kickee.request_queue.pop(0)
+                response = req.choose_wisely()
+                kickee.response.append(response)
+                cv.notify()
+            finally:
+                cv.release()
+            second = True
+        del self.game.players[self.players.index(kickee)]
+
     def store(self):
         from domination.main import app
         f = file(app.game_storage_prefix + self.game.name + app.game_storage_postfix, "wb")
@@ -433,18 +451,6 @@ class Game(object):
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
                 yield InfoRequest(self, player, _("The pile %s is empty.") % (card_name, ), [])
 
-    def kick(self, kicker, kickee):
-        cv = kickee.response_condition
-        cv.acquire()
-        try:
-            req = kickee.request_queue.pop(0)
-            response = req.choose_wisely()
-            kickee.response.append(response)
-            kickee.kicked_by = kicker
-            del self.players[self.players.index(kickee)]
-            cv.notify()
-        finally:
-            cv.release()
 
     @property
     def player_names(self):
