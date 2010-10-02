@@ -301,10 +301,10 @@ class GameRunner(Thread):
         kickee.kicked_by = kicker
         second = False
         scv = self.seqno_condition
+        seqno = kickee.request_queue[0].seqno
         while True:
             scv.acquire()
-            while not kickee.request_queue and not kickee.info_queue\
-                    and not self.waiting_for != kickee:
+            while self.seqno <= seqno:
                 scv.wait()
             scv.release()
             if kickee != self.waiting_for:
@@ -315,6 +315,7 @@ class GameRunner(Thread):
                     kickee.kicked_by = None
                 try:
                     req = kickee.request_queue.pop(0)
+                    seqno = req.seqno
                     response = req.choose_wisely()
                     kickee.response.append(response)
                     cv.notify()
