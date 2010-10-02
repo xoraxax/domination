@@ -3,6 +3,7 @@ import sys
 import random
 import pickle
 import optparse
+import traceback
 
 from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
@@ -16,11 +17,12 @@ sys.path.append(root_dir)
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
         YesNoQuestion, Question, MultipleChoice, card_sets, editions, \
-        AIPlayer, Kibitzer
+        AIPlayer, Kibitzer, FRESH, ENDED, RUNNING, STATES
 from domination.tools import _
 from domination.gzip_middleware import GzipMiddleware
 
-AI_NAMES = ['Alan', 'Grace', 'Linus', 'Guido', 'Konrad', 'Donald']
+AI_NAMES = ['Alan', 'Grace', 'Linus', 'Guido', 'Konrad', 'Donald',
+            'Miranda', 'Ada', 'Hannah', 'Kim']
 
 # init app object
 app.games = {}
@@ -118,7 +120,9 @@ def login():
 def index():
     if "username" not in session:
         return redirect(url_for('login'))
-    return render_template('index.html')
+    runners = app.games.values()
+    runners.sort(key=lambda runner: (STATES.index(runner.state), runner.game.name))
+    return render_template('index.html', runners=runners)
 
 @app.route('/logout')
 def logout():
@@ -149,7 +153,7 @@ def create_game(): # XXX check for at most 10 sets
             except ValueError:
                 n = 1
             for i in range(n):
-                player = AIPlayer(names[i])
+                player = AIPlayer(names[i] + " [AI]")
                 game.players.append(player)
         return redirect(url_for('game', name=name))
     def transform_sets(sets):
@@ -177,6 +181,7 @@ def game(game_runner):
         if request.method == 'POST':
             cv = player.response_condition
             cv.acquire()
+            player.info_queue = []
             try:
                 req = player.request_queue[0]
                 assert hash(req) == int(request.form["req_id"])
@@ -184,15 +189,15 @@ def game(game_runner):
                 if response is not Ellipsis:
                     player.response.append(response)
                     player.request_queue.pop(0)
-                    player.info_queue = []
                     cv.notify()
             finally:
                 cv.release()
-            cv = game_runner.seqno_condition
-            cv.acquire()
-            while game_runner.seqno <= req.seqno:
-                cv.wait()
-            cv.release()
+            if response is not Ellipsis:
+                cv = game_runner.seqno_condition
+                cv.acquire()
+                while game_runner.seqno <= req.seqno:
+                    cv.wait()
+                cv.release()
         req = None
         if player.request_queue:
             req = player.request_queue[0]
@@ -214,7 +219,7 @@ def game(game_runner):
 
     return render_template("game.html", runner=game_runner, game=game,
             req=req, req_id=hash(req), player=player, req_type=type(req).__name__,
-            seqno=seqno, info_queue=info_queue)
+            seqno=seqno, info_queue=info_queue, FRESH=FRESH, ENDED=ENDED, RUNNING=RUNNING)
 
 @app.route("/game/join/<name>", methods=["POST"])
 @needs_login
@@ -287,7 +292,7 @@ def kick_player(game_runner, playername):
                 if not kickee.is_ai:
                     games = get_store(playername)["games"]
                     del games[game_runner.game]
-                game.kick(player, kickee)
+                game_runner.kick(player, kickee)
                 cv.notify()
             finally:
                 cv.release()
@@ -353,6 +358,9 @@ def main(argv):
     if options.debug:
         @app.route("/crash")
         def crash():
+            for frame in sys._current_frames().values():
+                traceback.print_stack(frame)
+                print "\n"
             1/0
         app.secret_key = "insecure"
 

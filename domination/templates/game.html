@@ -13,14 +13,13 @@
     {% if req %}
       your_turn_reminder();
     {% endif %}
-    /* $(function() {
-        $.scrollTo("#game");
-    }); */
+    $(function() {
+        $.scrollTo("#infoend", {offset: {top: -$(window).height()}, duration: 1500});
+    });
   </script>
   {{ macros.init_render_card() }}
 {% endblock %}
 {% block content %}
-<a id="game"></a>
 <h2>{{ game.name }}{% if runner.startable(runner.owner) %} (stopped){% endif %}
   {% if game.round %} (round {{ game.round }}){% endif %}</h2>
   <ul>
@@ -34,7 +33,7 @@
         <input type="submit" value="Start">
       </form></li>
     {% endif %}
-    {% if runner.state != "ended" and player == runner.owner %}
+    {% if runner.state != ENDED and player == runner.owner %}
       <li><form action="{{ url_for("cancel_game", name=game.name) }}" method="post">
         <input type="submit" value="Abort game">
       </form></li>
@@ -44,7 +43,7 @@
     <h3>Players</h3>
     <ul>
       {% for p in game.players %}
-      <li class="{% if p.current %}activeplayer{% endif %}">{{ p.name }} ({{ p.hand | count }} of {{ (p.hand + p.deck + p.discard_pile) | count }} cards in hand)
+      <li class="{% if p.current %}activeplayer{% endif %}">{{ p.name }} ({{ p.hand | count }} of {{ p.total_cards | count }} cards in hand)
       {% if runner.waiting_for == p %} (waiting for this player)
       {% if player == runner.owner and p != player and game.players | count > 2 %}
         <form action="{{ url_for("kick_player", name=game.name, playername=p.name) }}" method="post">
@@ -74,7 +73,7 @@
   {% endif %}
   <div id="infosep"></div>
 
-  {% if runner.state == "ended" %}
+  {% if runner.state == ENDED %}
   <h3>The game has ended. {{ game.end_of_game_reason }}</h3>
     <ul>
     {% for player in game.players %}
@@ -104,6 +103,7 @@
     </li>
   </ul>
   {% endif %}
+  <a id="infoend"></a>
   {% if req %}
     <h3>{{ req.msg }}</h3>
     {% if req.last_error %}
@@ -139,7 +139,7 @@
         You need to select at least {{ req.count_lower }} cards.
       {% endif %}
       {% endif %}
-      {% if req.count_upper != 1 %}
+      {% if req.count_upper != 1 or req.count_lower == 0 %}
         <form action="" method="post">
           <input type="hidden" name="req_id" value="{{ req_id }}">
       {% endif %}
@@ -161,8 +161,13 @@
           {% endif %}
         {% endcall %}
       {% endfor %}
-      {% if req.count_upper != 1 %}
-          <input type="submit" value="Select">
+      {% if req.count_upper != 1 or req.count_lower == 0%}
+        {% if req.count_lower == 0 %}
+        <input type="submit" name="canceled" value="Cancel">
+        {% endif %}
+        {% if req.count_upper != 1 %}
+        <input type="submit" value="Select">
+        {% endif %}
         </form>
       {% endif %}
     {% elif req_type == "SelectCard" %}
@@ -212,7 +217,7 @@
     {% endif %}
   {% endif %}
   {% if player %}
-    {% if not player.deck and not player.hand and runner.state != "ended" %}
+    {% if not player.deck and not player.hand and runner.state != ENDED %}
       {% if game.players | count == 1 %}
         Waiting for further players ...
       {% else %}
@@ -235,7 +240,9 @@
   {% endif %}
   {% if req_type != "SelectDeal" %}
     <div id="supply">
-      <h3 onclick="show_supply();">Supply</h3>
+      <form>
+        <input type="button" onclick="show_supply();" value="Supply">
+      </form>
       <div id="supplycards">
         {% for key, cards in game.supply | dictsort %}
           {% if cards %}

@@ -190,9 +190,10 @@ class InfoRequest(Request):
         self.cards = cards
 
 
-FRESH = "fresh"
-RUNNING = "running"
-ENDED = "ended"
+FRESH = "Fresh"
+RUNNING = "Running"
+ENDED = "Ended"
+STATES = [FRESH, RUNNING, ENDED]
 
 class GameRunner(Thread):
     def __init__(self, game, owner, seqno=0, waiting_for=None, state=FRESH):
@@ -228,6 +229,7 @@ class GameRunner(Thread):
         except:
             self.owner.request_queue.append(DebugRequest(sys.exc_info()))
         self.state = ENDED
+        self.waiting_for = None
         self.increment_seqno()
 
     def increment_seqno(self):
@@ -294,6 +296,24 @@ class GameRunner(Thread):
             cv.notifyAll()
             cv.release()
 
+    def kick(self, kicker, kickee):
+        cv = kickee.response_condition
+        kickee.kicked_by = kicker
+        second = False
+        while kickee == self.waiting_for:
+            cv.acquire()
+            if second and kickee.kicked_by is not None:
+                kickee.kicked_by = None
+            try:
+                req = kickee.request_queue.pop(0)
+                response = req.choose_wisely()
+                kickee.response.append(response)
+                cv.notify()
+            finally:
+                cv.release()
+            second = True
+        del self.game.players[self.players.index(kickee)]
+
     def store(self):
         from domination.main import app
         f = file(app.game_storage_prefix + self.game.name + app.game_storage_postfix, "wb")
@@ -334,7 +354,6 @@ class Game(object):
     def play_round(self):
         for player in self.players:
             with player:
-                player.aux_cards = []
                 try:
                     # action
                     while player.remaining_actions and [c for c in player.hand
@@ -347,12 +366,12 @@ class Game(object):
                         player.remaining_actions -= 1
                         card = action_cards[0]
                         player.hand.remove(card)
-                        gen = self.play_action_card(player, card)
-                        generator_forward(gen)
                         if card.trash_after_playing:
                             self.trash_pile.append(card)
                         else:
                             player.aux_cards.append(card)
+                        gen = self.play_action_card(player, card)
+                        generator_forward(gen)
 
                     # deal
                     break_selection = False
@@ -385,6 +404,7 @@ class Game(object):
 
                 # cleanup pt. 2
                 player.discard_pile.extend(player.aux_cards)
+                player.aux_cards = []
                 player.discard_pile.extend(player.hand)
                 player.hand = []
                 player.prepare_hand()
@@ -431,18 +451,10 @@ class Game(object):
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
                 yield InfoRequest(self, player, _("The pile %s is empty.") % (card_name, ), [])
 
-    def kick(self, kicker, kickee):
-        cv = kickee.response_condition
-        cv.acquire()
-        try:
-            req = kickee.request_queue.pop(0)
-            response = req.choose_wisely()
-            kickee.response.append(response)
-            kickee.kicked_by = kicker
-            del self.players[self.players.index(kickee)]
-            cv.notify()
-        finally:
-            cv.release()
+
+    @property
+    def player_names(self):
+        return ", ".join(p.name for p in self.players)
 
 from domination.cards import Alchemy
 
@@ -451,6 +463,10 @@ class DominationGame(Game):
     def __init__(self, name, selected_cards):
         Game.__init__(self, name)
         self.selected_cards = selected_cards # cards chosen for the game
+
+    @property
+    def selected_cards_str(self):
+        return ", ".join(c.__name__ for c in self.selected_cards)
 
     def deal_cards(self):
         self.deal_initial_decks()

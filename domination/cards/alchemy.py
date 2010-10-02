@@ -285,6 +285,8 @@ class Transmute(ActionCard):
     desc = _("Trash a card from your hand. If it is an Action Card, gain a Duchy. If it is a Treasure card, gain a Transmute. If it is a Victory Card, gain a Gold.")
 
     def activate_action(self, game, player):
+        if not player.hand:
+            return
         cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
                 msg=_("Which card do you want to trash?"))
         if cards:
@@ -298,19 +300,19 @@ class Transmute(ActionCard):
                     player.discard_pile.append(new_card)
                     for info_player in game.following_participants(player):
                         yield InfoRequest(game, info_player,
-                            _("%s gains:") % (other_player.name, ), [new_card])
+                            _("%s gains:") % (player.name, ), [new_card])
             if isinstance(card, TreasureCard):
                 with fetch_card_from_supply(game, Transmute) as new_card:
                     player.discard_pile.append(new_card)
                     for info_player in game.following_participants(player):
                         yield InfoRequest(game, info_player,
-                                _("%s gains:") % (other_player.name, ), [new_card])
+                                _("%s gains:") % (player.name, ), [new_card])
             if isinstance(card, VictoryCard):
                 with fetch_card_from_supply(game, Gold) as new_card:
                     player.discard_pile.append(new_card)
                     for info_player in game.following_participants(player):
                         yield InfoRequest(game, info_player,
-                                _("%s gains:") % (other_player.name, ), [new_card])
+                                _("%s gains:") % (player.name, ), [new_card])
 
 
 class University(ActionCard):
