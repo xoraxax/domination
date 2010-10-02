@@ -22,6 +22,9 @@ class Condition(PristineCondition):
 class EndOfGameException(Exception):
     pass
 
+class PlayerKickedException(Exception):
+    pass
+
 class ActivateNextActionMultipleTimes(Exception):
     def __init__(self, times):
         self.times = times
@@ -273,6 +276,7 @@ class GameRunner(Thread):
                 reply = player.response[0]
             player.response = []
             if player.kicked_by:
+                gen.throw(PlayerKickedException(player))
                 for participant in self.game.participants:
                     participant.info_queue.append(InfoRequest(self.game, participant,
                         _("%(kicker)s kicked %(kickee)s.") % {"kicker": player.kicked_by.name,
@@ -295,34 +299,6 @@ class GameRunner(Thread):
             cv.acquire()
             cv.notifyAll()
             cv.release()
-
-    def kick(self, kicker, kickee):
-        cv = kickee.response_condition
-        kickee.kicked_by = kicker
-        second = False
-        scv = self.seqno_condition
-        seqno = kickee.request_queue[0].seqno
-        while True:
-            scv.acquire()
-            while self.seqno <= seqno:
-                scv.wait()
-            scv.release()
-            if kickee != self.waiting_for:
-                break
-            if kickee.request_queue:
-                cv.acquire()
-                if second and kickee.kicked_by is not None:
-                    kickee.kicked_by = None
-                try:
-                    req = kickee.request_queue.pop(0)
-                    seqno = req.seqno
-                    response = req.choose_wisely()
-                    kickee.response.append(response)
-                    cv.notify()
-                finally:
-                    cv.release()
-                second = True
-        del self.game.players[self.players.index(kickee)]
 
     def store(self):
         from domination.main import app
@@ -361,8 +337,21 @@ class Game(object):
         gen = card.activate_action(self, player)
         generator_forward(gen)
 
+    def kick(self, kicker, kickee):
+        cv = kickee.response_condition
+        kickee.kicked_by = kicker
+        cv.acquire()
+        try:
+            req = kickee.request_queue.pop(0)
+            response = req.choose_wisely()
+            kickee.response.append(response)
+            cv.notify()
+        finally:
+            cv.release()
+        del self.players[self.players.index(kickee)]
+
     def play_round(self):
-        for player in self.players:
+        for player in self.players[:]:
             with player:
                 try:
                     # action
@@ -601,6 +590,8 @@ class Player(object):
         self.activated_cards = []
         self.current = False
         self.turn_cleanups = []
+        if exc_type is PlayerKickedException:
+            return True
 
     def __repr__(self):
         return "<Player %r>" % (self.name, )
