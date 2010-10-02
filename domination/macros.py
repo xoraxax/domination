@@ -18,6 +18,21 @@ def generator_forward(gen):
         while True:
             try:
                 reply = (yield gen.send(reply))
+                if isinstance(reply, Exception):
+
+            except StopIteration:
+                break
+
+@macro
+def generator_forward_ex(gen, excs):
+    if gen is not None:
+        reply = None
+        # generic generator forwarding pattern
+        while True:
+            try:
+                reply = (yield gen.send(reply))
+                if isinstance(reply, excs):
+                    gen.throw(reply)
             except StopIteration:
                 break
 

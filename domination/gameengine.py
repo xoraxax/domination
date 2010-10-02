@@ -5,7 +5,7 @@ from threading import Thread
 from threading import _Condition as PristineCondition
 
 from domination.tools import _
-from domination.macros.__macros__ import generator_forward
+from domination.macros.__macros__ import generator_forward, generator_forward_ex
 
 
 random = SystemRandom()
@@ -417,7 +417,7 @@ class Game(object):
             yield Checkpoint(self)
             self.round += 1
             gen = self.play_round()
-            generator_forward(gen)
+            generator_forward(gen, [PlayerKickedException])
 
     def deal_cards(self):
         raise NotImplementedError
@@ -590,7 +590,6 @@ class Player(object):
         self.activated_cards = []
         self.current = False
         self.turn_cleanups = []
-        print exc_type
         if exc_type is PlayerKickedException:
             return True
 
