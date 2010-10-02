@@ -18,8 +18,6 @@ def generator_forward(gen):
         while True:
             try:
                 reply = (yield gen.send(reply))
-                if isinstance(reply, Exception):
-
             except StopIteration:
                 break
 
