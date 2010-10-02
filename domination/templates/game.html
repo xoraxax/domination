@@ -240,7 +240,9 @@
   {% endif %}
   {% if req_type != "SelectDeal" %}
     <div id="supply">
-      <h3 onclick="show_supply();">Supply</h3>
+      <form>
+        <input type="button" onclick="show_supply();" value="Supply">
+      </form>
       <div id="supplycards">
         {% for key, cards in game.supply | dictsort %}
           {% if cards %}
