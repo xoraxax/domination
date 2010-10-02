@@ -71,7 +71,7 @@
   <form action="" method="post">
     <p>Name of Game: <input type="text" name="name" value="{{ name }}"></p>
     <p><input type="checkbox" name="ai" value="yes">Add
-      <input type="text" name="numai" value="0" maxlength="1" size="3"> AI player(s)</p>
+      <input type="text" name="numai" value="1" maxlength="1" size="3"> AI player(s)</p>
     <p>Editions:
       {% for edition in editions %}
       <input type="checkbox" name="edition" value="{{ edition.key }}"

@@ -147,7 +147,7 @@ def create_game(): # XXX check for at most 10 sets
             try:
                 n = min(len(names), int(request.form.get("numai", 1)))
             except ValueError:
-                n = 0
+                n = 1
             for i in range(n):
                 player = AIPlayer(names[i])
                 game.players.append(player)
