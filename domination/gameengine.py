@@ -276,7 +276,7 @@ class GameRunner(Thread):
                 reply = player.response[0]
             player.response = []
             if player.kicked_by:
-                gen.throw(PlayerKickedException(player))
+                reply = PlayerKickedException(player)
                 for participant in self.game.participants:
                     participant.info_queue.append(InfoRequest(self.game, participant,
                         _("%(kicker)s kicked %(kickee)s.") % {"kicker": player.kicked_by.name,
