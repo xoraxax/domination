@@ -590,6 +590,7 @@ class Player(object):
         self.activated_cards = []
         self.current = False
         self.turn_cleanups = []
+        print exc_type
         if exc_type is PlayerKickedException:
             return True
 

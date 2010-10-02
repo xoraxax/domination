@@ -281,21 +281,15 @@ def kick_player(game_runner, playername):
             kickee = [x for x in game.players if x.name == playername][0]
             if kickee == player:
                 return render_error(_("You cannot kick yourself!"))
-            cv = kickee.response_condition
-            cv.acquire()
-            try:
-                if not game_runner.waiting_for == kickee:
-                    return render_error(_("You can only kick a player if you are waiting for him!"))
-                if len(game.players) <= 2:
-                    # can be lifted as soon we have an impersonation feature
-                    return render_error(_("You cannot kick your last opponent!"))
-                if not kickee.is_ai:
-                    games = get_store(playername)["games"]
-                    del games[game_runner.game]
-                game.kick(player, kickee)
-                cv.notify()
-            finally:
-                cv.release()
+            if not game_runner.waiting_for == kickee:
+                return render_error(_("You can only kick a player if you are waiting for him!"))
+            if len(game.players) <= 2:
+                # can be lifted as soon we have an impersonation feature
+                return render_error(_("You cannot kick your last opponent!"))
+            if not kickee.is_ai:
+                games = get_store(playername)["games"]
+                del games[game_runner.game]
+            game.kick(player, kickee)
 
     return redirect(url_for("game", name=game.name))
 
