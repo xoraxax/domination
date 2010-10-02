@@ -30,7 +30,7 @@ def generator_forward_ex(gen, excs):
             try:
                 reply = (yield gen.send(reply))
                 if isinstance(reply, tuple(excs)):
-                    gen.throw(reply)
+                    reply = (yield gen.throw(reply))
             except StopIteration:
                 break
 
