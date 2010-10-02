@@ -229,6 +229,7 @@ class GameRunner(Thread):
         except:
             self.owner.request_queue.append(DebugRequest(sys.exc_info()))
         self.state = ENDED
+        self.waiting_for = None
         self.increment_seqno()
 
     def increment_seqno(self):

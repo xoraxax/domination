@@ -3,6 +3,7 @@ import sys
 import random
 import pickle
 import optparse
+import traceback
 
 from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
@@ -180,6 +181,7 @@ def game(game_runner):
         if request.method == 'POST':
             cv = player.response_condition
             cv.acquire()
+            player.info_queue = []
             try:
                 req = player.request_queue[0]
                 assert hash(req) == int(request.form["req_id"])
@@ -187,15 +189,15 @@ def game(game_runner):
                 if response is not Ellipsis:
                     player.response.append(response)
                     player.request_queue.pop(0)
-                    player.info_queue = []
                     cv.notify()
             finally:
                 cv.release()
-            cv = game_runner.seqno_condition
-            cv.acquire()
-            while game_runner.seqno <= req.seqno:
-                cv.wait()
-            cv.release()
+            if response is not Ellipsis:
+                cv = game_runner.seqno_condition
+                cv.acquire()
+                while game_runner.seqno <= req.seqno:
+                    cv.wait()
+                cv.release()
         req = None
         if player.request_queue:
             req = player.request_queue[0]
@@ -356,6 +358,9 @@ def main(argv):
     if options.debug:
         @app.route("/crash")
         def crash():
+            for frame in sys._current_frames().values():
+                traceback.print_stack(frame)
+                print "\n"
             1/0
         app.secret_key = "insecure"
 
