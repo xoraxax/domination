@@ -29,7 +29,7 @@ def generator_forward_ex(gen, excs):
         while True:
             try:
                 reply = (yield gen.send(reply))
-                if isinstance(reply, excs):
+                if isinstance(reply, tuple(excs)):
                     gen.throw(reply)
             except StopIteration:
                 break
