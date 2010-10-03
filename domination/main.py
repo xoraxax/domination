@@ -128,7 +128,16 @@ def index():
 @app.route('/logout')
 def logout():
     # remove the username from the session if its there
-    app.users.pop(session.pop('username', None), None)
+    username = session.pop('username', None)
+    store = app.users.pop(username, None)
+    if store:
+        games = store["games"]
+        for game, player in games.items():
+            # XXX race condition possible
+            if player.current:
+                game.kick(Player("Logout Button"), player)
+            else:
+                game.players.remove(player)
     return redirect(url_for("index"))
 
 @app.route("/create_game", methods=['GET', 'POST'])
@@ -289,8 +298,10 @@ def kick_player(game_runner, playername):
             kickee = [x for x in game.players if x.name == playername][0]
             if kickee == player:
                 return render_error(_("You cannot kick yourself!"))
+            # XXX race condition possible
             if not game_runner.waiting_for == kickee:
                 return render_error(_("You can only kick a player if you are waiting for him!"))
+            # XXX race condition possible
             if len(game.players) <= 2:
                 # can be lifted as soon we have an impersonation feature
                 return render_error(_("You cannot kick your last opponent!"))
