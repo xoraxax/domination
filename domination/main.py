@@ -188,7 +188,7 @@ def create_game(): # XXX check for at most 10 sets
     def transform_sets(sets):
         result = []
         for set in sets:
-            result.append((set, [c.name.__str__() for c in sorted(set.card_classes, key = lambda x: x.name.__str__())]))
+            result.append((set, [c.name.string for c in sorted(set.card_classes, key = lambda x: x.name.string)]))
         return result
     name = _("Game of %s", [session["username"]])
     newname = name
