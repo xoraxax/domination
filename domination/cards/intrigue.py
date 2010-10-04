@@ -23,7 +23,7 @@ class Baron(ActionCard):
             card.discard(player)
             for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
-                        _("%s discards:") % (player.name, ), [card])
+                        _("%s discards:", [player.name]), [card])
         else:
             estate_pile = game.supply["Estate"]
             if estate_pile:
@@ -149,7 +149,7 @@ class Ironworks(ActionCard):
         player.discard_pile.append(new_card)
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%s gains:") % (player.name, ), [new_card])
+                    _("%s gains:", [player.name]), [new_card])
         for val in game.check_empty_pile(card_cls.__name__):
             yield val
 
@@ -193,7 +193,7 @@ class Masquerade(ActionCard):
                 card.trash(game, player)
             for other_player in game.following_participants(player):
                 yield InfoRequest(game, other_player,
-                        _("%s trashes this card:") % (player.name, ), cards)
+                        _("%s trashes this card:", [player.name]), cards)
 
 
 class MiningVillage(ActionCard):
@@ -230,7 +230,7 @@ class Minion(AttackCard):
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
+                    _("%(player)s chooses '%(action)s'", {player: player.name, action: _(dict(actions)[answer])}), [])
 
         if answer == "money":
             player.virtual_money += 2
@@ -282,7 +282,7 @@ class Nobles(ActionCard, VictoryCard):
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
+                    _("%(player)s chooses '%(action)s'", {player: player.name, action: _(dict(actions)[answer])}), [])
 
         if answer == "cards":
             player.draw_cards(3)
@@ -311,7 +311,7 @@ class Pawn(ActionCard):
         for info_player in game.following_participants(player):
             chosen = ", ".join(_(dict(choices)[c]) for c in choice)
             yield InfoRequest(game, info_player,
-                    _("%s chooses '%s'") % (player.name, chosen), [])
+                    _("%(player)s chooses '%(action)s'", {player: player.name, action: chosen}), [])
 
         for item in choice:
             if item == "card":
@@ -346,7 +346,7 @@ class Scout(ActionCard):
 
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s reveals the top 4 cards of his"
-                " deck:") % (player.name, ), drawn)
+                " deck:", [player.name]), drawn)
         victory_cards = [c for c in drawn if isinstance(c, VictoryCard)]
         player.hand.extend(victory_cards)
         drawn = [c for c in drawn if not isinstance(c, VictoryCard)]
@@ -381,7 +381,7 @@ class SecretChamber(ReactionCard):
         for other_player in game.participants:
             if other_player is not player:
                 yield InfoRequest(game, other_player,
-                    _("%s discards these cards:") % (player.name, ), cards)
+                    _("%s discards these cards:", [player.name]), cards)
 
     def defend_action(self, game, player, card):
         player.draw_cards(2)
@@ -406,8 +406,8 @@ class ShantyTown(ActionCard):
         player.remaining_actions += 2
 
         for info_player in game.following_participants(player):
-            yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
-                    (player.name, ), player.hand[:])
+            yield InfoRequest(game, info_player, _("%s reveals his hand:",
+                    [player.name]), player.hand[:])
 
         action_cards = [c for c in player.hand if isinstance(c, ActionCard)]
         if not action_cards:
@@ -446,7 +446,7 @@ class Swindler(AttackCard):
             other_player.discard_pile.append(new_card)
             for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
-                        _("%s gains:") % (other_player.name, ), [new_card])
+                        _("%s gains:", [other_player.name]), [new_card])
             for val in game.check_empty_pile(card_cls.__name__):
                 yield val
 
@@ -468,7 +468,7 @@ class Steward(ActionCard):
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%s chooses '%s'") % (player.name, _(dict(actions)[answer])), [])
+                    _("%(player)s chooses '%(action)s'", {player: player.name, action: _(dict(actions)[answer])}), [])
 
         if answer == "cards":
             player.draw_cards(2)
@@ -486,7 +486,7 @@ class Steward(ActionCard):
             for other_player in game.participants:
                 if other_player is not player:
                     yield InfoRequest(game, other_player,
-                            _("%s trashes these cards:") % (player.name, ), cards)
+                            _("%s trashes these cards:", [player.name]), cards)
 
 
 class Torturer(AttackCard):
@@ -531,13 +531,13 @@ class WishingWell(ActionCard):
             msg=_("Name a card."), show_supply_count=True)
 
         for info_player in game.participants:
-            yield InfoRequest(game, info_player, _("%s names:") % (player.name, ),
+            yield InfoRequest(game, info_player, _("%s names:", [player.name]),
                     [card_cls])
         player.draw_cards(1)
         card = player.hand.pop()
         for info_player in game.participants:
-            yield InfoRequest(game, info_player, _("%s reveals:") %
-                    (player.name, ), [card])
+            yield InfoRequest(game, info_player, _("%s reveals:",
+                    [player.name]), [card])
         if isinstance(card, card_cls):
             player.hand.append(card)
         else:

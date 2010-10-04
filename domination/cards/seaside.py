@@ -95,7 +95,7 @@ class Salvager(ActionCard):
         for other_player in game.participants:
             if other_player is not player:
                 yield InfoRequest(game, other_player,
-                        _("%s trashes these cards:") % (player.name, ), cards)
+                        _("%s trashes these cards:", [player.name]), cards)
 
 class SeaHag(AttackCard):
     name = _("Sea Hag")
@@ -157,17 +157,17 @@ class Cutpurse(AttackCard):
             copper_cards = [c for c in other_player.hand if isinstance(c, Copper)]
             if copper_cards:
                 cards = yield SelectHandCards(game, other_player, count_lower=1, count_upper=1,
-                        msg=_("%s played Cutpurse. Which Copper do you want to discard?") % (player.name, ), cls=Copper)
+                        msg=_("%s played Cutpurse. Which Copper do you want to discard?", [player.name]), cls=Copper)
                 for card in cards:
                     card.discard(other_player)
                     for other_player in game.participants:
                         if other_player is not player:
                             yield InfoRequest(game, other_player,
-                                _("%s discards these cards:") % (other_player.name, ), cards)
+                                _("%s discards these cards:", [other_player.name]), cards)
             else:
                 for info_player in game.following_participants(player):
-                    yield InfoRequest(game, info_player, _("%s reveals his hand:") % \
-                            (other_player.name, ), other_player.hand[:])
+                    yield InfoRequest(game, info_player, _("%s reveals his hand:",
+                            [other_player.name]), other_player.hand[:])
 
 
 class Embargo(ActionCard):
@@ -209,7 +209,7 @@ class GhostShip(AttackCard):
                 continue
             count = len(other_player.hand) - 3
             cards = yield SelectHandCards(game, other_player, count_lower=count, count_upper=count,
-                    msg=_("%s played Ghost Ship. Which cards do you want to put on the top of your deck?") % (player.name, ))
+                    msg=_("%s played Ghost Ship. Which cards do you want to put on the top of your deck?", [player.name]))
             for card in cards:
                 card.backondeck(game, other_player)
 
@@ -266,7 +266,7 @@ class Warehouse(ActionCard):
             for other_player in game.participants:
                 if other_player is not player:
                     yield InfoRequest(game, other_player,
-                            _("%s discards these cards:") % (player.name, ), cards)
+                            _("%s discards these cards:", [player.name]), cards)
 
 class Treasury(ActionCard):
     name = _("Treasury")
@@ -350,13 +350,13 @@ class TreasureMap(ActionCard):
             card.trash(game, player)
             for other_player in game.participants:
                 yield InfoRequest(game, other_player,
-                            _("%s trashes:") % (player.name, ), [card])
+                            _("%s trashes:", [player.name]), [card])
             for i in range(0, 4):
                 new_card = game.supply["Gold"].pop()
                 player.deck.append(new_card)
                 for other_player in game.participants:
                     yield InfoRequest(game, other_player,
-                            _("%s gains on top of his deck:") % (player.name, ), [new_card])
+                            _("%s gains on top of his deck:", [player.name]), [new_card])
                 for val in game.check_empty_pile("Gold"):
                     yield val
 

@@ -64,7 +64,7 @@ class Apothecary(ActionCard):
         player.draw_cards(4)
         player.hand, new_cards = player.hand[:-4], player.hand[-4:]
         for info_player in game.participants:
-            yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ),
+            yield InfoRequest(game, info_player, _("%s reveals:", [player.name]),
                     new_cards)
         copper_and_potions = [c for c in new_cards if isinstance(c, (Copper, Potion))]
         remaining_cards = [c for c in new_cards if not isinstance(c, (Copper, Potion))]
@@ -103,7 +103,7 @@ class Apprentice(ActionCard):
         for other_player in game.participants:
             if other_player is not player:
                 yield InfoRequest(game, other_player,
-                        _("%s trashes these cards:") % (player.name, ), cards)
+                        _("%s trashes these cards:", [player.name]), cards)
 
 
 class Familiar(AttackCard):
@@ -125,7 +125,7 @@ class Familiar(AttackCard):
                     continue
                 other_player.discard_pile.append(curse_cards.pop())
                 yield InfoRequest(game, other_player,
-                        _("%s curses you. You gain a curse card.") % (player.name, ), [])
+                        _("%s curses you. You gain a curse card.", [player.name]), [])
                 for val in game.check_empty_pile("Curse"):
                     yield val
 
@@ -153,7 +153,7 @@ class Golem(ActionCard):
                 break
             card = player.hand.pop()
             for info_player in game.participants:
-                yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ), [card])
+                yield InfoRequest(game, info_player, _("%s reveals:", [player.name]), [card])
             if isinstance(card, ActionCard) and not isinstance(card, Golem):
                 found_cards.append(card)
                 action_cards_found += 1
@@ -270,7 +270,7 @@ class ScryingPool(AttackCard):
                 break
             card = player.hand.pop()
             for info_player in game.participants:
-                yield InfoRequest(game, info_player, _("%s reveals:") % (player.name, ),
+                yield InfoRequest(game, info_player, _("%s reveals:", [player.name]),
                         [card])
             player.hand.append(card)
             if not isinstance(card, ActionCard):
@@ -293,26 +293,26 @@ class Transmute(ActionCard):
             card = cards[0]
             for other_player in game.following_participants(player):
                 yield InfoRequest(game, other_player,
-                        _("%s trashes this card:") % (player.name, ), cards)
+                        _("%s trashes this card:", [player.name]), cards)
             card.trash(game, player)
             if isinstance(card, ActionCard):
                 with fetch_card_from_supply(game, Duchy) as new_card:
                     player.discard_pile.append(new_card)
                     for info_player in game.following_participants(player):
                         yield InfoRequest(game, info_player,
-                            _("%s gains:") % (player.name, ), [new_card])
+                            _("%s gains:", [player.name]), [new_card])
             if isinstance(card, TreasureCard):
                 with fetch_card_from_supply(game, Transmute) as new_card:
                     player.discard_pile.append(new_card)
                     for info_player in game.following_participants(player):
                         yield InfoRequest(game, info_player,
-                                _("%s gains:") % (player.name, ), [new_card])
+                                _("%s gains:", [player.name]), [new_card])
             if isinstance(card, VictoryCard):
                 with fetch_card_from_supply(game, Gold) as new_card:
                     player.discard_pile.append(new_card)
                     for info_player in game.following_participants(player):
                         yield InfoRequest(game, info_player,
-                                _("%s gains:") % (player.name, ), [new_card])
+                                _("%s gains:", [player.name]), [new_card])
 
 
 class University(ActionCard):
@@ -337,7 +337,7 @@ class University(ActionCard):
             for info_player in game.participants:
                 if info_player is not player:
                     yield InfoRequest(game, info_player,
-                            _("%s gains:") % (player.name, ), [new_card])
+                            _("%s gains:", [player.name]), [new_card])
             for val in game.check_empty_pile(card_cls.__name__):
                 yield val
 

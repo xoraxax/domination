@@ -274,10 +274,8 @@ class GameRunner(Thread):
             player.response = []
             if player.kicked_by:
                 for participant in self.game.participants:
-                    participant.info_queue.append(InfoRequest(self.game, participant,
-                        _("%(kicker)s kicked %(kickee)s.") % {"kicker": player.kicked_by.name,
-                            "kickee": player.name}, []))
-                player.name += _(" (kicked)")
+                    participant.info_queue.append(InfoRequest(self.game, participant, _("%(kicker)s kicked %(kickee)s.", {"kicker": player.kicked_by.name, "kickee": player.name})._(app.languages[participant.preferred_language()])))
+                player.name += _(" (kicked)")._(app.languages[player.preferred_language()])
             player.response_condition.release()
 
     def cancel(self):
@@ -345,7 +343,7 @@ class Game(object):
         for other_player in self.participants:
             if other_player is not player:
                 yield InfoRequest(self, other_player,
-                        _("%s plays:") % (player.name, ), [card])
+                        _("%s plays:", [player.name]), card)
 
         player.activated_cards.append(card)
         gen = card.activate_action(self, player)
@@ -359,8 +357,7 @@ class Game(object):
                     while player.remaining_actions and [c for c in player.hand
                             if isinstance(c, ActionCard)]:
                         action_cards = (yield SelectActionCard(self, player,
-                            _("Which action card do you want to play? (%i actions left)")
-                                % (player.remaining_actions, )))
+                            _("Which action card do you want to play? (%i actions left)", [player.remaining_actions])))
                         if action_cards is None:
                             break
                         player.remaining_actions -= 1
@@ -390,7 +387,7 @@ class Game(object):
                             for other_player in self.players + self.kibitzers:
                                 if other_player is not player:
                                     yield InfoRequest(self, other_player,
-                                            _("%s buys:") % (player.name, ), [card])
+                                            _("%s buys:", [player.name]), [card])
 
                         reason = self.check_end_of_game()
                         if reason:
@@ -449,7 +446,7 @@ class Game(object):
         if not self.supply[key]:
             for player in self.players + self.kibitzers:
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
-                yield InfoRequest(self, player, _("The pile %s is empty.") % (card_name, ), [])
+                yield InfoRequest(self, player, _("The pile %s is empty.", [card.name]), [])
 
 
     @property
@@ -466,7 +463,7 @@ class DominationGame(Game):
 
     @property
     def selected_cards_str(self):
-        return ", ".join(c.__name__ for c in self.selected_cards)
+        return ", ".join(c.name.__str__() for c in self.selected_cards)
 
     def deal_cards(self):
         self.deal_initial_decks()
