@@ -23,7 +23,7 @@ class Baron(ActionCard):
             card.discard(player)
             for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
-                        _("%s discards:", [player.name]), [card])
+                        _("%s discards:", (player.name, )), [card])
         else:
             estate_pile = game.supply["Estate"]
             if estate_pile:
@@ -149,7 +149,7 @@ class Ironworks(ActionCard):
         player.discard_pile.append(new_card)
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%s gains:", [player.name]), [new_card])
+                    _("%s gains:", (player.name, )), [new_card])
         for val in game.check_empty_pile(card_cls.__name__):
             yield val
 
@@ -193,7 +193,7 @@ class Masquerade(ActionCard):
                 card.trash(game, player)
             for other_player in game.following_participants(player):
                 yield InfoRequest(game, other_player,
-                        _("%s trashes this card:", [player.name]), cards)
+                        _("%s trashes this card:", (player.name, )), cards)
 
 
 class MiningVillage(ActionCard):
@@ -243,8 +243,8 @@ class Minion(AttackCard):
             for info_player in game.following_participants(player):
                 yield InfoRequest(
                     game, info_player,
-                    _("%s discards this hand and draws 4 cards:") %
-                    (player.name, ), original_hand)
+                    _("%s discards this hand and draws 4 cards:",
+                    (player.name, )), original_hand)
 
             for other_player in game.following_players(player):
                 if len(other_player.hand) < 5:
@@ -263,8 +263,8 @@ class Minion(AttackCard):
                 for info_player in game.following_participants(other_player):
                     yield InfoRequest(
                         game, info_player,
-                        _("%s discards this hand and draws 4 cards:") %
-                        (other_player.name, ), original_hand)
+                        _("%s discards this hand and draws 4 cards:",
+                        (other_player.name, )), original_hand)
 
 
 class Nobles(ActionCard, VictoryCard):
@@ -351,7 +351,7 @@ class Scout(ActionCard):
 
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s reveals the top 4 cards of his"
-                " deck:", [player.name]), drawn)
+                " deck:", (player.name, )), drawn)
         victory_cards = [c for c in drawn if isinstance(c, VictoryCard)]
         player.hand.extend(victory_cards)
         drawn = [c for c in drawn if not isinstance(c, VictoryCard)]
@@ -386,7 +386,7 @@ class SecretChamber(ReactionCard):
         for other_player in game.participants:
             if other_player is not player:
                 yield InfoRequest(game, other_player,
-                    _("%s discards these cards:", [player.name]), cards)
+                    _("%s discards these cards:", (player.name, )), cards)
 
     def defend_action(self, game, player, card):
         player.draw_cards(2)
@@ -412,7 +412,7 @@ class ShantyTown(ActionCard):
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player, _("%s reveals his hand:",
-                    [player.name]), player.hand[:])
+                    (player.name, )), player.hand[:])
 
         action_cards = [c for c in player.hand if isinstance(c, ActionCard)]
         if not action_cards:
@@ -437,8 +437,8 @@ class Swindler(AttackCard):
                 continue
             card = other_player.hand.pop()
             for info_player in game.participants:
-                yield InfoRequest(game, info_player, _("%s trashes:") %
-                        (other_player.name, ), [card])
+                yield InfoRequest(game, info_player, _("%s trashes:",
+                        (other_player.name, )), [card])
 
             req = SelectCard(game, player, card_classes=[c for c in
                 CardTypeRegistry.card_classes.itervalues() if c.cost == card.cost and
@@ -451,7 +451,7 @@ class Swindler(AttackCard):
             other_player.discard_pile.append(new_card)
             for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
-                        _("%s gains:", [other_player.name]), [new_card])
+                        _("%s gains:", (other_player.name, )), [new_card])
             for val in game.check_empty_pile(card_cls.__name__):
                 yield val
 
@@ -491,7 +491,7 @@ class Steward(ActionCard):
             for other_player in game.participants:
                 if other_player is not player:
                     yield InfoRequest(game, other_player,
-                            _("%s trashes these cards:", [player.name]), cards)
+                            _("%s trashes these cards:", (player.name, )), cards)
 
 
 class Torturer(AttackCard):
@@ -545,13 +545,13 @@ class WishingWell(ActionCard):
             msg=_("Name a card."), show_supply_count=True)
 
         for info_player in game.participants:
-            yield InfoRequest(game, info_player, _("%s names:", [player.name]),
+            yield InfoRequest(game, info_player, _("%s names:", (player.name, )),
                     [card_cls])
         player.draw_cards(1)
         card = player.hand.pop()
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s reveals:",
-                    [player.name]), [card])
+                    (player.name, )), [card])
         if isinstance(card, card_cls):
             player.hand.append(card)
         else:

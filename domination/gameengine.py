@@ -329,7 +329,7 @@ class Game(object):
         for other_player in self.participants:
             if other_player is not player:
                 yield InfoRequest(self, other_player,
-                        _("%s plays:", [player.name]), card)
+                        _("%s plays:", (player.name, )), card)
 
         player.activated_cards.append(card)
         gen = card.activate_action(self, player)
@@ -356,7 +356,7 @@ class Game(object):
                     while player.remaining_actions and [c for c in player.hand
                             if isinstance(c, ActionCard)]:
                         action_cards = (yield SelectActionCard(self, player,
-                            _("Which action card do you want to play? (%i actions left)", [player.remaining_actions])))
+                            _("Which action card do you want to play? (%i actions left)", (player.remaining_actions, ))))
                         if action_cards is None:
                             break
                         player.remaining_actions -= 1
@@ -386,7 +386,7 @@ class Game(object):
                             for other_player in self.players + self.kibitzers:
                                 if other_player is not player:
                                     yield InfoRequest(self, other_player,
-                                            _("%s buys:", [player.name]), [card])
+                                            _("%s buys:", (player.name, )), [card])
 
                         reason = self.check_end_of_game()
                         if reason:
@@ -445,7 +445,7 @@ class Game(object):
         if not self.supply[key]:
             for player in self.players + self.kibitzers:
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
-                yield InfoRequest(self, player, _("The pile %s is empty.", [card.name]), [])
+                yield InfoRequest(self, player, _("The pile %s is empty.", (card.name, )), [])
 
 
     @property
