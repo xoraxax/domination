@@ -222,6 +222,7 @@ class Minion(AttackCard):
             " and draws 4 cards.")
 
     def activate_action(self, game, player):
+        player.remaining_actions += 1
         actions = [("money", _("+2 Money")),
                    ("cards", _("Discard hand and draw 4 cards, "
                                "attack other players"))]
@@ -536,6 +537,8 @@ class WishingWell(ActionCard):
              "deck. If it's the named card, put it into your hand.")
 
     def activate_action(self, game, player):
+        player.draw_cards(1)
+        player.remaining_actions += 1
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
             CardTypeRegistry.card_classes.itervalues() if
             c.__name__ in game.supply],
