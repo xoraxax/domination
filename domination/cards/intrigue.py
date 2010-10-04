@@ -217,7 +217,7 @@ class Minion(AttackCard):
     name = _("Minion")
     edition = Intrigue
     cost = 5
-    desc = _("Choose one: +2 Money, or discard your hand, +4 Cards, and each"
+    desc = _("+1 Action, Choose one: +2 Money, or discard your hand, +4 Cards, and each"
             " other player with at least 5 cards in hand discards his hand"
             " and draws 4 cards.")
 
@@ -329,6 +329,10 @@ class Saboteur(AttackCard):
     name = _("Saboteur")
     edition = Intrigue
     cost = 5
+    desc = _("Each other player reveals cards from the top of his deck until "
+             "revealing one costing 3 or more. He trashes that card and may gain "
+             "a card costing at most 2 less than it. He discards the other "
+             "revealed cards.")
 
 
 class Scout(ActionCard):
@@ -494,6 +498,7 @@ class Torturer(AttackCard):
     edition = Intrigue
     implemented = False #FIXME not implemented completely
     cost = 5
+    desc = _("+3 Cards, Each other player chooses one: he discards 2 cards; or he gains a Curse card, putting it in his hand.")
 
 
 class TradingPost(ActionCard):
@@ -501,6 +506,7 @@ class TradingPost(ActionCard):
     edition = Intrigue
     implemented = False #FIXME not implemented completely
     cost = 5
+    desc = _("Trash 2 cards from your hand. If you do, gain a Silver card; put it into your hand.")
 
 
 class Tribute(ActionCard):
@@ -508,6 +514,10 @@ class Tribute(ActionCard):
     edition = Intrigue
     implemented = False #FIXME not implemented completely
     cost = 5
+    desc = _("The player to your left reveals then discards the top 2 cards "
+             "of his deck. For each differently named card revealed, if it is "
+             "an Action Card: +2 Actions. If it is a Treasure Card: +2 Money. "
+             "If it is a Victory Card: +2 Cards.")
 
 
 class Upgrade(ActionCard):
@@ -515,14 +525,15 @@ class Upgrade(ActionCard):
     edition = Intrigue
     implemented = False #FIXME not implemented completely
     cost = 5
+    desc = _("+1 Card, +1 Action, Trash a card from your hand. Gain a card costing exactly 1 more than it.")
 
 
 class WishingWell(ActionCard):
     name = _("Wishing Well")
     edition = Intrigue
     cost = 3
-    desc = _("Name a card. Reveal the top card of your deck. If it's the named"
-             " card, put it into your hand.")
+    desc = _("+1 Card, +1 Action, Name a card. Reveal the top card of your "
+             "deck. If it's the named card, put it into your hand.")
 
     def activate_action(self, game, player):
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
