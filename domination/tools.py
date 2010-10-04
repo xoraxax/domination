@@ -1,4 +1,4 @@
-from flaskext.babel import gettext, ngettext
+from flaskext.babel import get_translations
 
 
 class Translatable(unicode):
@@ -8,7 +8,10 @@ class Translatable(unicode):
         return inst
 
     def __unicode__(self):
-        return gettext(self) % self.parameters
+        t = get_translations()
+        if t is None:
+            return self % self.parameters
+        return t.ugettext(self) % self.parameters
 
 
 def _(string, parameters=()):
