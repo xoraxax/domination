@@ -1,3 +1,5 @@
+import os
+
 from flaskext.babel import get_translations
 
 
@@ -16,3 +18,19 @@ class Translatable(unicode):
 
 def _(string, parameters=()):
 	return Translatable(string, parameters)
+
+
+def taint_filename(basename):
+    """
+    Make a filename that is supposed to be a plain name secure, i.e.
+    remove any possible path components that compromise our system.
+
+    @param basename: (possibly unsafe) filename
+    @rtype: string
+    @return: (safer) filename
+    """
+    for x in (os.pardir, ':', '/', '\\', '<', '>'):
+        basename = basename.replace(x, '_')
+
+    return basename
+

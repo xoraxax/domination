@@ -4,7 +4,7 @@ from random import SystemRandom
 from threading import Thread
 from threading import _Condition as PristineCondition
 
-from domination.tools import _
+from domination.tools import _, taint_filename
 from domination.macros.__macros__ import generator_forward, generator_forward_ex
 
 
@@ -300,7 +300,8 @@ class GameRunner(Thread):
 
     def store(self):
         from domination.main import app
-        f = file(app.game_storage_prefix + self.game.name + app.game_storage_postfix, "wb")
+        f = file(taint_filename(app.game_storage_prefix + self.game.name
+            + app.game_storage_postfix), "wb")
         pickle.dump(self, f, -1)
         f.close()
 
