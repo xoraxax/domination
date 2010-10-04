@@ -46,7 +46,7 @@ def get_locale():
     # try to guess the language from the user accept
     # header the browser transmits.  We support de/fr/en in this
     # example.  The best match wins.
-    return request.accept_languages.best_match(['de', 'en'])
+    return request.accept_languages.best_match(['de_DE', 'de', 'en'])
 
 
 def needs_login(func):
