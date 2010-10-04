@@ -445,7 +445,7 @@ class Game(object):
         if not self.supply[key]:
             for player in self.players + self.kibitzers:
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
-                yield InfoRequest(self, player, _("The pile %s is empty.", (card.name, )), [])
+                yield InfoRequest(self, player, _("The pile %s is empty.", (card_name, )), [])
 
 
     @property

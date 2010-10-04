@@ -1,4 +1,5 @@
 from random import SystemRandom
+from werkzeug import abort # WTH fails the import of this file without this import?
 from domination.gameengine import Player, DominationGame, InfoRequest, EndOfGameException, card_sets, Checkpoint
 from domination.cards import CardTypeRegistry
 from domination.cards.base import ThroneRoom, Smithy
