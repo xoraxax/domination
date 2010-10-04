@@ -3,7 +3,7 @@ from flaskext.babel import gettext, ngettext
 
 
 class Translatable:
-	def __init__(self, string, parameters=[]):
+	def __init__(self, string, parameters=()):
 		self.string = string
 		self.parameters = parameters
 
@@ -11,5 +11,5 @@ class Translatable:
 		return gettext(self.string % self.parameters)
 
 
-def _(string, parameters=[]):
+def _(string, parameters=()):
 	return Translatable(string, parameters)
