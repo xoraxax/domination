@@ -107,10 +107,10 @@ def get_response(req):
             assert req.is_selectable(card)
             cards.append(card)
         if len(cards) < req.count_lower:
-            req.last_error = _("You need to select at least %i cards!", [req.count_lower])
+            req.last_error = _("You need to select at least %i cards!", (req.count_lower, ))
             return Ellipsis
         if req.count_upper is not None and len(cards) > req.count_upper:
-            req.last_error = _("You may select at most %i cards!", [req.count_upper])
+            req.last_error = _("You may select at most %i cards!", (req.count_upper, ))
             return Ellipsis
         return cards
     else:
@@ -182,9 +182,9 @@ def create_game(): # XXX check for at most 10 sets
     def transform_sets(sets):
         result = []
         for set in sets:
-            result.append((set, [c.name.__str__() for c in sorted(set.card_classes, key = lambda x: x.name.__str__())]))
+            result.append((set, [c.__name__ for c in sorted(set.card_classes, key = lambda x: x.name.string)]))
         return result
-    name = _("Game of %s", [session["username"]])
+    name = _("Game of %s", (session["username"], ))
     newname = name
     ctr = 0
     while newname in app.games:

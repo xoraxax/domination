@@ -2,10 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Domination\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-04 16:36+0100\n"
-"PO-Revision-Date: 2010-10-04 16:37+0100\n"
+"POT-Creation-Date: 2010-10-04 21:49+0100\n"
+"PO-Revision-Date: 2010-10-04 21:50+0100\n"
 "Last-Translator: David ‘Bombe’ Roden <bombe@pterodactylus.net>\n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,702 +17,101 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ../../../.\n"
 
-#: ../../.././main.py:77
-msgid "Game not found!"
-msgstr "Spiel nicht gefunden!"
-
-#: ../../.././main.py:124
-#, python-format
-msgid "You need to select at least %i cards!"
-msgstr "Du musst mindestens %i Karten auswählen!"
-
-#: ../../.././main.py:127
-#, python-format
-msgid "You may select at most %i cards!"
-msgstr "Du darfst höchstens %i Karten auswählen!"
-
-#: ../../.././main.py:138
-msgid "Username already in use."
-msgstr "Benutzername schon belegt."
-
-#: ../../.././main.py:168
-msgid "Game with this name is already existing!"
-msgstr "Ein Spiel mit diesem Namen existiert bereits!"
-
-#: ../../.././main.py:170
-msgid "Please enter a name!"
-msgstr "Bitte einen Namen eingeben!"
-
-#: ../../.././main.py:193
-#, python-format
-msgid "Game of %s"
-msgstr "Spiel von %s"
-
-#: ../../.././main.py:259
-msgid "Game has begun or ended already."
-msgstr "Spiel hat bereits begonnen oder ist bereits beendet."
-
-#: ../../.././main.py:266
-msgid "Too many players in the game!"
-msgstr "Zu viele Spieler im Spiel!"
-
-#: ../../.././main.py:312
-msgid "You cannot kick yourself!"
-msgstr "Du kannst dich nicht selbst rauswerfen!"
-
-#: ../../.././main.py:317
-msgid "You can only kick a player if you are waiting for him!"
-msgstr "Du kannst einen Spieler nur rauswerfen, wenn auf ihn gewartet wird!"
-
-#: ../../.././main.py:320
-msgid "You cannot kick your last opponent!"
-msgstr "Du kannst deinen letzten Gegner nicht rauswerfen!"
-
-#: ../../.././gameengine.py:277
+#: ../../.././gameengine.py:281
 #, python-format
 msgid "%(kicker)s kicked %(kickee)s."
 msgstr "%(kicker)s hat %(kickee)s rausgeworfen."
 
-#: ../../.././gameengine.py:278
+#: ../../.././gameengine.py:282
 msgid " (kicked)"
 msgstr " (rausgeworfen)"
 
-#: ../../.././gameengine.py:328
+#: ../../.././gameengine.py:314
 msgid "Aborted!"
 msgstr "Abgebrochen!"
 
-#: ../../.././gameengine.py:346
+#: ../../.././gameengine.py:332
 #, python-format
 msgid "%s plays:"
 msgstr "%s spielt:"
 
-#: ../../.././gameengine.py:360
+#: ../../.././gameengine.py:359
 #, python-format
 msgid "Which action card do you want to play? (%i actions left)"
 msgstr "Welche Aktionskarte möchstest du spielen? (Noch %i Aktionen übrig.)"
 
-#: ../../.././gameengine.py:376
+#: ../../.././gameengine.py:375
 msgid "Which card do you want to buy?"
 msgstr "Welche Karte möchtest du kaufen?"
 
-#: ../../.././gameengine.py:390
+#: ../../.././gameengine.py:389
 #, python-format
 msgid "%s buys:"
 msgstr "%s kauft:"
 
-#: ../../.././gameengine.py:449
+#: ../../.././gameengine.py:448
 #, python-format
 msgid "The pile %s is empty."
 msgstr "Der Vorrat „%s“ ist erschöpft."
 
-#: ../../.././gameengine.py:526
+#: ../../.././gameengine.py:525
 msgid "Province supply is empty."
 msgstr "Der Provinzvorrat ist erschöpft."
 
-#: ../../.././gameengine.py:536
+#: ../../.././gameengine.py:535
 msgid "The following supplies are empty:"
 msgstr "Die folgenden Vorräte sind erschöpft:"
 
-#: ../../.././cards/__init__.py:11
-msgid "Base game"
-msgstr "Basisspiel"
+#: ../../.././main.py:88
+msgid "Game not found!"
+msgstr "Spiel nicht gefunden!"
 
-#: ../../.././cards/__init__.py:12
-msgid "Intrigue game"
-msgstr "Die Intrige"
-
-#: ../../.././cards/__init__.py:13
-msgid "Alchemy game"
-msgstr "Die Alchemisten"
-
-#: ../../.././cards/__init__.py:14
-msgid "Seaside game"
-msgstr "Seaside"
-
-#: ../../.././cards/__init__.py:65
-msgid "Victory/Treasure card"
-msgstr "Punktekarte/Geldkarte"
-
-#: ../../.././cards/__init__.py:67
-msgid "Action/Victory card"
-msgstr "Aktionskarte/Punktekarte"
-
-#: ../../.././cards/__init__.py:98
-msgid "Action card"
-msgstr "Aktionskarte"
-
-#: ../../.././cards/__init__.py:105
-msgid "Duration card"
-msgstr "Dauerkarte"
-
-#: ../../.././cards/__init__.py:110
-msgid "Attack card"
-msgstr "Angriffskarte"
-
-#: ../../.././cards/__init__.py:120
-msgid "Do you want to flash a card in response to the attack?"
-msgstr "Möchtest du eine Reaktionskarte aufdecken?"
-
-#: ../../.././cards/__init__.py:132
+#: ../../.././main.py:135
 #, python-format
-msgid "%s reacts with:"
-msgstr "%s reagiert mit:"
+msgid "You need to select at least %i cards!"
+msgstr "Du musst mindestens %i Karten auswählen!"
 
-#: ../../.././cards/__init__.py:147
-msgid "Action/Reaction card"
-msgstr "Aktionskarte/Reaktionskarte"
-
-#: ../../.././cards/__init__.py:153
-msgid "Victory card"
-msgstr "Punktekarte"
-
-#: ../../.././cards/__init__.py:159
-msgid "Treasure card"
-msgstr "Geldkarte"
-
-#: ../../.././cards/__init__.py:165
-msgid "Curse card"
-msgstr "Fluchkarte"
-
-#: ../../.././cards/alchemy.py:12
-msgid "Potion"
-msgstr "Trank"
-
-#: ../../.././cards/alchemy.py:20
-msgid "Vineyard"
-msgstr "Weinberg"
-
-#: ../../.././cards/alchemy.py:24
-msgid "Worth 1 point for every 3 Action Cards in your deck (rounded down)"
-msgstr "Wert 1 Punkt für je 3 Aktionskarten im eigenen Kartensatz (abgerundet)."
-
-#: ../../.././cards/alchemy.py:32
-msgid "Alchemist"
-msgstr "Alchemist"
-
-#: ../../.././cards/alchemy.py:36
-msgid "+2 Cards, + 1 Action. When you discard this from play, you may put this on top of your deck if you have a Potion in play."
-msgstr "+2 Karten, +1 Aktion. Wenn diese Karte und ein Trank im Spiel sind und du den Alchemisten ablegst, darfst du diesen verdeckt oben auf deinen Nachziehstapel legen."
-
-#: ../../.././cards/alchemy.py:47
-msgid "Do you want to put your alchemist card onto your deck when cleaning up?"
-msgstr "Möchtest du deinen Alchemisten auf deinen Nachziehstapel legen?"
-
-#: ../../.././cards/alchemy.py:53
-msgid "Apothecary"
-msgstr "Apotheker"
-
-#: ../../.././cards/alchemy.py:57
-msgid "+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed Coppers and Potions into your hand. Put the other cards back on top of your deck in any order."
-msgstr "+1 Karte, +1 Aktion. Decke die obersten 4 Karten von deinem Nachziehstapel auf. Nimm alle aufgedeckten Kupfer und Tränke auf die Hand. Lege die übrigens Karten in beliebiger Reihenfolge verdeckt zurück auf deinen Nachziehstapel."
-
-#: ../../.././cards/alchemy.py:67
-#: ../../.././cards/alchemy.py:156
-#: ../../.././cards/alchemy.py:273
-#: ../../.././cards/base.py:258
-#: ../../.././cards/intrigue.py:553
+#: ../../.././main.py:138
 #, python-format
-msgid "%s reveals:"
-msgstr "%s deckt auf:"
+msgid "You may select at most %i cards!"
+msgstr "Du darfst höchstens %i Karten auswählen!"
 
-#: ../../.././cards/alchemy.py:75
-msgid "Which card do you want to put onto your deck next?"
-msgstr "Welche Karte möchtest du als nächstes auf deinen Nachziehstapel legen?"
+#: ../../.././main.py:149
+msgid "Username already in use."
+msgstr "Benutzername schon belegt."
 
-#: ../../.././cards/alchemy.py:82
-msgid "Apprentice"
-msgstr "Lehrling"
+#: ../../.././main.py:187
+msgid "Game with this name is already existing!"
+msgstr "Ein Spiel mit diesem Namen existiert bereits!"
 
-#: ../../.././cards/alchemy.py:85
-msgid "+1 Action. Trash a card from your hand. +1 Card per Money it costs. +2 Cards if it has potion in its cost."
-msgstr "+1 Aktion. Entsorge eine Karte aus deiner Hand. +1 Karte pro Geld, das die Karte kostet und zusätzliche +2 Karten, wenn sie Tränke kostet."
+#: ../../.././main.py:189
+msgid "Please enter a name!"
+msgstr "Bitte einen Namen eingeben!"
 
-#: ../../.././cards/alchemy.py:92
-#: ../../.././cards/alchemy.py:291
-#: ../../.././cards/intrigue.py:189
-msgid "Which card do you want to trash?"
-msgstr "Welche Karte möchtest du entsorgen?"
-
-#: ../../.././cards/alchemy.py:106
-#: ../../.././cards/base.py:81
-#: ../../.././cards/seaside.py:98
-#: ../../.././cards/intrigue.py:494
+#: ../../.././main.py:212
 #, python-format
-msgid "%s trashes these cards:"
-msgstr "%s entsorgt diese Karten:"
-
-#: ../../.././cards/alchemy.py:110
-msgid "Familiar"
-msgstr "Vertrauter"
-
-#: ../../.././cards/alchemy.py:114
-msgid "+1 Card, +1 Action. Each other player gains a Curse."
-msgstr "+1 Karte, +1 Aktion. Jeder Mitspieler muss sich eine Fluchkarte nehmen."
-
-#: ../../.././cards/alchemy.py:128
-#: ../../.././cards/base.py:524
-#, python-format
-msgid "%s curses you. You gain a curse card."
-msgstr "%s verflucht dich. Du erhältst eine Fluchkarte."
-
-#: ../../.././cards/alchemy.py:134
-msgid "Golem"
-msgstr "Golem"
-
-#: ../../.././cards/alchemy.py:138
-msgid "Reveal cards from your deck until you reveal 2 Action cards other than Golem cards. Discard the other cards, then play the Action cards in any order."
-msgstr "Decke solange Karten von deinem Nachziehstapel auf, bis 2 Aktionskarten (außer Golem-Karten) offen liegen. Lege sofort alle übrigen aufgedeckten Karten ab und spiele die beiden Aktionskarten in beliebiger Reihenfolge."
-
-#: ../../.././cards/alchemy.py:168
-msgid "Which card do you want to play next?"
-msgstr "Welche Karte möchtest du als nächstes spielen?"
-
-#: ../../.././cards/alchemy.py:182
-msgid "Herbalist"
-msgstr "Kräuterkundiger"
-
-#: ../../.././cards/alchemy.py:185
-msgid "+1 Buy, +1 Money. If you discard this from play, you may put one of your Treasures from play on top of your deck."
-msgstr "+1 Kauf, +1 Geld. Wenn diese Karte im Spiel ist und du sie ablegst, darfst du eine deiner Geldkarten im Spiel verdeckt oben auf deinen Nachziehstapel legen."
-
-#: ../../.././cards/alchemy.py:196
-msgid "Which treasure do you want to put on top of your deck?"
-msgstr "Welche Geldkarte möchtest du auf deinen Nachziehstapel legen?"
-
-#: ../../.././cards/alchemy.py:205
-msgid "Philosophers Stone"
-msgstr "Stein der Weisen"
-
-#: ../../.././cards/alchemy.py:209
-msgid "Worth 1 Point for every three Action cards in your deck (rounded down)."
-msgstr "Wert 1 Punkt für je 3 Aktionskarten im eigenen Kartensatz (abgerundet)."
-
-#: ../../.././cards/alchemy.py:216
-msgid "Possession"
-msgstr "Besessenheit"
-
-#: ../../.././cards/alchemy.py:221
-msgid "The player to your left takes an extra turn after this one, in which you can see all the cards he can and make all decisions for him. Any cards he would gain on that turn, you gain instead, any cards of his that are trashed are set aside and returned to his discard pile at the end of turn."
-msgstr "Der Spieler links von dir führt einen Extra-Zug direkt nach diesem aus. Dabei siehst du alle Karten, die auch er sieht, und du fällst alle Entscheidungen für ihn. Alle Karten, die er nimmt, oder kauft, legst du auf deinen Ablagestapel. Alle Karten, die er in diesem Zug entsorgt, werden zur Seite gelegt und am Ende des Zuges auf seinen Ablagestapel gelegt."
-
-#: ../../.././cards/alchemy.py:231
-msgid "Scrying Pool"
-msgstr "Vision"
-
-#: ../../.././cards/alchemy.py:235
-msgid "Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice. Then reveal cards from the top of your deck until you reveal one that is not an Action. Put all your revealed cards into your hand."
-msgstr "+1 Aktion. Jeder Spieler (auch du selbst) muss die oberste Karte von seinem Nachziehstapel aufdecken. Du entscheidest, ob er sie ablegen oder auf seinen Nachziehstapel zurücklegen muss. Dann deckst du solange Karten von deinem Nachziehstapel auf, bis du eine Karte aufdeckst, die keine Aktionskarte ist. Nimm alle aufgedeckten Karten auf die Hand."
-
-#: ../../.././cards/alchemy.py:249
-#: ../../.././cards/base.py:420
-#, python-format
-msgid "%s reveals the top card of his deck:"
-msgstr "%s zeigt die oberste Karte von seinem Nachziehstapel:"
-
-#: ../../.././cards/alchemy.py:252
-#: ../../.././cards/base.py:423
-#, python-format
-msgid "Do you want to discard %(name)s's card '%(cardname)s'?"
-msgstr "Möchtest du die Karte %(cardname)s von %(name)s ablegen?"
-
-#: ../../.././cards/alchemy.py:257
-#: ../../.././cards/base.py:428
-#, python-format
-msgid "%(playername)s discarded %(player2name)s's card:"
-msgstr "%(playername)s hat diese Karte von %(player2name)s abgelegt:"
-
-#: ../../.././cards/alchemy.py:281
-msgid "Transmute"
-msgstr "Verwandlung"
-
-#: ../../.././cards/alchemy.py:285
-msgid "Trash a card from your hand. If it is an Action Card, gain a Duchy. If it is a Treasure card, gain a Transmute. If it is a Victory Card, gain a Gold."
-msgstr "Entsorge eine Karte aus deiner Hand. Ist es eine Aktionskarte, nimm dir ein Herzogtum. Ist es eine Geldkarte, nimm dir eine Verwandlung. Ist es eine Punktekarte, nimm dir ein Gold."
-
-#: ../../.././cards/alchemy.py:296
-#: ../../.././cards/intrigue.py:196
-#, python-format
-msgid "%s trashes this card:"
-msgstr "%s entsorgt diese Karte:"
-
-#: ../../.././cards/alchemy.py:303
-#: ../../.././cards/alchemy.py:309
-#: ../../.././cards/alchemy.py:315
-#: ../../.././cards/alchemy.py:340
-#: ../../.././cards/base.py:168
-#: ../../.././cards/base.py:216
-#: ../../.././cards/base.py:340
-#: ../../.././cards/base.py:553
-#: ../../.././cards/intrigue.py:152
-#: ../../.././cards/intrigue.py:454
-#, python-format
-msgid "%s gains:"
-msgstr "%s erhält:"
-
-#: ../../.././cards/alchemy.py:319
-msgid "University"
-msgstr "Universität"
-
-#: ../../.././cards/alchemy.py:323
-msgid "+2 Actions. You may gain an Action card costing up to 5."
-msgstr "+2 Aktionen. Du darfst dir eine Aktionskarte nehmen, die bis zu 5 Geld kostet."
-
-#: ../../.././cards/alchemy.py:332
-msgid "Select a action card that you want to have."
-msgstr "Wähle eine Aktionskarte aus, die du haben möchtest."
-
-#: ../../.././cards/base.py:10
-msgid "Copper"
-msgstr "Kupfer"
-
-#: ../../.././cards/base.py:16
-msgid "Silver"
-msgstr "Silber"
-
-#: ../../.././cards/base.py:22
-msgid "Gold"
-msgstr "Gold"
-
-#: ../../.././cards/base.py:28
-msgid "Estate"
-msgstr "Anwesen"
-
-#: ../../.././cards/base.py:34
-msgid "Duchy"
-msgstr "Herzogtum"
-
-#: ../../.././cards/base.py:40
-msgid "Province"
-msgstr "Provinz"
-
-#: ../../.././cards/base.py:46
-msgid "Curse"
-msgstr "Fluch"
-
-#: ../../.././cards/base.py:52
-msgid "Gardens"
-msgstr "Gärten"
-
-#: ../../.././cards/base.py:55
-msgid "Worth one point for every ten cards in your deck (rounded down)"
-msgstr "Wert 1 Punkt für je 10 Karten im eigenen Kartensatz (abgerundet)."
-
-#: ../../.././cards/base.py:64
-msgid "Chapel"
-msgstr "Kapelle"
-
-#: ../../.././cards/base.py:67
-msgid "Trash up to four cards from your hand."
-msgstr "Entsorge bis zu 4 Karten aus deiner Hand."
-
-#: ../../.././cards/base.py:72
-#: ../../.././cards/seaside.py:88
-#: ../../.././cards/intrigue.py:485
-msgid "Which cards do you want to trash?"
-msgstr "Welche Karten möchtest du entsorgen?"
-
-#: ../../.././cards/base.py:84
-msgid "Cellar"
-msgstr "Keller"
-
-#: ../../.././cards/base.py:87
-msgid "+1 Action, Discard any number of cards. +1 Card per card discarded."
-msgstr "+1 Aktion. Lege eine beliebige Anzahl Karten aus deiner Hand ab. Ziehe für jede abgelegte Karte eine Karte nach."
-
-#: ../../.././cards/base.py:92
-#: ../../.././cards/intrigue.py:380
-msgid "Which cards do you want to discard?"
-msgstr "Welche Karten möchtest du ablegen?"
-
-#: ../../.././cards/base.py:101
-#: ../../.././cards/base.py:139
-#: ../../.././cards/seaside.py:166
-#: ../../.././cards/seaside.py:269
-#: ../../.././cards/intrigue.py:389
-#, python-format
-msgid "%s discards these cards:"
-msgstr "%s legt diese Karten ab:"
-
-#: ../../.././cards/base.py:104
-msgid "Market"
-msgstr "Markt"
-
-#: ../../.././cards/base.py:107
-msgid "+1 Card, +1 Action, +1 Buy, +1 Money"
-msgstr "+1 Karte, +1 Aktion, +1 Kauf, +1 Geld."
-
-#: ../../.././cards/base.py:116
-msgid "Militia"
-msgstr "Miliz"
-
-#: ../../.././cards/base.py:119
-msgid "+2 Money, Each other player discards down to three cards in his hand."
-msgstr "+2 Geld. Jeder Mitspieler legt Karten ab, bis er nur noch 3 Karten auf der Hand hat."
-
-#: ../../.././cards/base.py:132
-#, python-format
-msgid "%s played Militia. Which cards do you want to discard?"
-msgstr "%s hat Miliz gespielt. Welche Karten möchtest du ablegen?"
-
-#: ../../.././cards/base.py:142
-msgid "Mine"
-msgstr "Mine"
-
-#: ../../.././cards/base.py:145
-msgid "Trash a treasure card in your hand. Gain a treasure card costing up to three money more, put it in your hand."
-msgstr "Entsorge eine Geldkarte aus deiner Hand. Nimm dir eine Geldkarte, die bis zu 3 Geld mehr kostet. Nimm diese Geldkarte sofort auf die Hand."
-
-#: ../../.././cards/base.py:151
-msgid "Select a treasure card you want to convert to a potentially better card."
-msgstr "Wähle eine Geldkarte aus, die du entsorgen möchtest."
-
-#: ../../.././cards/base.py:159
-msgid "Select a treasure card that you want to have."
-msgstr "Wähle eine Geldkarte aus, die du haben möchtest."
-
-#: ../../.././cards/base.py:166
-#: ../../.././cards/base.py:214
-#: ../../.././cards/base.py:399
-#: ../../.././cards/base.py:467
-#: ../../.././cards/seaside.py:353
-#: ../../.././cards/intrigue.py:440
-#, python-format
-msgid "%s trashes:"
-msgstr "%s entsorgt:"
-
-#: ../../.././cards/base.py:173
-msgid "Moat"
-msgstr "Burggraben"
-
-#: ../../.././cards/base.py:176
-msgid "+2 Cards, When another player plays an attack card, you may reveal this from your hand. If you do, you are unaffected by the attack."
-msgstr "+2 Karten. Wenn ein Mitspieler eine Angriffskarte ausspielt, kannst du diese Karte aus deiner Hand vorzeigen. Der Angriff hat dann keine Wirkung auf dich."
-
-#: ../../.././cards/base.py:188
-msgid "Remodel"
-msgstr "Umbau"
-
-#: ../../.././cards/base.py:191
-msgid "Trash a card from your hand. Gain a card costing up to 2 Money more than the trashed card."
-msgstr "Entsorge eine Karte aus deiner Hand. Nimm dir eine Karte, die bis zu 2 Geld mehr kostet als die entsorgte Karte."
-
-#: ../../.././cards/base.py:199
-msgid "Select a card you want to trash."
-msgstr "Wähle die Karte, die du entsorgen möchtest."
-
-#: ../../.././cards/base.py:206
-#: ../../.././cards/base.py:335
-#: ../../.././cards/base.py:548
-#: ../../.././cards/intrigue.py:147
-msgid "Select a card that you want to have."
-msgstr "Wähle die Karte, die du haben möchtest."
-
-#: ../../.././cards/base.py:221
-msgid "Smithy"
-msgstr "Schmiede"
-
-#: ../../.././cards/base.py:224
-#: ../../.././cards/intrigue.py:278
-msgid "+3 Cards"
-msgstr "+3 Karten."
-
-#: ../../.././cards/base.py:230
-msgid "Village"
-msgstr "Dorf"
-
-#: ../../.././cards/base.py:233
-msgid "+1 Card, +2 Actions"
-msgstr "+1 Karte, +2 Aktionen."
-
-#: ../../.././cards/base.py:240
-msgid "Adventurer"
-msgstr "Abenteurer"
-
-#: ../../.././cards/base.py:243
-msgid "Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards into your hand and discard the other revealed cards."
-msgstr "Decke solange Karten vom Nachziehstapel auf, bis 2 Geldkarten offen liegen. Nimm die Geldkarten auf die Hand, lege die übrigen aufgedeckten Karten ab."
-
-#: ../../.././cards/base.py:268
-msgid "Bureaucrat"
-msgstr "Bürokrat"
-
-#: ../../.././cards/base.py:271
-msgid "Gain a Silver card; put it on top of your deck. Each other player reveals a Victory card from his hand and puts it on his deck (or reveals a hand with no Victory cards)."
-msgstr "Nimm dir ein Silber und lege es verdeckt auf deinen Nachziehstapel. Jeder Mitspieler deckt eine Punktekarte aus seiner Hand auf und legt sie verdeckt auf seinen Nachziehstapel. Hat ein Spieler keine Punktekarte auf der Hand, muss er seine Kartenhand vorzeigen."
-
-#: ../../.././cards/base.py:289
-msgid "Select a Victory card you want to reveal"
-msgstr "Wähle die Punktekarte aus, die du aufdecken möchtest!"
-
-#: ../../.././cards/base.py:293
-#, python-format
-msgid "%s reveals a card:"
-msgstr "%s deckt eine Karte auf:"
-
-#: ../../.././cards/base.py:296
-#: ../../.././cards/seaside.py:169
-#: ../../.././cards/intrigue.py:414
-#, python-format
-msgid "%s reveals his hand:"
-msgstr "%s deckt seine Hand auf:"
-
-#: ../../.././cards/base.py:299
-msgid "Chancellor"
-msgstr "Kanzler"
-
-#: ../../.././cards/base.py:302
-msgid "+2 Money, You may immediately put your deck into your discard pile."
-msgstr "+2 Geld. Lege sofort deinen kompletten Nachziehstapel ab."
-
-#: ../../.././cards/base.py:306
-msgid "Do you want to put your deck into your discard pile?"
-msgstr "Möchtest du deinen Nachziehstapel ablegen?"
-
-#: ../../.././cards/base.py:312
-msgid "Council Room"
-msgstr "Ratsversammlung"
-
-#: ../../.././cards/base.py:315
-msgid "+4 cards, +1 buy, Each other player draws a card."
-msgstr "+4 Karten, +1 Kauf. Jeder Mitspieler zieht sofort eine Karte nach."
-
-#: ../../.././cards/base.py:324
-msgid "Feast"
-msgstr "Festmahl"
-
-#: ../../.././cards/base.py:329
-msgid "Trash this card, gain a card costing up to 5."
-msgstr "Entsorge diese Karte. Nimm dir eine Karte, die bis zu 5 Geld kostet."
-
-#: ../../.././cards/base.py:345
-msgid "Festival"
-msgstr "Jahrmarkt"
-
-#: ../../.././cards/base.py:348
-msgid "+2 Actions, +1 Buy, +2 Money"
-msgstr "+2 Aktionen, +1 Kauf, +2 Geld."
-
-#: ../../.././cards/base.py:356
-msgid "Laboratory"
-msgstr "Laboratorium"
-
-#: ../../.././cards/base.py:359
-msgid "+2 Cards, +1 Action"
-msgstr "+2 Karten, +1 Aktion."
-
-#: ../../.././cards/base.py:366
-msgid "Library"
-msgstr "Bibliothek"
-
-#: ../../.././cards/base.py:369
-msgid "Draw until you have 7 cards in your hand. You may set aside any action cards drawn this way, as you draw them; discard the set aside cards after you finish drawing."
-msgstr "Ziehe solange Karten nach, bis du 7 Karten auf der Hand hast. Aktionskarten kannst du zur Seite legen, sobald du sie ziehst. Die zur Seite gelegten Karten werden am Ende der Aktion abgelegt."
-
-#: ../../.././cards/base.py:379
-#, python-format
-msgid "Do you want to set aside the card '%s'?"
-msgstr "Möchtest du die Karte „%s“ zur Seite legen?"
-
-#: ../../.././cards/base.py:386
-msgid "Moneylender"
-msgstr "Geldverleiher"
-
-#: ../../.././cards/base.py:389
-msgid "Trash a Copper card from your hand. If you do, +3 Money."
-msgstr "Entsorge ein Kupfer aus deiner Hand. Wenn du das machst, +3 Geld."
-
-#: ../../.././cards/base.py:402
-msgid "Spy"
-msgstr "Spion"
-
-#: ../../.././cards/base.py:405
-msgid "+1 Card, +1 Action, Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice."
-msgstr "+1 Karte, +1 Aktion. Jeder Spieler (auch du selbst) deckt die oberste Karte von seinem Nachziehstapel auf. Du entscheidest, ob er sie ablegt oder zurück auf seinen Nachziehstapel legt."
-
-#: ../../.././cards/base.py:435
-msgid "Thief"
-msgstr "Dieb"
-
-#: ../../.././cards/base.py:438
-msgid "Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards."
-msgstr "Jeder Mitspieler deckt die obersten beiden Karten von seinem Nachziehstapel auf. Haben die Mitspieler eine oder mehrere Geldkarten aufgedeckt, muss jeder eine davon (nach deiner Wahl) entsorgen. Du kannst eine beliebige Zahl der entsorgten Karten bei dir ablegen. Die übrigen aufgedeckten Karten legen die Spieler bei sich ab."
-
-#: ../../.././cards/base.py:455
-#, python-format
-msgid "%s reveals the top 2 cards of his deck:"
-msgstr "%s deckt die obersten 2 Karten seines Nachziehstapels auf:"
-
-#: ../../.././cards/base.py:461
-#, python-format
-msgid "Which card of the player %s do you want to trash?"
-msgstr "Welche Karte von %s möchtest du entsorgen?"
-
-#: ../../.././cards/base.py:472
-#, python-format
-msgid "Do you want to have the card '%s'?"
-msgstr "Möchtest du die Karte „%s“ haben?"
-
-#: ../../.././cards/base.py:475
-#, python-format
-msgid "%s picks up this card from trash:"
-msgstr "%s nimmt die entsorgte Karte:"
-
-#: ../../.././cards/base.py:481
-msgid "Throne Room"
-msgstr "Thronsaal"
-
-#: ../../.././cards/base.py:484
-msgid "Choose an action card in your hand. Play it twice."
-msgstr "Wähle eine Aktionskarte aus deiner Hand. Spiele diese Aktionskarte zweimal aus."
-
-#: ../../.././cards/base.py:490
-#, python-format
-msgid "Which action card do you want to play on the throne room? (%i actions left)"
-msgstr "Welche Aktionskarte möchtest du im Thronsaal ausspielen? (Noch %i Aktionen übrig.)"
-
-#: ../../.././cards/base.py:508
-msgid "Witch"
-msgstr "Hexe"
-
-#: ../../.././cards/base.py:511
-msgid "+2 Cards, Each other player gains a Curse card."
-msgstr "+2 Karten. Jeder Mitspieler muss sich eine Fluchkarte nehmen."
-
-#: ../../.././cards/base.py:529
-msgid "Woodcutter"
-msgstr "Holzfäller"
-
-#: ../../.././cards/base.py:532
-msgid "+1 Buy, +2 Money"
-msgstr "+1 Kauf, +2 Geld."
-
-#: ../../.././cards/base.py:539
-msgid "Workshop"
-msgstr "Werkstatt"
-
-#: ../../.././cards/base.py:542
-msgid "Gain a card costing up to 4."
-msgstr "Nimm dir eine Karte, die bis zu 4 Geld kostet."
-
-#: ../../.././cards/base.py:559
-msgid "First Game"
-msgstr "Erstes Spiel"
-
-#: ../../.././cards/base.py:562
-msgid "Big Money"
-msgstr "Großes Geld"
-
-#: ../../.././cards/base.py:565
-msgid "Interaction"
-msgstr "Interaktion"
-
-#: ../../.././cards/base.py:568
-msgid "Size Distortion"
-msgstr "Größenverzerrung"
-
-#: ../../.././cards/base.py:571
-msgid "Village Square"
-msgstr "Dorfplatz"
+msgid "Game of %s"
+msgstr "Spiel von %s"
+
+#: ../../.././main.py:285
+msgid "Game has begun or ended already."
+msgstr "Spiel hat bereits begonnen oder ist bereits beendet."
+
+#: ../../.././main.py:292
+msgid "Too many players in the game!"
+msgstr "Zu viele Spieler im Spiel!"
+
+#: ../../.././main.py:338
+msgid "You cannot kick yourself!"
+msgstr "Du kannst dich nicht selbst rauswerfen!"
+
+#: ../../.././main.py:341
+msgid "You can only kick a player if you are waiting for him!"
+msgstr "Du kannst einen Spieler nur rauswerfen, wenn auf ihn gewartet wird!"
+
+#: ../../.././main.py:345
+msgid "You cannot kick your last opponent!"
+msgstr "Du kannst deinen letzten Gegner nicht rauswerfen!"
 
 #: ../../.././cards/seaside.py:11
 msgid "Lookout"
@@ -769,6 +169,20 @@ msgstr "Müllverwerter"
 msgid "+1 Buy. Trash a Card from your hand. +Money equal to its costs."
 msgstr "+1 Kauf. Entsorge eine Karte aus deiner Hand. +X Geld entsprechend den Kosten der entsorgten Karte."
 
+#: ../../.././cards/seaside.py:88
+#: ../../.././cards/base.py:72
+#: ../../.././cards/intrigue.py:485
+msgid "Which cards do you want to trash?"
+msgstr "Welche Karten möchtest du entsorgen?"
+
+#: ../../.././cards/seaside.py:98
+#: ../../.././cards/base.py:81
+#: ../../.././cards/alchemy.py:106
+#: ../../.././cards/intrigue.py:494
+#, python-format
+msgid "%s trashes these cards:"
+msgstr "%s entsorgt diese Karten:"
+
 #: ../../.././cards/seaside.py:101
 msgid "Sea Hag"
 msgstr "Seehexe"
@@ -813,6 +227,22 @@ msgstr "+2 Geld. Jeder Mitspieler muss ein Kupfer aus seiner Hand ablegen. Hat e
 #, python-format
 msgid "%s played Cutpurse. Which Copper do you want to discard?"
 msgstr "%s hat „Beutelschneider“ gespielt. Welches Kupfer möchtest du ablegen?"
+
+#: ../../.././cards/seaside.py:166
+#: ../../.././cards/seaside.py:269
+#: ../../.././cards/base.py:101
+#: ../../.././cards/base.py:139
+#: ../../.././cards/intrigue.py:389
+#, python-format
+msgid "%s discards these cards:"
+msgstr "%s legt diese Karten ab:"
+
+#: ../../.././cards/seaside.py:169
+#: ../../.././cards/base.py:296
+#: ../../.././cards/intrigue.py:414
+#, python-format
+msgid "%s reveals his hand:"
+msgstr "%s deckt seine Hand auf:"
 
 #: ../../.././cards/seaside.py:174
 msgid "Embargo"
@@ -935,10 +365,544 @@ msgstr "Schatzkarte"
 msgid "Trash this and another copy of Treasure map from your hand. If you do trash two Treasure maps, gain 4 Gold cards, putting them on top of your deck."
 msgstr "Entsorge diese und eine weitere Schatzkarte aus deiner Hand. Wenn du das machst: Nimm dir 4 Gold und lege diese verdeckt auf deinen Nachziehstapel."
 
+#: ../../.././cards/seaside.py:353
+#: ../../.././cards/base.py:166
+#: ../../.././cards/base.py:214
+#: ../../.././cards/base.py:399
+#: ../../.././cards/base.py:467
+#: ../../.././cards/intrigue.py:440
+#, python-format
+msgid "%s trashes:"
+msgstr "%s entsorgt:"
+
 #: ../../.././cards/seaside.py:359
 #, python-format
 msgid "%s gains on top of his deck:"
 msgstr "%s erhält auf seinem Nachziehstapel:"
+
+#: ../../.././cards/base.py:10
+msgid "Copper"
+msgstr "Kupfer"
+
+#: ../../.././cards/base.py:16
+msgid "Silver"
+msgstr "Silber"
+
+#: ../../.././cards/base.py:22
+msgid "Gold"
+msgstr "Gold"
+
+#: ../../.././cards/base.py:28
+msgid "Estate"
+msgstr "Anwesen"
+
+#: ../../.././cards/base.py:34
+msgid "Duchy"
+msgstr "Herzogtum"
+
+#: ../../.././cards/base.py:40
+msgid "Province"
+msgstr "Provinz"
+
+#: ../../.././cards/base.py:46
+msgid "Curse"
+msgstr "Fluch"
+
+#: ../../.././cards/base.py:52
+msgid "Gardens"
+msgstr "Gärten"
+
+#: ../../.././cards/base.py:55
+msgid "Worth one point for every ten cards in your deck (rounded down)"
+msgstr "Wert 1 Punkt für je 10 Karten im eigenen Kartensatz (abgerundet)."
+
+#: ../../.././cards/base.py:64
+msgid "Chapel"
+msgstr "Kapelle"
+
+#: ../../.././cards/base.py:67
+msgid "Trash up to four cards from your hand."
+msgstr "Entsorge bis zu 4 Karten aus deiner Hand."
+
+#: ../../.././cards/base.py:84
+msgid "Cellar"
+msgstr "Keller"
+
+#: ../../.././cards/base.py:87
+msgid "+1 Action, Discard any number of cards. +1 Card per card discarded."
+msgstr "+1 Aktion. Lege eine beliebige Anzahl Karten aus deiner Hand ab. Ziehe für jede abgelegte Karte eine Karte nach."
+
+#: ../../.././cards/base.py:92
+#: ../../.././cards/intrigue.py:380
+msgid "Which cards do you want to discard?"
+msgstr "Welche Karten möchtest du ablegen?"
+
+#: ../../.././cards/base.py:104
+msgid "Market"
+msgstr "Markt"
+
+#: ../../.././cards/base.py:107
+msgid "+1 Card, +1 Action, +1 Buy, +1 Money"
+msgstr "+1 Karte, +1 Aktion, +1 Kauf, +1 Geld."
+
+#: ../../.././cards/base.py:116
+msgid "Militia"
+msgstr "Miliz"
+
+#: ../../.././cards/base.py:119
+msgid "+2 Money, Each other player discards down to three cards in his hand."
+msgstr "+2 Geld. Jeder Mitspieler legt Karten ab, bis er nur noch 3 Karten auf der Hand hat."
+
+#: ../../.././cards/base.py:132
+#, python-format
+msgid "%s played Militia. Which cards do you want to discard?"
+msgstr "%s hat Miliz gespielt. Welche Karten möchtest du ablegen?"
+
+#: ../../.././cards/base.py:142
+msgid "Mine"
+msgstr "Mine"
+
+#: ../../.././cards/base.py:145
+msgid "Trash a treasure card in your hand. Gain a treasure card costing up to three money more, put it in your hand."
+msgstr "Entsorge eine Geldkarte aus deiner Hand. Nimm dir eine Geldkarte, die bis zu 3 Geld mehr kostet. Nimm diese Geldkarte sofort auf die Hand."
+
+#: ../../.././cards/base.py:151
+msgid "Select a treasure card you want to convert to a potentially better card."
+msgstr "Wähle eine Geldkarte aus, die du entsorgen möchtest."
+
+#: ../../.././cards/base.py:159
+msgid "Select a treasure card that you want to have."
+msgstr "Wähle eine Geldkarte aus, die du haben möchtest."
+
+#: ../../.././cards/base.py:168
+#: ../../.././cards/base.py:216
+#: ../../.././cards/base.py:340
+#: ../../.././cards/base.py:553
+#: ../../.././cards/alchemy.py:303
+#: ../../.././cards/alchemy.py:309
+#: ../../.././cards/alchemy.py:315
+#: ../../.././cards/alchemy.py:340
+#: ../../.././cards/intrigue.py:152
+#: ../../.././cards/intrigue.py:454
+#, python-format
+msgid "%s gains:"
+msgstr "%s erhält:"
+
+#: ../../.././cards/base.py:173
+msgid "Moat"
+msgstr "Burggraben"
+
+#: ../../.././cards/base.py:176
+msgid "+2 Cards, When another player plays an attack card, you may reveal this from your hand. If you do, you are unaffected by the attack."
+msgstr "+2 Karten. Wenn ein Mitspieler eine Angriffskarte ausspielt, kannst du diese Karte aus deiner Hand vorzeigen. Der Angriff hat dann keine Wirkung auf dich."
+
+#: ../../.././cards/base.py:188
+msgid "Remodel"
+msgstr "Umbau"
+
+#: ../../.././cards/base.py:191
+msgid "Trash a card from your hand. Gain a card costing up to 2 Money more than the trashed card."
+msgstr "Entsorge eine Karte aus deiner Hand. Nimm dir eine Karte, die bis zu 2 Geld mehr kostet als die entsorgte Karte."
+
+#: ../../.././cards/base.py:199
+msgid "Select a card you want to trash."
+msgstr "Wähle die Karte, die du entsorgen möchtest."
+
+#: ../../.././cards/base.py:206
+#: ../../.././cards/base.py:335
+#: ../../.././cards/base.py:548
+#: ../../.././cards/intrigue.py:147
+msgid "Select a card that you want to have."
+msgstr "Wähle die Karte, die du haben möchtest."
+
+#: ../../.././cards/base.py:221
+msgid "Smithy"
+msgstr "Schmiede"
+
+#: ../../.././cards/base.py:224
+#: ../../.././cards/intrigue.py:278
+msgid "+3 Cards"
+msgstr "+3 Karten."
+
+#: ../../.././cards/base.py:230
+msgid "Village"
+msgstr "Dorf"
+
+#: ../../.././cards/base.py:233
+msgid "+1 Card, +2 Actions"
+msgstr "+1 Karte, +2 Aktionen."
+
+#: ../../.././cards/base.py:240
+msgid "Adventurer"
+msgstr "Abenteurer"
+
+#: ../../.././cards/base.py:243
+msgid "Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards into your hand and discard the other revealed cards."
+msgstr "Decke solange Karten vom Nachziehstapel auf, bis 2 Geldkarten offen liegen. Nimm die Geldkarten auf die Hand, lege die übrigen aufgedeckten Karten ab."
+
+#: ../../.././cards/base.py:258
+#: ../../.././cards/alchemy.py:67
+#: ../../.././cards/alchemy.py:156
+#: ../../.././cards/alchemy.py:273
+#: ../../.././cards/intrigue.py:553
+#, python-format
+msgid "%s reveals:"
+msgstr "%s deckt auf:"
+
+#: ../../.././cards/base.py:268
+msgid "Bureaucrat"
+msgstr "Bürokrat"
+
+#: ../../.././cards/base.py:271
+msgid "Gain a Silver card; put it on top of your deck. Each other player reveals a Victory card from his hand and puts it on his deck (or reveals a hand with no Victory cards)."
+msgstr "Nimm dir ein Silber und lege es verdeckt auf deinen Nachziehstapel. Jeder Mitspieler deckt eine Punktekarte aus seiner Hand auf und legt sie verdeckt auf seinen Nachziehstapel. Hat ein Spieler keine Punktekarte auf der Hand, muss er seine Kartenhand vorzeigen."
+
+#: ../../.././cards/base.py:289
+msgid "Select a Victory card you want to reveal"
+msgstr "Wähle die Punktekarte aus, die du aufdecken möchtest!"
+
+#: ../../.././cards/base.py:293
+#, python-format
+msgid "%s reveals a card:"
+msgstr "%s deckt eine Karte auf:"
+
+#: ../../.././cards/base.py:299
+msgid "Chancellor"
+msgstr "Kanzler"
+
+#: ../../.././cards/base.py:302
+msgid "+2 Money, You may immediately put your deck into your discard pile."
+msgstr "+2 Geld. Lege sofort deinen kompletten Nachziehstapel ab."
+
+#: ../../.././cards/base.py:306
+msgid "Do you want to put your deck into your discard pile?"
+msgstr "Möchtest du deinen Nachziehstapel ablegen?"
+
+#: ../../.././cards/base.py:312
+msgid "Council Room"
+msgstr "Ratsversammlung"
+
+#: ../../.././cards/base.py:315
+msgid "+4 cards, +1 buy, Each other player draws a card."
+msgstr "+4 Karten, +1 Kauf. Jeder Mitspieler zieht sofort eine Karte nach."
+
+#: ../../.././cards/base.py:324
+msgid "Feast"
+msgstr "Festmahl"
+
+#: ../../.././cards/base.py:329
+msgid "Trash this card, gain a card costing up to 5."
+msgstr "Entsorge diese Karte. Nimm dir eine Karte, die bis zu 5 Geld kostet."
+
+#: ../../.././cards/base.py:345
+msgid "Festival"
+msgstr "Jahrmarkt"
+
+#: ../../.././cards/base.py:348
+msgid "+2 Actions, +1 Buy, +2 Money"
+msgstr "+2 Aktionen, +1 Kauf, +2 Geld."
+
+#: ../../.././cards/base.py:356
+msgid "Laboratory"
+msgstr "Laboratorium"
+
+#: ../../.././cards/base.py:359
+msgid "+2 Cards, +1 Action"
+msgstr "+2 Karten, +1 Aktion."
+
+#: ../../.././cards/base.py:366
+msgid "Library"
+msgstr "Bibliothek"
+
+#: ../../.././cards/base.py:369
+msgid "Draw until you have 7 cards in your hand. You may set aside any action cards drawn this way, as you draw them; discard the set aside cards after you finish drawing."
+msgstr "Ziehe solange Karten nach, bis du 7 Karten auf der Hand hast. Aktionskarten kannst du zur Seite legen, sobald du sie ziehst. Die zur Seite gelegten Karten werden am Ende der Aktion abgelegt."
+
+#: ../../.././cards/base.py:379
+#, python-format
+msgid "Do you want to set aside the card '%s'?"
+msgstr "Möchtest du die Karte „%s“ zur Seite legen?"
+
+#: ../../.././cards/base.py:386
+msgid "Moneylender"
+msgstr "Geldverleiher"
+
+#: ../../.././cards/base.py:389
+msgid "Trash a Copper card from your hand. If you do, +3 Money."
+msgstr "Entsorge ein Kupfer aus deiner Hand. Wenn du das machst, +3 Geld."
+
+#: ../../.././cards/base.py:402
+msgid "Spy"
+msgstr "Spion"
+
+#: ../../.././cards/base.py:405
+msgid "+1 Card, +1 Action, Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice."
+msgstr "+1 Karte, +1 Aktion. Jeder Spieler (auch du selbst) deckt die oberste Karte von seinem Nachziehstapel auf. Du entscheidest, ob er sie ablegt oder zurück auf seinen Nachziehstapel legt."
+
+#: ../../.././cards/base.py:420
+#: ../../.././cards/alchemy.py:249
+#, python-format
+msgid "%s reveals the top card of his deck:"
+msgstr "%s zeigt die oberste Karte von seinem Nachziehstapel:"
+
+#: ../../.././cards/base.py:423
+#: ../../.././cards/alchemy.py:252
+#, python-format
+msgid "Do you want to discard %(name)s's card '%(cardname)s'?"
+msgstr "Möchtest du die Karte %(cardname)s von %(name)s ablegen?"
+
+#: ../../.././cards/base.py:428
+#: ../../.././cards/alchemy.py:257
+#, python-format
+msgid "%(playername)s discarded %(player2name)s's card:"
+msgstr "%(playername)s hat diese Karte von %(player2name)s abgelegt:"
+
+#: ../../.././cards/base.py:435
+msgid "Thief"
+msgstr "Dieb"
+
+#: ../../.././cards/base.py:438
+msgid "Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards."
+msgstr "Jeder Mitspieler deckt die obersten beiden Karten von seinem Nachziehstapel auf. Haben die Mitspieler eine oder mehrere Geldkarten aufgedeckt, muss jeder eine davon (nach deiner Wahl) entsorgen. Du kannst eine beliebige Zahl der entsorgten Karten bei dir ablegen. Die übrigen aufgedeckten Karten legen die Spieler bei sich ab."
+
+#: ../../.././cards/base.py:455
+#, python-format
+msgid "%s reveals the top 2 cards of his deck:"
+msgstr "%s deckt die obersten 2 Karten seines Nachziehstapels auf:"
+
+#: ../../.././cards/base.py:461
+#, python-format
+msgid "Which card of the player %s do you want to trash?"
+msgstr "Welche Karte von %s möchtest du entsorgen?"
+
+#: ../../.././cards/base.py:472
+#, python-format
+msgid "Do you want to have the card '%s'?"
+msgstr "Möchtest du die Karte „%s“ haben?"
+
+#: ../../.././cards/base.py:475
+#, python-format
+msgid "%s picks up this card from trash:"
+msgstr "%s nimmt die entsorgte Karte:"
+
+#: ../../.././cards/base.py:481
+msgid "Throne Room"
+msgstr "Thronsaal"
+
+#: ../../.././cards/base.py:484
+msgid "Choose an action card in your hand. Play it twice."
+msgstr "Wähle eine Aktionskarte aus deiner Hand. Spiele diese Aktionskarte zweimal aus."
+
+#: ../../.././cards/base.py:490
+#, python-format
+msgid "Which action card do you want to play on the throne room? (%i actions left)"
+msgstr "Welche Aktionskarte möchtest du im Thronsaal ausspielen? (Noch %i Aktionen übrig.)"
+
+#: ../../.././cards/base.py:508
+msgid "Witch"
+msgstr "Hexe"
+
+#: ../../.././cards/base.py:511
+msgid "+2 Cards, Each other player gains a Curse card."
+msgstr "+2 Karten. Jeder Mitspieler muss sich eine Fluchkarte nehmen."
+
+#: ../../.././cards/base.py:524
+#: ../../.././cards/alchemy.py:128
+#, python-format
+msgid "%s curses you. You gain a curse card."
+msgstr "%s verflucht dich. Du erhältst eine Fluchkarte."
+
+#: ../../.././cards/base.py:529
+msgid "Woodcutter"
+msgstr "Holzfäller"
+
+#: ../../.././cards/base.py:532
+msgid "+1 Buy, +2 Money"
+msgstr "+1 Kauf, +2 Geld."
+
+#: ../../.././cards/base.py:539
+msgid "Workshop"
+msgstr "Werkstatt"
+
+#: ../../.././cards/base.py:542
+msgid "Gain a card costing up to 4."
+msgstr "Nimm dir eine Karte, die bis zu 4 Geld kostet."
+
+#: ../../.././cards/base.py:559
+msgid "First Game"
+msgstr "Erstes Spiel"
+
+#: ../../.././cards/base.py:562
+msgid "Big Money"
+msgstr "Großes Geld"
+
+#: ../../.././cards/base.py:565
+msgid "Interaction"
+msgstr "Interaktion"
+
+#: ../../.././cards/base.py:568
+msgid "Size Distortion"
+msgstr "Größenverzerrung"
+
+#: ../../.././cards/base.py:571
+msgid "Village Square"
+msgstr "Dorfplatz"
+
+#: ../../.././cards/alchemy.py:12
+msgid "Potion"
+msgstr "Trank"
+
+#: ../../.././cards/alchemy.py:20
+msgid "Vineyard"
+msgstr "Weinberg"
+
+#: ../../.././cards/alchemy.py:24
+msgid "Worth 1 point for every 3 Action Cards in your deck (rounded down)"
+msgstr "Wert 1 Punkt für je 3 Aktionskarten im eigenen Kartensatz (abgerundet)."
+
+#: ../../.././cards/alchemy.py:32
+msgid "Alchemist"
+msgstr "Alchemist"
+
+#: ../../.././cards/alchemy.py:36
+msgid "+2 Cards, + 1 Action. When you discard this from play, you may put this on top of your deck if you have a Potion in play."
+msgstr "+2 Karten, +1 Aktion. Wenn diese Karte und ein Trank im Spiel sind und du den Alchemisten ablegst, darfst du diesen verdeckt oben auf deinen Nachziehstapel legen."
+
+#: ../../.././cards/alchemy.py:47
+msgid "Do you want to put your alchemist card onto your deck when cleaning up?"
+msgstr "Möchtest du deinen Alchemisten auf deinen Nachziehstapel legen?"
+
+#: ../../.././cards/alchemy.py:53
+msgid "Apothecary"
+msgstr "Apotheker"
+
+#: ../../.././cards/alchemy.py:57
+msgid "+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed Coppers and Potions into your hand. Put the other cards back on top of your deck in any order."
+msgstr "+1 Karte, +1 Aktion. Decke die obersten 4 Karten von deinem Nachziehstapel auf. Nimm alle aufgedeckten Kupfer und Tränke auf die Hand. Lege die übrigens Karten in beliebiger Reihenfolge verdeckt zurück auf deinen Nachziehstapel."
+
+#: ../../.././cards/alchemy.py:75
+msgid "Which card do you want to put onto your deck next?"
+msgstr "Welche Karte möchtest du als nächstes auf deinen Nachziehstapel legen?"
+
+#: ../../.././cards/alchemy.py:82
+msgid "Apprentice"
+msgstr "Lehrling"
+
+#: ../../.././cards/alchemy.py:85
+msgid "+1 Action. Trash a card from your hand. +1 Card per Money it costs. +2 Cards if it has potion in its cost."
+msgstr "+1 Aktion. Entsorge eine Karte aus deiner Hand. +1 Karte pro Geld, das die Karte kostet und zusätzliche +2 Karten, wenn sie Tränke kostet."
+
+#: ../../.././cards/alchemy.py:92
+#: ../../.././cards/alchemy.py:291
+#: ../../.././cards/intrigue.py:189
+msgid "Which card do you want to trash?"
+msgstr "Welche Karte möchtest du entsorgen?"
+
+#: ../../.././cards/alchemy.py:110
+msgid "Familiar"
+msgstr "Vertrauter"
+
+#: ../../.././cards/alchemy.py:114
+msgid "+1 Card, +1 Action. Each other player gains a Curse."
+msgstr "+1 Karte, +1 Aktion. Jeder Mitspieler muss sich eine Fluchkarte nehmen."
+
+#: ../../.././cards/alchemy.py:134
+msgid "Golem"
+msgstr "Golem"
+
+#: ../../.././cards/alchemy.py:138
+msgid "Reveal cards from your deck until you reveal 2 Action cards other than Golem cards. Discard the other cards, then play the Action cards in any order."
+msgstr "Decke solange Karten von deinem Nachziehstapel auf, bis 2 Aktionskarten (außer Golem-Karten) offen liegen. Lege sofort alle übrigen aufgedeckten Karten ab und spiele die beiden Aktionskarten in beliebiger Reihenfolge."
+
+#: ../../.././cards/alchemy.py:168
+msgid "Which card do you want to play next?"
+msgstr "Welche Karte möchtest du als nächstes spielen?"
+
+#: ../../.././cards/alchemy.py:182
+msgid "Herbalist"
+msgstr "Kräuterkundiger"
+
+#: ../../.././cards/alchemy.py:185
+msgid "+1 Buy, +1 Money. If you discard this from play, you may put one of your Treasures from play on top of your deck."
+msgstr "+1 Kauf, +1 Geld. Wenn diese Karte im Spiel ist und du sie ablegst, darfst du eine deiner Geldkarten im Spiel verdeckt oben auf deinen Nachziehstapel legen."
+
+#: ../../.././cards/alchemy.py:196
+msgid "Which treasure do you want to put on top of your deck?"
+msgstr "Welche Geldkarte möchtest du auf deinen Nachziehstapel legen?"
+
+#: ../../.././cards/alchemy.py:205
+msgid "Philosophers Stone"
+msgstr "Stein der Weisen"
+
+#: ../../.././cards/alchemy.py:209
+msgid "Worth 1 Point for every three Action cards in your deck (rounded down)."
+msgstr "Wert 1 Punkt für je 3 Aktionskarten im eigenen Kartensatz (abgerundet)."
+
+#: ../../.././cards/alchemy.py:216
+msgid "Possession"
+msgstr "Besessenheit"
+
+#: ../../.././cards/alchemy.py:221
+msgid "The player to your left takes an extra turn after this one, in which you can see all the cards he can and make all decisions for him. Any cards he would gain on that turn, you gain instead, any cards of his that are trashed are set aside and returned to his discard pile at the end of turn."
+msgstr "Der Spieler links von dir führt einen Extra-Zug direkt nach diesem aus. Dabei siehst du alle Karten, die auch er sieht, und du fällst alle Entscheidungen für ihn. Alle Karten, die er nimmt, oder kauft, legst du auf deinen Ablagestapel. Alle Karten, die er in diesem Zug entsorgt, werden zur Seite gelegt und am Ende des Zuges auf seinen Ablagestapel gelegt."
+
+#: ../../.././cards/alchemy.py:231
+msgid "Scrying Pool"
+msgstr "Vision"
+
+#: ../../.././cards/alchemy.py:235
+msgid "Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice. Then reveal cards from the top of your deck until you reveal one that is not an Action. Put all your revealed cards into your hand."
+msgstr "+1 Aktion. Jeder Spieler (auch du selbst) muss die oberste Karte von seinem Nachziehstapel aufdecken. Du entscheidest, ob er sie ablegen oder auf seinen Nachziehstapel zurücklegen muss. Dann deckst du solange Karten von deinem Nachziehstapel auf, bis du eine Karte aufdeckst, die keine Aktionskarte ist. Nimm alle aufgedeckten Karten auf die Hand."
+
+#: ../../.././cards/alchemy.py:281
+msgid "Transmute"
+msgstr "Verwandlung"
+
+#: ../../.././cards/alchemy.py:285
+msgid "Trash a card from your hand. If it is an Action Card, gain a Duchy. If it is a Treasure card, gain a Transmute. If it is a Victory Card, gain a Gold."
+msgstr "Entsorge eine Karte aus deiner Hand. Ist es eine Aktionskarte, nimm dir ein Herzogtum. Ist es eine Geldkarte, nimm dir eine Verwandlung. Ist es eine Punktekarte, nimm dir ein Gold."
+
+#: ../../.././cards/alchemy.py:296
+#: ../../.././cards/intrigue.py:196
+#, python-format
+msgid "%s trashes this card:"
+msgstr "%s entsorgt diese Karte:"
+
+#: ../../.././cards/alchemy.py:319
+msgid "University"
+msgstr "Universität"
+
+#: ../../.././cards/alchemy.py:323
+msgid "+2 Actions. You may gain an Action card costing up to 5."
+msgstr "+2 Aktionen. Du darfst dir eine Aktionskarte nehmen, die bis zu 5 Geld kostet."
+
+#: ../../.././cards/alchemy.py:332
+msgid "Select a action card that you want to have."
+msgstr "Wähle eine Aktionskarte aus, die du haben möchtest."
+
+#: ../../.././cards/alchemy.py:356
+msgid "Forbidden Arts [A&D]"
+msgstr "Verbotene Künste (Alchemisten)"
+
+#: ../../.././cards/alchemy.py:359
+msgid "Potion Mixers [A&D]"
+msgstr "Braumeister (Alchemisten)"
+
+#: ../../.././cards/alchemy.py:362
+msgid "Chemistry Lesson [A&D]"
+msgstr "Chemiestunde (Alchemisten)"
+
+#: ../../.././cards/alchemy.py:365
+msgid "Servants [A&I]"
+msgstr "Diener (Alchemisten & Intrige)"
+
+#: ../../.././cards/alchemy.py:368
+msgid "Secret Research [A&I]"
+msgstr "Geheime Forschung (Alchemisten & Intrige)"
+
+#: ../../.././cards/alchemy.py:371
+msgid "Pools, Tools, and Fools [A&I]"
+msgstr "Harte Arbeit, unfairer Lohn (Alchemisten & Intrige)"
 
 #: ../../.././cards/intrigue.py:11
 msgid "Baron"
@@ -1274,4 +1238,65 @@ msgstr "Manueller Wahnsinn"
 #: ../../.././cards/intrigue.py:581
 msgid "Underlings"
 msgstr "Untergebene"
+
+#: ../../.././cards/__init__.py:11
+msgid "Base game"
+msgstr "Basisspiel"
+
+#: ../../.././cards/__init__.py:12
+msgid "Intrigue game"
+msgstr "Die Intrige"
+
+#: ../../.././cards/__init__.py:13
+msgid "Alchemy game"
+msgstr "Die Alchemisten"
+
+#: ../../.././cards/__init__.py:14
+msgid "Seaside game"
+msgstr "Seaside"
+
+#: ../../.././cards/__init__.py:65
+msgid "Victory/Treasure card"
+msgstr "Punktekarte/Geldkarte"
+
+#: ../../.././cards/__init__.py:67
+msgid "Action/Victory card"
+msgstr "Aktionskarte/Punktekarte"
+
+#: ../../.././cards/__init__.py:98
+msgid "Action card"
+msgstr "Aktionskarte"
+
+#: ../../.././cards/__init__.py:105
+msgid "Duration card"
+msgstr "Dauerkarte"
+
+#: ../../.././cards/__init__.py:110
+msgid "Attack card"
+msgstr "Angriffskarte"
+
+#: ../../.././cards/__init__.py:120
+msgid "Do you want to flash a card in response to the attack?"
+msgstr "Möchtest du eine Reaktionskarte aufdecken?"
+
+#: ../../.././cards/__init__.py:132
+#, python-format
+msgid "%s reacts with:"
+msgstr "%s reagiert mit:"
+
+#: ../../.././cards/__init__.py:147
+msgid "Action/Reaction card"
+msgstr "Aktionskarte/Reaktionskarte"
+
+#: ../../.././cards/__init__.py:153
+msgid "Victory card"
+msgstr "Punktekarte"
+
+#: ../../.././cards/__init__.py:159
+msgid "Treasure card"
+msgstr "Geldkarte"
+
+#: ../../.././cards/__init__.py:165
+msgid "Curse card"
+msgstr "Fluchkarte"
 
