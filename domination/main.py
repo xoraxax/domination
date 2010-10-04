@@ -4,9 +4,11 @@ import random
 import pickle
 import optparse
 import traceback
+import gettext
 
 from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
+from gettext import NullTranslations
 
 app = Flask(__name__)
 app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
@@ -28,13 +30,39 @@ MAX_SEQNO_DIFF = 8
 # init app object
 app.games = {}
 app.users = {}
+app.languages = {}
 app.game_storage_prefix = os.path.join(root_dir, "game-")
 app.game_storage_postfix = ".pickle"
-app.card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues()
-                    if cls.optional]
-app.card_classes.sort(key=lambda x: x.name)
+app.all_card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues()
+                    if cls.optional & cls.implemented ]
+app.card_classes = lambda: sorted(app.all_card_classes, key=lambda x: x.name.__str__())
 app.template_context_processors[None].append(lambda: {'app': app, 'store': get_store()})
 
+# init languages
+for language in ["de_DE"]:
+	# the path "domination/po" needs to be fixed, I guess. ~bombe
+	# also, I am not sure that I am actually using gettext correctly here. will this
+	# load all the languages independently after one another, or will there be some
+	# kind of default/fallback system implemented here unknowingly?
+	t = gettext.translation("domination", "domination/po", [language], codeset = "UTF-8")
+	app.languages[language] = t
+app.languages["en"] = NullTranslations()
+
+def extract_request_language(func):
+	def innerfunc(*args, **kwargs):
+		"""Extracts the preferred language of the browser from the request."""
+		header_value = request.headers.get("Accept-Language")
+		language_weights = header_value.split(",")
+		request.translation = app.languages["en"]
+		for language_weight in language_weights:
+			language = language_weight.split(";q=")[0].replace("-", "_")
+			if language in app.languages:
+				request.translation = app.languages[language]
+				print "language:", language
+				break
+		return func(*args, **kwargs)
+	innerfunc.__name__ = func.__name__
+	return innerfunc
 
 def needs_login(func):
     def innerfunc(*args, **kwargs):
@@ -94,10 +122,10 @@ def get_response(req):
             assert req.is_selectable(card)
             cards.append(card)
         if len(cards) < req.count_lower:
-            req.last_error = _("You need to select at least %i cards!") % (req.count_lower, )
+            req.last_error = _("You need to select at least %i cards!", [req.count_lower])
             return Ellipsis
         if req.count_upper is not None and len(cards) > req.count_upper:
-            req.last_error = _("You may select at most %i cards!") % (req.count_upper, )
+            req.last_error = _("You may select at most %i cards!", [req.count_upper])
             return Ellipsis
         return cards
     else:
@@ -141,6 +169,7 @@ def logout():
     return redirect(url_for("index"))
 
 @app.route("/create_game", methods=['GET', 'POST'])
+@extract_request_language
 @needs_login
 def create_game(): # XXX check for at most 10 sets
     if request.method == 'POST':
@@ -169,9 +198,9 @@ def create_game(): # XXX check for at most 10 sets
     def transform_sets(sets):
         result = []
         for set in sets:
-            result.append((set, [c.__name__ for c in set.card_classes]))
+            result.append((set, [c.name.__str__() for c in sorted(set.card_classes, key = lambda x: x.name.__str__())]))
         return result
-    name = _("Game of %s") % (session["username"], )
+    name = _("Game of %s", [session["username"]])
     newname = name
     ctr = 0
     while newname in app.games:

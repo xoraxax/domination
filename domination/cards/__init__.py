@@ -129,7 +129,7 @@ class AttackCard(ActionCard):
                 for info_player in game.following_participants(other_player):
                     yield InfoRequest(
                         game, info_player,
-                        _("%s reacts with:") % (other_player.name, ), [card])
+                        _("%s reacts with:", [other_player.name]), [card])
                 gen = card.defend_action(game, other_player, self)
                 item = None
                 while True:
