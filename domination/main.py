@@ -40,29 +40,24 @@ app.template_context_processors[None].append(lambda: {'app': app, 'store': get_s
 
 # init languages
 for language in ["de_DE"]:
-	# the path "domination/po" needs to be fixed, I guess. ~bombe
-	# also, I am not sure that I am actually using gettext correctly here. will this
-	# load all the languages independently after one another, or will there be some
-	# kind of default/fallback system implemented here unknowingly?
-	t = gettext.translation("domination", "domination/po", [language], codeset = "UTF-8")
-	app.languages[language] = t
+    # the path "domination/po" needs to be fixed, I guess. ~bombe
+    # also, I am not sure that I am actually using gettext correctly here. will this
+    # load all the languages independently after one another, or will there be some
+    # kind of default/fallback system implemented here unknowingly?
+    t = gettext.translation("domination", "domination/po", [language], codeset = "UTF-8")
+    app.languages[language] = t
 app.languages["en"] = NullTranslations()
 
-def extract_request_language(func):
-	def innerfunc(*args, **kwargs):
-		"""Extracts the preferred language of the browser from the request."""
-		header_value = request.headers.get("Accept-Language")
-		language_weights = header_value.split(",")
-		request.translation = app.languages["en"]
-		for language_weight in language_weights:
-			language = language_weight.split(";q=")[0].replace("-", "_")
-			if language in app.languages:
-				request.translation = app.languages[language]
-				print "language:", language
-				break
-		return func(*args, **kwargs)
-	innerfunc.__name__ = func.__name__
-	return innerfunc
+def extract_request_language():
+    """Extracts the preferred language of the browser from the request."""
+    header_value = request.headers.get("Accept-Language")
+    language_weights = header_value.split(",")
+    request.translation = app.languages["en"]
+    for language_weight in language_weights:
+        language = language_weight.split(";q=")[0].replace("-", "_")
+        if language in app.languages:
+            request.translation = app.languages[language]
+            break
 
 def needs_login(func):
     def innerfunc(*args, **kwargs):
@@ -169,7 +164,6 @@ def logout():
     return redirect(url_for("index"))
 
 @app.route("/create_game", methods=['GET', 'POST'])
-@extract_request_language
 @needs_login
 def create_game(): # XXX check for at most 10 sets
     if request.method == 'POST':
@@ -198,7 +192,7 @@ def create_game(): # XXX check for at most 10 sets
     def transform_sets(sets):
         result = []
         for set in sets:
-            result.append((set, [c.name.__str__() for c in sorted(set.card_classes, key = lambda x: x.name.__str__())]))
+            result.append((set, [c.name.string for c in sorted(set.card_classes, key = lambda x: x.name.string)]))
         return result
     name = _("Game of %s", [session["username"]])
     newname = name
@@ -369,6 +363,7 @@ def check_seqno(game_runner):
 def before_request():
     if "username" in session and session["username"] not in app.users:
         app.users[session["username"]] = {"games": {}}
+    extract_request_language()
 
 def restore_game(filename):
     f = file(filename, "rb")
