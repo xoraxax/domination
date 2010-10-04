@@ -8,12 +8,14 @@ import gettext
 
 from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
-from gettext import NullTranslations
-
-app = Flask(__name__)
-app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
+from flaskext.babel import Babel
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+app = Flask(__name__)
+babel = Babel(app)
+app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
+
 sys.path.append(root_dir)
 
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
@@ -38,31 +40,14 @@ app.all_card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues(
 app.card_classes = lambda: sorted(app.all_card_classes, key=lambda x: x.name.__str__())
 app.template_context_processors[None].append(lambda: {'app': app, 'store': get_store()})
 
-# init languages
-for language in ["de_DE"]:
-	# the path "domination/po" needs to be fixed, I guess. ~bombe
-	# also, I am not sure that I am actually using gettext correctly here. will this
-	# load all the languages independently after one another, or will there be some
-	# kind of default/fallback system implemented here unknowingly?
-	t = gettext.translation("domination", "domination/po", [language], codeset = "UTF-8")
-	app.languages[language] = t
-app.languages["en"] = NullTranslations()
 
-def extract_request_language(func):
-	def innerfunc(*args, **kwargs):
-		"""Extracts the preferred language of the browser from the request."""
-		header_value = request.headers.get("Accept-Language")
-		language_weights = header_value.split(",")
-		request.translation = app.languages["en"]
-		for language_weight in language_weights:
-			language = language_weight.split(";q=")[0].replace("-", "_")
-			if language in app.languages:
-				request.translation = app.languages[language]
-				print "language:", language
-				break
-		return func(*args, **kwargs)
-	innerfunc.__name__ = func.__name__
-	return innerfunc
+@babel.localeselector
+def get_locale():
+    # try to guess the language from the user accept
+    # header the browser transmits.  We support de/fr/en in this
+    # example.  The best match wins.
+    return request.accept_languages.best_match(['de', 'en'])
+
 
 def needs_login(func):
     def innerfunc(*args, **kwargs):
@@ -169,7 +154,6 @@ def logout():
     return redirect(url_for("index"))
 
 @app.route("/create_game", methods=['GET', 'POST'])
-@extract_request_language
 @needs_login
 def create_game(): # XXX check for at most 10 sets
     if request.method == 'POST':
