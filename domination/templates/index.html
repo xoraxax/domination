@@ -1,15 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Overview{% endblock %}
+{% block title %}{% trans %}Overview{% endtrans %}{% endblock %}
 {% block content %}
-  <h2>Overview</h2>
-  <h3>Running games</h3>
+<h3>{% trans %}Running games{% endtrans %}</h3>
   <table border="1">
-  <tr><th>Name</th><th>State</th><th>Players</th><th>Cards</th><th>Round</th></tr>
+    <tr><th>{% trans %}Name{% endtrans%}</th><th>{% trans %}State{% endtrans %}</th><th>{% trans %}Players{% endtrans %}</th><th>{% trans %}Cards{% endtrans %}</th><th>{% trans %}Round{% endtrans %}</th></tr>
     {% for runner in runners %}
-    <tr><td><a href="{{ url_for('game', name=runner.game.name) }}">{{ runner.game.name }}</a></td><td>{{ runner.state }}</td><td>{{ runner.game.player_names }}</td><td>{{ runner.game.selected_cards_str }}
+    <tr><td><a href="{{ url_for('game', name=runner.game.name) }}">{{ runner.game.name }}</a></td><td>{{ _(runner.state) }}</td><td>{{ runner.game.player_names }}</td><td>{{ runner.game.selected_cards_str }}
     </td><td>{{ runner.game.round }}</td></tr>
     {% else %}
-    <tr><td colspan="5">None</td></tr>
+    <tr><td colspan="5">{% trans %}None{% endtrans %}</td></tr>
     {% endfor %}
   </table>
 {% endblock %}

@@ -20,22 +20,22 @@
   {% endblock %}
 </head>
 <body>
-  <noscript>This game needs JavaScript to work properly!</noscript>
+  <noscript>{{ _('This game needs JavaScript to work properly!') }}</noscript>
   <div id="menu">
     <ul>
       {% if not session.username %}
       <li>
-        <a href="{{ url_for('login') }}">log in</a>
+      <a href="{{ url_for('login') }}">{% trans %}log in{% endtrans %}</a>
       </li>
       {% else %}
       <li>
-        <a href="{{ url_for('index') }}">view game list</a>
+        <a href="{{ url_for('index') }}">{% trans %}view game list{% endtrans %}</a>
       </li>
       <li>
-        <a href="{{ url_for('create_game') }}">create new game</a>
+        <a href="{{ url_for('create_game') }}">{% trans %}create new game{% endtrans %}</a>
       </li>
       <li>
-        <a href="{{ url_for('logout') }}">log out</a>
+        <a href="{{ url_for('logout') }}">{% trans %}log out{% endtrans %}</a>
       </li>
       {% endif %}
     </ul>
@@ -46,7 +46,7 @@
   <div id="content">{% block content %}{% endblock %}</div>
   <div id="footer">
     {% block footer %}
-    Domination – &copy; 2010 Various authors
+    Domination – {% trans %}&copy; 2010 Various authors{% endtrans %}
     {% endblock %}
   </div>
 </body>

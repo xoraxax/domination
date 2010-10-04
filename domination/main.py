@@ -13,7 +13,8 @@ from flaskext.babel import Babel
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 app = Flask(__name__)
-babel = Babel(app)
+app.jinja_env.add_extension('jinja2.ext.i18n')
+babel = Babel(app, configure_jinja=False)
 app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
 
 sys.path.append(root_dir)
@@ -39,6 +40,7 @@ app.all_card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues(
                     if cls.optional & cls.implemented ]
 app.card_classes = lambda: sorted(app.all_card_classes, key=lambda x: x.name.__str__())
 app.template_context_processors[None].append(lambda: {'app': app, 'store': get_store()})
+app.jinja_env.globals.update(gettext=_)
 
 
 @babel.localeselector

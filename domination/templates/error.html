@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Error{% endblock %}
+{% block title %}{% trans %}Error{% endtrans %}{% endblock %}
 {% block content %}
-  <h4>Error</h4>
+<h4>{% trans %}Error{% endtrans %}</h4>
   <div class="errormessage">{{ error_msg }}</div>
 {% endblock %}

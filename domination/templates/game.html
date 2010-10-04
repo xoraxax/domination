@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Game: {{ game.name }}{% endblock %}
+{% block title %}{% trans %}Game: {% endtrans %}{{ game.name }}{% endblock %}
 {% block head %}
   {{ super() }}
   {% if not req %}
@@ -20,34 +20,34 @@
   {{ macros.init_render_card() }}
 {% endblock %}
 {% block content %}
-<h2>{{ game.name }}{% if runner.startable(runner.owner) %} (stopped){% endif %}
-  {% if game.round %} (round {{ game.round }}){% endif %}</h2>
+<h2>{{ game.name }}{% if runner.startable(runner.owner) %} {% trans %}(stopped){% endtrans %}{% endif %}
+  {% if game.round %} {{ _('(round %i)', (game.round, )) }}{% endif %}</h2>
   <ul>
     {% if game not in store.games and runner.joinable %}
       <li><form action="{{ url_for("join_game", name=game.name) }}" method="post">
-        <input type="submit" value="Join">
+	      <input type="submit" value="{% trans %}Join{% endtrans %}">
       </form></li>
     {% endif %}
     {% if runner.startable(store.games[game]) %}
       <li><form action="{{ url_for("start_game", name=game.name) }}" method="post">
-        <input type="submit" value="Start">
+	      <input type="submit" value="{% trans %}Start{% endtrans %}">
       </form></li>
     {% endif %}
     {% if runner.state != ENDED and player == runner.owner %}
       <li><form action="{{ url_for("cancel_game", name=game.name) }}" method="post">
-        <input type="submit" value="Abort game">
+	      <input type="submit" value="{% trans %}Abort game{% endtrans %}">
       </form></li>
       {% endif %}
   </ul>
   <div id="players">
-    <h3>Players</h3>
+	  <h3>{% trans %}Players{% endtrans %}</h3>
     <ul>
       {% for p in game.players %}
-      <li class="{% if p.current %}activeplayer{% endif %}">{{ p.name }} ({{ p.hand | count }} of {{ p.total_cards | count }} cards in hand)
-      {% if runner.waiting_for == p %} (waiting for this player)
+      <li class="{% if p.current %}activeplayer{% endif %}">{{ p.name }} {{ _('(%(handcount)s of %(totalcount)s cards in hand)', {"handcount": p.hand | count, "totalcount": p.total_cards | count}) }}
+      {% if runner.waiting_for == p %} {% trans %}(waiting for this player){% endtrans %}
       {% if player == runner.owner and p != player and game.players | count > 2 %}
         <form action="{{ url_for("kick_player", name=game.name, playername=p.name) }}" method="post">
-          <input type="submit" value="Kick">
+		<input type="submit" value="{% trans %}Kick{% endtrans %}">
         </form>
       {% endif %}
       {% endif %}
@@ -55,7 +55,7 @@
       {% endfor %}
     </ul>
     {% if game.kibitzers %}
-      <h3>Kibitzers</h3>
+    <h3>{% trans %}Kibitzers{% endtrans %}</h3>
       <ul>
         {% for kibitzer in game.kibitzers %}
         <li>{{ kibitzer.name }}</li>
@@ -65,22 +65,23 @@
   </div>
   {% if player and (player.deck or player.discard_pile) %}
     <div id="pileinfo">
-      <h3>Your deck</h3>
-      {{ player.deck | count }} cards
-      <h3>Your discard pile</h3>
-      {{ player.discard_pile | count }} cards
+      <h3>{% trans %}Your deck{% endtrans %}</h3>
+      {{ _('%i cards', player.deck | count) }}
+      <h3>{% trans %}Your discard pile{% endtrans %}</h3>
+      {{ _('%i cards', player.discard_pile | count) }}
     </div>
   {% endif %}
   <div id="infosep"></div>
 
   {% if runner.state == ENDED %}
-  <h3>The game has ended. {{ game.end_of_game_reason }}</h3>
+  <h3>{% trans %}The game has ended.{% endtrans %} {{ game.end_of_game_reason }}</h3>
     <ul>
     {% for player in game.players %}
-      <li>{{ player.name }}: {{ player.deck | count }} cards, {{ player.points(game) }} points</li>
+      <li>{{ _('%(pname)s: %(cards)i cards, %(points)i points', {"pname": player.name,
+	      "cards": player.deck | count, "points": player.points(game)}) }}</li>
     {% endfor %}
     </ul>
-    Your cards:
+    {% trans %}Your cards:{% endtrans %}
     {% for card in player.deck %}
       {{ macros.render_card(card) }}
     {% endfor %}
@@ -110,33 +111,40 @@
       <div class="errormessage">{{ req.last_error }}</div>
     {% endif %}
     {% if req_type == "SelectDeal" %}
-    <p>You have {{ player.remaining_money }} Money{% if player.remaining_potion %}, {{ player.remaining_potion }} Potion{% endif %} and {{ player.remaining_deals }} buys remaining!</p>
+    <p>{% if player.remaining_potion %}
+    {{ _('You have %(money)i Money, %(potion)i Potion(s) and %(buys)i buys remaining!',
+    	{"money": player.remaining_money, "potion": player.remaining_potion, "buys": player.remaining_deals}) }}
+    {% else %}
+    {{ _('You have %(money)i Money and %(buys)i buys remaining!',
+    	{"money": player.remaining_money, "buys": player.remaining_deals}) }}
+    {% endif %}
+    </p>
       {% for card in req.cards %}
         {% call macros.render_card(card) %}
           <span class="{% if not game.supply[card.__name__] %}importantfigure{% endif %}">
-            {{ game.supply[card.__name__] | count }} left</span>
+		  {{ _('%i left', (game.supply[card.__name__] | count, )) }}</span>
           {% if req.is_buyable(card) %}
             <form action="" method="post">
               <input type="hidden" name="req_id" value="{{ req_id }}">
               <input type="hidden" name="card" value="{{ card.__name__ }}">
-              <input type="submit" value="Buy">
+	      <input type="submit" value="{% trans %}Buy{% endtrans %}">
             </form>
           {% endif %}
         {% endcall %}
       {% endfor %}
       <form action="" method="post">
       <input type="hidden" name="req_id" value="{{ req_id }}">
-      <input type="submit" value="Cancel">
+      <input type="submit" value="{% trans %}Cancel{% endtrans %}">
       </form>
     {% elif req_type == "SelectHandCards" %}
       {% if req.count_upper == req.count_lower != none %}
-        You should select exactly {{ req.count_lower }} cards.
+      	{{ _('You should select exactly %i cards.', (req.count_lower, )) }}
       {% else %}
       {% if req.count_upper != 1 and req.count_upper != none %}
-        You may select at most {{ req.count_upper }} cards.
+      	{{ _('You may select at most %i cards.', (req.count_upper,)) }}
       {% endif %}
       {% if not req.count_lower in (0, 1) %}
-        You need to select at least {{ req.count_lower }} cards.
+      	{{ _('You need to select at least %i cards.', (req.count_lower,)) }}
       {% endif %}
       {% endif %}
       {% if req.count_upper != 1 or req.count_lower == 0 %}
@@ -150,9 +158,9 @@
               <form action="" method="post">
               <input type="hidden" name="req_id" value="{{ req_id }}">
               <input type="hidden" name="card" value="{{ loop.index0 }}">
-              <input type="submit" value="Select">
+	      <input type="submit" value="{% trans %}Select{% endtrans %}">
               {% if req.count_lower == 0 %}
-                <input type="submit" name="canceled" value="Cancel">
+	        <input type="submit" name="canceled" value="{% trans %}Cancel{% endtrans %}">
               {% endif %}
               </form>
             {% else %}
@@ -163,10 +171,10 @@
       {% endfor %}
       {% if req.count_upper != 1 or req.count_lower == 0%}
         {% if req.count_lower == 0 %}
-        <input type="submit" name="canceled" value="Cancel">
+	<input type="submit" name="canceled" value="{% trans %}Cancel{% endtrans %}">
         {% endif %}
         {% if req.count_upper != 1 %}
-        <input type="submit" value="Select">
+	<input type="submit" value="{% trans %}Select{% endtrans %}">
         {% endif %}
         </form>
       {% endif %}
@@ -174,12 +182,12 @@
       {% for card in req.card_classes %}
         {% call macros.render_card(card) %}
           {% if req.show_supply_count %}
-            {{ game.supply[card.__name__] | count }} left
+            {{ _('%i left', (game.supply[card.__name__] | count, )) }}
           {% endif %}
           <form action="" method="post">
             <input type="hidden" name="req_id" value="{{ req_id }}">
             <input type="hidden" name="card" value="{{ card.__name__ }}">
-            <input type="submit" value="Select">
+	    <input type="submit" value="{% trans %}Select{% endtrans %}">
           </form>
         {% endcall %}
       {% endfor %}
@@ -187,12 +195,12 @@
       <form action="" method="post">
         <input type="hidden" name="req_id" value="{{ req_id }}">
         <input type="hidden" name="answer" value="yes">
-        <input type="submit" value="Yes">
+	<input type="submit" value="{% trans %}Yes{% endtrans %}">
       </form>
       <form action="" method="post">
         <input type="hidden" name="req_id" value="{{ req_id }}">
         <input type="hidden" name="answer" value="no">
-        <input type="submit" value="No">
+	<input type="submit" value="{% trans %}No{% endtrans %}">
       </form>
     {% elif req_type == "Question" %}
       {% for option in req.options %}
@@ -210,7 +218,7 @@
         {{ option[1] }} <br>
       {% endfor %}
         <input type="hidden" name="req_id" value="{{ req_id }}">
-        <input type="submit" value="Select">
+	<input type="submit" value="{% trans %}Select{% endtrans %}">
       </form>
     {% else %}
       Unknown request {{ req | string }}!
@@ -219,19 +227,19 @@
   {% if player %}
     {% if not player.deck and not player.hand and runner.state != ENDED %}
       {% if game.players | count == 1 %}
-        Waiting for further players ...
+      {% trans %}Waiting for further players ...{% endtrans %}
       {% else %}
-        Waiting for {{ runner.owner.name }} to start the game ...
+      	{{ _('Waiting for %s to start the game ...', (runner.owner.name, )) }}
       {% endif %}
     {% else %}
       {% if player.activated_cards %}
-        <h3>Activated action cards</h3>
+      <h3>{% trans %}Activated action cards{% endtrans %}</h3>
         {% for card in player.activated_cards %}
           {{ macros.render_card(card) }}
         {% endfor %}
       {% endif %}
       {% if req_type != "SelectHandCards" %}
-        <h3>Your hand</h3>
+      <h3>{% trans %}Your hand{% endtrans %}</h3>
         {% for card in player.sorted_hand %}
           {{ macros.render_card(card) }}
         {% endfor %}
@@ -241,14 +249,14 @@
   {% if req_type != "SelectDeal" %}
     <div id="supply">
       <form>
-        <input type="button" onclick="show_supply();" value="Supply">
+        <input type="button" onclick="show_supply();" value="{% trans %}Supply{% endtrans %}">
       </form>
       <div id="supplycards">
         {% for key, cards in game.supply | dictsort %}
           {% if cards %}
             {% call macros.render_card(cards[0]) %}
               <span class="{% if not game.supply[key] %}importantfigure{% endif %}">
-                {{ game.supply[key] | count }} left</span>
+		{{ _('%i left', (game.supply[key] | count, )) }}</span>
             {% endcall %}
           {% endif %}
         {% endfor %}
