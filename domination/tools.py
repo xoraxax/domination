@@ -11,7 +11,7 @@ class Translatable(unicode):
         t = get_translations()
         if t is None:
             return self % self.parameters
-        return t.ugettext(self) % self.parameters
+        return t.ugettext(self[:]) % self.parameters
 
 
 def _(string, parameters=()):
