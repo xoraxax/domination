@@ -39,12 +39,12 @@ app.template_context_processors[None].append(lambda: {'app': app, 'store': get_s
 
 # init languages
 for language in ["de_DE"]:
-	# the path "domination/po" needs to be fixed, I guess. ~bombe
-	# also, I am not sure that I am actually using gettext correctly here. will this
-	# load all the languages independently after one another, or will there be some
-	# kind of default/fallback system implemented here unknowingly?
-	t = gettext.translation("domination", "domination/po", [language], codeset = "UTF-8")
-	app.languages[language] = t
+    # the path "domination/po" needs to be fixed, I guess. ~bombe
+    # also, I am not sure that I am actually using gettext correctly here. will this
+    # load all the languages independently after one another, or will there be some
+    # kind of default/fallback system implemented here unknowingly?
+    t = gettext.translation("domination", "domination/po", [language], codeset = "UTF-8")
+    app.languages[language] = t
 app.languages["en"] = NullTranslations()
 
 def extract_request_language(func):
