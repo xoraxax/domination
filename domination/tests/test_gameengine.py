@@ -45,7 +45,10 @@ class TestRandomRunner(object):
             except EndOfGameException:
                 print game.end_of_game_reason
                 break
-            if isinstance(req, InfoRequest) or isinstance(req, Checkpoint):
+            if isinstance(req, InfoRequest):
+                iter(req.cards)
+                continue
+            if isinstance(req, Checkpoint):
                 continue
             assert len(req.player.total_cards) >= 5, "\n".join(record)
             assert game.round < 100, "\n".join(record)

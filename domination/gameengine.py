@@ -330,7 +330,7 @@ class Game(object):
         for other_player in self.participants:
             if other_player is not player:
                 yield InfoRequest(self, other_player,
-                        _("%s plays:", (player.name, )), card)
+                        _("%s plays:", (player.name, )), [card])
 
         player.activated_cards.append(card)
         gen = card.activate_action(self, player)
