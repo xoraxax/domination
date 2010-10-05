@@ -448,10 +448,17 @@ class Game(object):
                 card_name = CardTypeRegistry.keys2classes((key, ))[0].name
                 yield InfoRequest(self, player, _("The pile %s is empty.", (card_name, )), [])
 
-
     @property
     def player_names(self):
         return ", ".join(p.name for p in self.players)
+
+    @property
+    def empty_pile_names(self):
+        empty_batches = [card_key for card_key, cards in self.supply.items()
+                if not cards]
+        return u", ".join(unicode(card.name) for card in
+                CardTypeRegistry.keys2classes(empty_batches))
+
 
 from domination.cards import Alchemy
 
@@ -523,7 +530,7 @@ class DominationGame(Game):
     def check_end_of_game(self):
         no_players = len(self.players) # number of players
         if not self.supply["Province"]: # check if province supply is empty
-            return _("Province supply is empty.")
+            return True
         # fill empty_batches with card keys of cards the supply of which is empty
         empty_batches = [card_key for card_key, cards in self.supply.items()
                 if not cards]
@@ -531,11 +538,8 @@ class DominationGame(Game):
             must_empty = 3
         else:
             must_empty = 4
-        # check if at least must_empty supply piles are empty
         if len(empty_batches) >= must_empty:
-            return _("The following supplies are empty:") + " " + \
-                    ", ".join(card.name for card in
-                            CardTypeRegistry.keys2classes(empty_batches))
+            return True
 
 
 class Kibitzer(object):
