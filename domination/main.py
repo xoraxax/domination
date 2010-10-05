@@ -186,10 +186,10 @@ def create_game(): # XXX check for at most 10 sets
         for set in sets:
             result.append((set, [c.__name__ for c in sorted(set.card_classes, key=lambda x: x.name)]))
         return result
-    name = _("Game of %s", (session["username"], ))
+    name = unicode(_("Game of %s", (session["username"], )))
     newname = name
     ctr = 0
-    while unicode(newname) in app.games:
+    while newname in app.games:
         ctr += 1
         newname = "%s (%i)" % (name, ctr)
     return render_template("create_game.html", editions=editions,
