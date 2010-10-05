@@ -189,7 +189,7 @@ def create_game(): # XXX check for at most 10 sets
     name = _("Game of %s", (session["username"], ))
     newname = name
     ctr = 0
-    while newname in app.games:
+    while unicode(newname) in app.games:
         ctr += 1
         newname = "%s (%i)" % (name, ctr)
     return render_template("create_game.html", editions=editions,
