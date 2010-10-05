@@ -39,7 +39,7 @@
       var button = $("input[type='submit']")[0];
       var checkmarks = $("input[name=card_key]:checked").size();
       button.disabled = (checkmarks != 10);
-      $("#noofcards").text(checkmarks + " card" + (checkmarks == 1 ? "" : "s"));
+      $("#noofcards").text(checkmarks);
     };
     $(function() {
       $("input[name=card_key]").change(update_button);
@@ -87,7 +87,7 @@
            onclick='select_set({{cards | tojson | safe}})'>{{ set.name }}</a>
       {% endfor %}
 
-    <p>{% trans %}Which 10 cards? You selected <span id="noofcards"></span>.{% endtrans %}</p>
+    <p>{% trans %}Which 10 cards? You selected <span id="noofcards"></span> card(s).{% endtrans %}</p>
       {% for edition, cards in app.card_classes() | groupby("edition") %}
         <h3>{{ edition.name }}<span class="edition-{{ edition.key }}"></span></h3>
         {% for cls in cards %}
