@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Domination\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-04 21:49+0100\n"
-"PO-Revision-Date: 2010-10-05 14:21+0100\n"
+"PO-Revision-Date: 2010-10-06 08:24+0100\n"
 "Last-Translator: David ‘Bombe’ Roden <bombe@pterodactylus.net>\n"
 "Language-Team: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1309,7 +1309,7 @@ msgstr "ausloggen"
 
 #: domination/templates/base.html:49
 msgid "&copy; 2010 Various authors"
-msgstr "&copy; 2010 verschiedene Authoren"
+msgstr "&copy; 2010 verschiedene Autoren"
 
 #: domination/templates/create_game.html:2
 #: domination/templates/create_game.html:70
@@ -1318,7 +1318,7 @@ msgstr "Neues Spiel erstellen"
 
 #: domination/templates/create_game.html:72
 msgid "Name of Game: "
-msgstr "Name des Spiels:"
+msgstr "Name des Spiels: "
 
 #: domination/templates/create_game.html:73
 msgid ""
@@ -1357,7 +1357,7 @@ msgstr "Fehler"
 
 #: domination/templates/game.html:2
 msgid "Game: "
-msgstr "Spiel:"
+msgstr "Spiel: "
 
 #: domination/templates/game.html:23
 msgid "(stopped)"
@@ -1373,6 +1373,7 @@ msgid "Join"
 msgstr "Mitspielen"
 
 #: domination/templates/game.html:33
+#: domination/templates/login.html:8
 msgid "Start"
 msgstr "Starten"
 
@@ -1414,7 +1415,7 @@ msgstr "%i Karten"
 
 #: domination/templates/game.html:70
 msgid "Your discard pile"
-msgstr "Dein Ablegestapel"
+msgstr "Dein Ablagestapel"
 
 #: domination/templates/game.html:77
 msgid "The game has ended."
@@ -1538,6 +1539,18 @@ msgstr "Runde"
 #: domination/templates/index.html:11
 msgid "None"
 msgstr "Keine"
+
+#: domination/templates/login.html:2
+msgid "Welcome"
+msgstr "Willkommen"
+
+#: domination/templates/login.html:4
+msgid "Welcome to Domination!"
+msgstr "Willkommen bei Domination!"
+
+#: domination/templates/login.html:7
+msgid "Select a username: "
+msgstr "Einen Benutzernamen auswählen: "
 
 #: domination/templates/macros.html:6
 msgid "Description"
