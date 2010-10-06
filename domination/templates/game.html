@@ -69,6 +69,13 @@
       {{ _('%i cards', player.deck | count) }}
       <h3>{% trans %}Your discard pile{% endtrans %}</h3>
       {{ _('%i cards', player.discard_pile | count) }}
+      <form><button type="button" onclick="show_pile('#discardpilecards', '{% trans %}Discard pile{% endtrans %}');">{% trans %}Show{% endtrans %}</button></form>
+      <div id="discardpilecards">
+        {% for card in player.discard_pile %}
+          {% call macros.render_card(card) %}
+          {% endcall %}
+        {% endfor %}
+      </div>
     </div>
   {% endif %}
   <div id="infosep"></div>
@@ -249,7 +256,7 @@
   {% if req_type != "SelectDeal" %}
     <div id="supply">
       <form>
-        <input type="button" onclick="show_supply();" value="{% trans %}Supply{% endtrans %}">
+        <input type="button" onclick="show_pile('#supplycards', '{% trans %}Supply{% endtrans %}');" value="{% trans %}Supply{% endtrans %}">
       </form>
       <div id="supplycards">
         {% for key, cards in game.supply | dictsort %}
