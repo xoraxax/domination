@@ -3,6 +3,7 @@ from werkzeug import abort # WTH fails the import of this file without this impo
 from domination.gameengine import Player, DominationGame, InfoRequest, EndOfGameException, card_sets, Checkpoint
 from domination.cards import CardTypeRegistry
 from domination.cards.base import ThroneRoom, Smithy
+from domination.cards.intrigue import Baron
 
 
 random = SystemRandom()
@@ -85,3 +86,7 @@ class TestRandomRunner(object):
     def test_throne_room(self):
         for _ in xrange(2**6):
             yield self.do_test_run, [ThroneRoom] * 9 + [Smithy]
+
+    def test_baron(self):
+        for _ in xrange(2**6):
+            yield self.do_test_run, [Baron] * 9 + [Smithy]

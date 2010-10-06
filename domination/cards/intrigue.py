@@ -17,7 +17,8 @@ class Baron(ActionCard):
     def activate_action(self, game, player):
         player.remaining_deals += 1
         estate_cards = [c for c in player.hand if isinstance(c, Estate)]
-        if estate_cards:
+        if estate_cards and (yield YesNoQuestion(game, player,
+            _("Do you want to discard an Estate card?"))):
             player.virtual_money += 4
             card = estate_cards[0]
             card.discard(player)
