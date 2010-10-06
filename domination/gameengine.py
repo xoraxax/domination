@@ -312,7 +312,7 @@ class Game(object):
         self.kibitzers = []
         self.supply = {}
         self.trash_pile = []
-        self.end_of_game_reason = _("Aborted!")
+        self.end_of_game_reason = False
         self.round = 0
         self.name = name
 

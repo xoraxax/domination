@@ -74,7 +74,7 @@
   <div id="infosep"></div>
 
   {% if runner.state == ENDED %}
-  <h3>{% trans %}The game has ended.{% endtrans %} {% if game.end_of_game_reason %}{% trans %}The following supplies are empty:{% endtrans %}{% endif %} {{ game.empty_pile_names }}</h3>
+  <h3>{% trans %}The game has ended.{% endtrans %} {% if game.end_of_game_reason %}{% trans %}The following supplies are empty:{% endtrans %}{% else %}{% trans %}Aborted or crashed!{% endtrans %}{% endif %} {{ game.empty_pile_names }}</h3>
     <ul>
     {% for player in game.players %}
       <li>{{ _('%(pname)s: %(cards)i cards, %(points)i points', {"pname": player.name,
