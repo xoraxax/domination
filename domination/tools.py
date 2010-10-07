@@ -23,7 +23,7 @@ class Translatable(unicode):
 
 
 def _(string, parameters=()):
-	return Translatable(string, parameters)
+    return Translatable(string, parameters)
 
 
 def taint_filename(basename):
