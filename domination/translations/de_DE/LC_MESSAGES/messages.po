@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Domination\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-04 21:49+0100\n"
-"PO-Revision-Date: 2010-10-07 08:43+0100\n"
+"PO-Revision-Date: 2010-10-07 08:47+0100\n"
 "Last-Translator: David ‘Bombe’ Roden <bombe@pterodactylus.net>\n"
 "Language-Team: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -730,7 +730,6 @@ msgid "+1 Buy, You may discard an Estate card. If you do, +4 Money. Otherwise ga
 msgstr "Du darfst ein Anwesen ablegen. Wenn du das machst: +4 Geld. Ansonsten: Nimm ein Anwesen."
 
 #: domination/cards/intrigue.py:21
-#, python-format
 msgid "Do you want to discard an Estate card?"
 msgstr "Möchtest du ein „Anwesen“ ablegen?"
 
@@ -1418,102 +1417,110 @@ msgstr "%i Karten"
 msgid "Your discard pile"
 msgstr "Dein Ablagestapel"
 
-#: domination/templates/game.html:77
+#: domination/templates/game.html:72
+msgid "Discard pile"
+msgstr "Ablagestapel"
+
+#: domination/templates/game.html:72
+msgid "Show"
+msgstr ""
+
+#: domination/templates/game.html:84
 msgid "The game has ended."
 msgstr "Das Spiel ist beendet."
 
-#: domination/templates/game.html:77
+#: domination/templates/game.html:84
 msgid "The following supplies are empty:"
 msgstr "Die folgenden Vorräte sind erschöpft:"
 
-#: domination/templates/game.html:77
+#: domination/templates/game.html:84
 msgid "Aborted or crashed!"
 msgstr "Abgebrochen oder abgestürzt!"
 
-#: domination/templates/game.html:80
+#: domination/templates/game.html:87
 #, python-format
 msgid "%(pname)s: %(cards)i cards, %(points)i points"
 msgstr "%(pname)s: %(cards)i Karten, %(points)i Punkte"
 
-#: domination/templates/game.html:84
+#: domination/templates/game.html:91
 msgid "Your cards:"
 msgstr "Deine Karten:"
 
-#: domination/templates/game.html:115
+#: domination/templates/game.html:122
 #, python-format
 msgid "You have %(money)i Money, %(potion)i Potion(s) and %(buys)i buys remaining!"
 msgstr "Du hast noch %(money)i Geld, %(potion)i Tränke und %(buys)i Käufe übrig!"
 
-#: domination/templates/game.html:118
+#: domination/templates/game.html:125
 #, python-format
 msgid "You have %(money)i Money and %(buys)i buys remaining!"
 msgstr "Du hast noch %(money)i Geld und %(buys)i Käufe übrig!"
 
-#: domination/templates/game.html:125
-#: domination/templates/game.html:185
-#: domination/templates/game.html:259
+#: domination/templates/game.html:132
+#: domination/templates/game.html:192
+#: domination/templates/game.html:266
 #, python-format
 msgid "%i left"
 msgstr "noch %i übrig"
 
-#: domination/templates/game.html:130
+#: domination/templates/game.html:137
 msgid "Buy"
 msgstr "Kaufen"
 
-#: domination/templates/game.html:137
-#: domination/templates/game.html:163
-#: domination/templates/game.html:174
+#: domination/templates/game.html:144
+#: domination/templates/game.html:170
+#: domination/templates/game.html:181
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: domination/templates/game.html:141
+#: domination/templates/game.html:148
 #, python-format
 msgid "You should select exactly %i cards."
 msgstr "Du musst genau %i Karten auswählen!"
 
-#: domination/templates/game.html:144
+#: domination/templates/game.html:151
 #, python-format
 msgid "You may select at most %i cards."
 msgstr "Du darfst höchstens %i Karten auswählen!"
 
-#: domination/templates/game.html:147
+#: domination/templates/game.html:154
 #, python-format
 msgid "You need to select at least %i cards."
 msgstr "Du musst mindestens %i Karten auswählen!"
 
-#: domination/templates/game.html:161
-#: domination/templates/game.html:177
-#: domination/templates/game.html:190
-#: domination/templates/game.html:221
+#: domination/templates/game.html:168
+#: domination/templates/game.html:184
+#: domination/templates/game.html:197
+#: domination/templates/game.html:228
 msgid "Select"
 msgstr "Auswählen"
 
-#: domination/templates/game.html:198
+#: domination/templates/game.html:205
 msgid "Yes"
 msgstr "Ja"
 
-#: domination/templates/game.html:203
+#: domination/templates/game.html:210
 msgid "No"
 msgstr "Nein"
 
-#: domination/templates/game.html:230
+#: domination/templates/game.html:237
 msgid "Waiting for further players ..."
 msgstr "Auf weitere Spieler warten…"
 
-#: domination/templates/game.html:232
+#: domination/templates/game.html:239
 #, python-format
 msgid "Waiting for %s to start the game ..."
 msgstr "%s wird das Spiel gleich starten…"
 
-#: domination/templates/game.html:236
+#: domination/templates/game.html:243
 msgid "Activated action cards"
 msgstr "Gespielte Aktionskarten"
 
-#: domination/templates/game.html:242
+#: domination/templates/game.html:249
 msgid "Your hand"
 msgstr "Deine Hand"
 
-#: domination/templates/game.html:252
+#: domination/templates/game.html:259
 msgid "Supply"
 msgstr "Vorrat"
 
@@ -1587,5 +1594,3 @@ msgstr "%(cost)i Geld und %(potion)i Tränke"
 msgid "%(cost)i Money"
 msgstr "%(cost)i Geld"
 
-#~ msgid "Aborted!"
-#~ msgstr "Abgebrochen!"
