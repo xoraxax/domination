@@ -1423,7 +1423,7 @@ msgstr "Ablagestapel"
 
 #: domination/templates/game.html:72
 msgid "Show"
-msgstr ""
+msgstr "Anzeigen"
 
 #: domination/templates/game.html:84
 msgid "The game has ended."
