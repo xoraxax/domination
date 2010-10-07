@@ -14,7 +14,12 @@
       your_turn_reminder();
     {% endif %}
     $(function() {
-        $.scrollTo("#infoend", {offset: {top: -$(window).height()}, duration: 1500});
+        {% if req %}
+        var offset = 2;
+        {% else %}
+        var offset = 1;
+        {% endif %}
+        $.scrollTo("#infoend", {offset: {top: -$(window).height() / offset}});
     });
   </script>
   {{ macros.init_render_card() }}
