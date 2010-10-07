@@ -232,7 +232,7 @@ class Minion(AttackCard):
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%(player)s chooses '%(action)s'", {player: player.name, action: _(dict(actions)[answer])}), [])
+                    _("%(player)s chooses '%(action)s'", {"player": player.name, "action": _(dict(actions)[answer])}), [])
 
         if answer == "money":
             player.virtual_money += 2
@@ -313,7 +313,7 @@ class Pawn(ActionCard):
         for info_player in game.following_participants(player):
             chosen = ", ".join(_(dict(choices)[c]) for c in choice)
             yield InfoRequest(game, info_player,
-                    _("%(player)s chooses '%(action)s'", {player: player.name, action: chosen}), [])
+                    _("%(player)s chooses '%(action)s'", {"player": player.name, "action": chosen}), [])
 
         for item in choice:
             if item == "card":
@@ -474,7 +474,7 @@ class Steward(ActionCard):
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%(player)s chooses '%(action)s'", {player: player.name, action: _(dict(actions)[answer])}), [])
+                    _("%(player)s chooses '%(action)s'", {"player": player.name, "action": _(dict(actions)[answer])}), [])
 
         if answer == "cards":
             player.draw_cards(2)
