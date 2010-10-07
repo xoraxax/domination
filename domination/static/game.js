@@ -4,7 +4,7 @@ handle_page_refresh = function () {
   var check_and_update = function() {
     $.getJSON($SCRIPT_ROOT + '/game/check_seqno/' + game_name, {seqno: seqno}, function(data) {
       if (!(data === null) && do_page_refresh) {
-        document.location.reload(true);
+        document.location = document.location;
         window.setTimeout(check_and_update, 100);
       }
     });
