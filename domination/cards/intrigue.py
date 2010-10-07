@@ -284,7 +284,7 @@ class Nobles(ActionCard, VictoryCard):
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%(player)s chooses '%(action)s'", {player: player.name, action: _(dict(actions)[answer])}), [])
+                    _("%(player)s chooses '%(action)s'", {"player": player.name, "action": _(dict(actions)[answer])}), [])
 
         if answer == "cards":
             player.draw_cards(3)

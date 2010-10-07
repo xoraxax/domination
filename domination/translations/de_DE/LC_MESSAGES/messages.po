@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Domination\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-04 21:49+0100\n"
-"PO-Revision-Date: 2010-10-06 08:24+0100\n"
+"PO-Revision-Date: 2010-10-07 08:43+0100\n"
 "Last-Translator: David ‘Bombe’ Roden <bombe@pterodactylus.net>\n"
 "Language-Team: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -20,10 +20,6 @@ msgstr "%(kicker)s hat %(kickee)s rausgeworfen."
 #: domination/gameengine.py:282
 msgid " (kicked)"
 msgstr " (rausgeworfen)"
-
-#: domination/gameengine.py:315
-msgid "Aborted!"
-msgstr "Abgebrochen!"
 
 #: domination/gameengine.py:333
 #, python-format
@@ -197,7 +193,7 @@ msgstr "+1 Karte, +1 Aktion. Decke die obersten 4 Karten von deinem Nachziehstap
 #: domination/cards/alchemy.py:156
 #: domination/cards/alchemy.py:273
 #: domination/cards/base.py:258
-#: domination/cards/intrigue.py:554
+#: domination/cards/intrigue.py:555
 #, python-format
 msgid "%s reveals:"
 msgstr "%s deckt auf:"
@@ -216,13 +212,13 @@ msgstr "+1 Aktion. Entsorge eine Karte aus deiner Hand. +1 Karte pro Geld, das d
 
 #: domination/cards/alchemy.py:92
 #: domination/cards/alchemy.py:291
-#: domination/cards/intrigue.py:189
+#: domination/cards/intrigue.py:190
 msgid "Which card do you want to trash?"
 msgstr "Welche Karte möchtest du entsorgen?"
 
 #: domination/cards/alchemy.py:106
 #: domination/cards/base.py:81
-#: domination/cards/intrigue.py:494
+#: domination/cards/intrigue.py:495
 #: domination/cards/seaside.py:98
 #, python-format
 msgid "%s trashes these cards:"
@@ -317,7 +313,7 @@ msgid "Trash a card from your hand. If it is an Action Card, gain a Duchy. If it
 msgstr "Entsorge eine Karte aus deiner Hand. Ist es eine Aktionskarte, nimm dir ein Herzogtum. Ist es eine Geldkarte, nimm dir eine Verwandlung. Ist es eine Punktekarte, nimm dir ein Gold."
 
 #: domination/cards/alchemy.py:296
-#: domination/cards/intrigue.py:196
+#: domination/cards/intrigue.py:197
 #, python-format
 msgid "%s trashes this card:"
 msgstr "%s entsorgt diese Karte:"
@@ -330,8 +326,8 @@ msgstr "%s entsorgt diese Karte:"
 #: domination/cards/base.py:216
 #: domination/cards/base.py:340
 #: domination/cards/base.py:553
-#: domination/cards/intrigue.py:152
-#: domination/cards/intrigue.py:454
+#: domination/cards/intrigue.py:153
+#: domination/cards/intrigue.py:455
 #, python-format
 msgid "%s gains:"
 msgstr "%s erhält:"
@@ -417,7 +413,7 @@ msgid "Trash up to four cards from your hand."
 msgstr "Entsorge bis zu 4 Karten aus deiner Hand."
 
 #: domination/cards/base.py:72
-#: domination/cards/intrigue.py:485
+#: domination/cards/intrigue.py:486
 #: domination/cards/seaside.py:88
 msgid "Which cards do you want to trash?"
 msgstr "Welche Karten möchtest du entsorgen?"
@@ -431,13 +427,13 @@ msgid "+1 Action, Discard any number of cards. +1 Card per card discarded."
 msgstr "+1 Aktion. Lege eine beliebige Anzahl Karten aus deiner Hand ab. Ziehe für jede abgelegte Karte eine Karte nach."
 
 #: domination/cards/base.py:92
-#: domination/cards/intrigue.py:380
+#: domination/cards/intrigue.py:381
 msgid "Which cards do you want to discard?"
 msgstr "Welche Karten möchtest du ablegen?"
 
 #: domination/cards/base.py:101
 #: domination/cards/base.py:139
-#: domination/cards/intrigue.py:389
+#: domination/cards/intrigue.py:390
 #: domination/cards/seaside.py:166
 #: domination/cards/seaside.py:269
 #, python-format
@@ -485,7 +481,7 @@ msgstr "Wähle eine Geldkarte aus, die du haben möchtest."
 #: domination/cards/base.py:214
 #: domination/cards/base.py:399
 #: domination/cards/base.py:468
-#: domination/cards/intrigue.py:441
+#: domination/cards/intrigue.py:442
 #: domination/cards/seaside.py:353
 #, python-format
 msgid "%s trashes:"
@@ -514,7 +510,7 @@ msgstr "Wähle die Karte, die du entsorgen möchtest."
 #: domination/cards/base.py:206
 #: domination/cards/base.py:335
 #: domination/cards/base.py:548
-#: domination/cards/intrigue.py:147
+#: domination/cards/intrigue.py:148
 msgid "Select a card that you want to have."
 msgstr "Wähle die Karte, die du haben möchtest."
 
@@ -523,7 +519,7 @@ msgid "Smithy"
 msgstr "Schmiede"
 
 #: domination/cards/base.py:224
-#: domination/cards/intrigue.py:278
+#: domination/cards/intrigue.py:279
 msgid "+3 Cards"
 msgstr "+3 Karten."
 
@@ -561,7 +557,7 @@ msgid "%s reveals a card:"
 msgstr "%s deckt eine Karte auf:"
 
 #: domination/cards/base.py:296
-#: domination/cards/intrigue.py:415
+#: domination/cards/intrigue.py:416
 #: domination/cards/seaside.py:170
 #, python-format
 msgid "%s reveals his hand:"
@@ -733,330 +729,335 @@ msgstr "Baron"
 msgid "+1 Buy, You may discard an Estate card. If you do, +4 Money. Otherwise gain an Estate card."
 msgstr "Du darfst ein Anwesen ablegen. Wenn du das machst: +4 Geld. Ansonsten: Nimm ein Anwesen."
 
-#: domination/cards/intrigue.py:26
+#: domination/cards/intrigue.py:21
+#, python-format
+msgid "Do you want to discard an Estate card?"
+msgstr "Möchtest du ein „Anwesen“ ablegen?"
+
+#: domination/cards/intrigue.py:27
 #, python-format
 msgid "%s discards:"
 msgstr "%s legt ab:"
 
-#: domination/cards/intrigue.py:37
+#: domination/cards/intrigue.py:38
 msgid "Bridge"
 msgstr "Brücke"
 
-#: domination/cards/intrigue.py:40
+#: domination/cards/intrigue.py:41
 msgid "+1 Buy, +1 Money, All cards (including cards in players' hands) cost 1 Money less this turn, but not less than 0 Money."
 msgstr "+1 Kauf, +1 Geld. Alle Karten (auch die Karten, die die Spieler auf der Hand halten), kosten in diesem Zug 1 Geld weniger, niemals jedoch weniger als 0 Geld."
 
-#: domination/cards/intrigue.py:59
+#: domination/cards/intrigue.py:60
 msgid "Conspirator"
 msgstr "Verschwörer"
 
-#: domination/cards/intrigue.py:62
+#: domination/cards/intrigue.py:63
 msgid "+2 Money, If you've played 3 or more Actions this turn (counting this): +1 Card, +1 Action"
 msgstr "+2 Geld. Wenn du in diesem Zug 3 oder mehr Aktionskarten ausgespielt hast (diese eingeschlossen): +1 Karte, +1 Aktion."
 
-#: domination/cards/intrigue.py:73
+#: domination/cards/intrigue.py:74
 msgid "Coppersmith"
 msgstr "Kupferschmied"
 
-#: domination/cards/intrigue.py:76
+#: domination/cards/intrigue.py:77
 msgid "Copper produces an extra 1 Money this turn."
 msgstr "Kupfer produziert in diesem Zug 1 Geld mehr."
 
-#: domination/cards/intrigue.py:87
+#: domination/cards/intrigue.py:88
 msgid "Courtyard"
 msgstr "Burghof"
 
-#: domination/cards/intrigue.py:90
+#: domination/cards/intrigue.py:91
 msgid "+3 Cards, put a card from your hand on top of your deck."
 msgstr "+3 Karten. Lege eine Karte aus deiner Hand verdeckt auf deinen Nachziehstapel."
 
-#: domination/cards/intrigue.py:95
+#: domination/cards/intrigue.py:96
 msgid "Select a card to put on your deck."
 msgstr "Wähle die Karte aus, die du auf deinen Nachziehstapel legen willst."
 
-#: domination/cards/intrigue.py:103
+#: domination/cards/intrigue.py:104
 msgid "Duke"
 msgstr "Herzog"
 
-#: domination/cards/intrigue.py:108
+#: domination/cards/intrigue.py:109
 msgid "Worth one point for every duchy you have."
 msgstr "Wert 1 Punkt pro Herzogtum im eigenen Kartensatz."
 
-#: domination/cards/intrigue.py:115
+#: domination/cards/intrigue.py:116
 msgid "Great Hall"
 msgstr "Große Halle"
 
-#: domination/cards/intrigue.py:119
+#: domination/cards/intrigue.py:120
 msgid "+1 Card, +1 Action"
 msgstr "+1 Karte, +1 Aktion."
 
-#: domination/cards/intrigue.py:127
+#: domination/cards/intrigue.py:128
 msgid "Harem"
 msgstr "Harem"
 
-#: domination/cards/intrigue.py:136
+#: domination/cards/intrigue.py:137
 msgid "Ironworks"
 msgstr "Eisenhütte"
 
-#: domination/cards/intrigue.py:139
+#: domination/cards/intrigue.py:140
 msgid "Gain a card costing up to 4. If it is an Action card: +1 Action; Treasure card: +1 Money; Victory Card: +1 Card"
 msgstr "Nimm dir eine Karte, die bis zu 4 Geld kostet. Ist es eine Aktionskarte, +1 Aktion. Ist es eine Geldkarte, +1 Geld. Ist es eine Punktekarte, +1 Karte."
 
-#: domination/cards/intrigue.py:165
+#: domination/cards/intrigue.py:166
 msgid "Masquerade"
 msgstr "Maskerade"
 
-#: domination/cards/intrigue.py:168
+#: domination/cards/intrigue.py:169
 msgid "+2 Cards, Each player passes a card from his hand to the left at once. Then you may trash a card from your hand."
 msgstr "+2 Karten. Alle Spieler (auch du selbst) müssen gleichzeitig eine Karte aus ihrer Hand an ihren linken Nachbarn weiter geben. Danach darfst du eine Karte aus deiner Hand entsorgen."
 
-#: domination/cards/intrigue.py:177
+#: domination/cards/intrigue.py:178
 msgid "Which card do you want to pass left?"
 msgstr "Welche Karte möchtest du nach links weitergeben?"
 
-#: domination/cards/intrigue.py:184
+#: domination/cards/intrigue.py:185
 msgid "You gained this card from your right:"
 msgstr "Du hast diese Karte von deiner Rechten erhalten:"
 
-#: domination/cards/intrigue.py:200
+#: domination/cards/intrigue.py:201
 msgid "Mining Village"
 msgstr "Bergwerk"
 
-#: domination/cards/intrigue.py:203
+#: domination/cards/intrigue.py:204
 msgid "+1 Card, +2 Actions, You may trash this card immediately. If you do, +2 Money."
 msgstr "+1 Karte, +2 Aktionen. Du darfst diese Karte sofort entsorgen. Wenn du das machst: +2 Geld."
 
-#: domination/cards/intrigue.py:211
+#: domination/cards/intrigue.py:212
 msgid "Do you want to trash your Mining Village?"
 msgstr "Möchtest du dein Bergwerk entsorgen?"
 
-#: domination/cards/intrigue.py:217
+#: domination/cards/intrigue.py:218
 msgid "Minion"
 msgstr "Lakai"
 
-#: domination/cards/intrigue.py:220
+#: domination/cards/intrigue.py:221
 msgid "+1 Action, Choose one: +2 Money, or discard your hand, +4 Cards, and each other player with at least 5 cards in hand discards his hand and draws 4 cards."
 msgstr "+1 Aktion. Wähle eins: +2 Geld; oder lege alle deine Handkarten ab: +4 Karten. Jeder Mitspieler, der mindestens 5 Karten auf der Hand hat, muss alle seine Handkarten ablegen und 4 Karten nachziehen."
 
-#: domination/cards/intrigue.py:226
-#: domination/cards/intrigue.py:468
+#: domination/cards/intrigue.py:227
+#: domination/cards/intrigue.py:469
 msgid "+2 Money"
 msgstr "+2 Geld"
 
-#: domination/cards/intrigue.py:227
+#: domination/cards/intrigue.py:228
 msgid "Discard hand and draw 4 cards, attack other players"
 msgstr "Hand ablegen und 4 Karten ziehen, andere Spieler angreifen"
 
-#: domination/cards/intrigue.py:229
-#: domination/cards/intrigue.py:471
+#: domination/cards/intrigue.py:230
+#: domination/cards/intrigue.py:472
 msgid "What do you want to do?"
 msgstr "Was möchtest du tun?"
 
-#: domination/cards/intrigue.py:234
-#: domination/cards/intrigue.py:286
-#: domination/cards/intrigue.py:315
-#: domination/cards/intrigue.py:476
+#: domination/cards/intrigue.py:235
+#: domination/cards/intrigue.py:287
+#: domination/cards/intrigue.py:316
+#: domination/cards/intrigue.py:477
 #, python-format
 msgid "%(player)s chooses '%(action)s'"
 msgstr "%(player)s wählt „%(action)s“"
 
-#: domination/cards/intrigue.py:247
-#: domination/cards/intrigue.py:267
+#: domination/cards/intrigue.py:248
+#: domination/cards/intrigue.py:268
 #, python-format
 msgid "%s discards this hand and draws 4 cards:"
 msgstr "%s legt seine Hand ab und zieht 4 Karten:"
 
-#: domination/cards/intrigue.py:262
+#: domination/cards/intrigue.py:263
 msgid "You discard your hand and draw 4 cards."
 msgstr "Du legst deine Hand ab und ziehst 4 Karten."
 
-#: domination/cards/intrigue.py:271
+#: domination/cards/intrigue.py:272
 msgid "Nobles"
 msgstr "Adelige"
 
-#: domination/cards/intrigue.py:275
+#: domination/cards/intrigue.py:276
 msgid "Choose one: +3 Cards, or +2 Actions."
 msgstr "Wähle eins: +3 Karten; oder +2 Aktionen."
 
-#: domination/cards/intrigue.py:279
+#: domination/cards/intrigue.py:280
 msgid "+2 Actions"
 msgstr "+2 Aktionen"
 
-#: domination/cards/intrigue.py:281
+#: domination/cards/intrigue.py:282
 msgid "What do you want to get?"
 msgstr "Was möchtest du haben?"
 
-#: domination/cards/intrigue.py:295
+#: domination/cards/intrigue.py:296
 msgid "Pawn"
 msgstr "Handlanger"
 
-#: domination/cards/intrigue.py:298
+#: domination/cards/intrigue.py:299
 msgid "Choose two: +1 Card, +1 Action, +1 Buy, +1 Money. (The choices must be different.)"
 msgstr "Wähle zwei verschiedene: +1 Karte, +1 Aktion, +1 Kauf, +1 Geld."
 
-#: domination/cards/intrigue.py:302
+#: domination/cards/intrigue.py:303
 msgid "+1 Card"
 msgstr "+1 Karte."
 
-#: domination/cards/intrigue.py:303
+#: domination/cards/intrigue.py:304
 msgid "+1 Action"
 msgstr "+1 Aktion."
 
-#: domination/cards/intrigue.py:304
+#: domination/cards/intrigue.py:305
 msgid "+1 Buy"
 msgstr "+1 Kauf."
 
-#: domination/cards/intrigue.py:305
+#: domination/cards/intrigue.py:306
 msgid "+1 Money"
 msgstr "+1 Geld."
 
-#: domination/cards/intrigue.py:307
+#: domination/cards/intrigue.py:308
 msgid "Choose two:"
 msgstr "Wähle zwei:"
 
-#: domination/cards/intrigue.py:330
+#: domination/cards/intrigue.py:331
 msgid "Saboteur"
 msgstr "Saboteur"
 
-#: domination/cards/intrigue.py:333
+#: domination/cards/intrigue.py:334
 msgid "Each other player reveals cards from the top of his deck until revealing one costing 3 or more. He trashes that card and may gain a card costing at most 2 less than it. He discards the other revealed cards."
 msgstr "Jeder Mitspieler muss solange Karten von seinem Nachziehstapel aufdecken, bis er eine Karte aufdeckt, die 3 Geld oder mehr kostet. Er muss diese Karte entsorgen und darf sich eine Karte nehmen, die mindestens 2 weniger kostet. Die übrigens aufgedeckten Karten legt er ab."
 
-#: domination/cards/intrigue.py:340
+#: domination/cards/intrigue.py:341
 msgid "Scout"
 msgstr "Späher"
 
-#: domination/cards/intrigue.py:343
+#: domination/cards/intrigue.py:344
 msgid "+1 Action, Reveal the top 4 cards of your deck. Put the revealed Victory cards into your hand. Put the other cards on top of your deck in any order."
 msgstr "+1 Aktion. Decke die obersten 4 Karten von deinem Nachziehstapel auf. Nimm alle aufgedeckten Punktekarten auf die Hand. Lege die übrigen Karten in beliebiger Reihenfolge verdeckt zurück auf deinen Nachziehstapel."
 
-#: domination/cards/intrigue.py:354
+#: domination/cards/intrigue.py:355
 #, python-format
 msgid "%s reveals the top 4 cards of his deck:"
 msgstr "%s deckt die obersten 4 Karten seines Nachziehstapels auf:"
 
-#: domination/cards/intrigue.py:361
+#: domination/cards/intrigue.py:362
 msgid "Which card do you want to put onto the deck next?"
 msgstr "Welche Karte möchtest du als nächstes auf den Nachziehstapel legen?"
 
-#: domination/cards/intrigue.py:369
+#: domination/cards/intrigue.py:370
 msgid "Secret Chamber"
 msgstr "Geheimkammer"
 
-#: domination/cards/intrigue.py:372
+#: domination/cards/intrigue.py:373
 msgid "Discard any number of cards. +1 Money per card discarded.  When another player plays an attack card, you may reveal this from your hand. If you do, +2 Cards, then put 2 cards from your hand on top of your deck."
 msgstr "Lege eine beliebige Anzahl Karten aus deiner Hand ab: +1 Geld für jede abgelegte Karte. Wenn ein Mitspieler eine Angriffskarte ausspielt, darfst du diese Karte aus deiner Hand aufdecken. Wenn du das machst: +2 Karten, dann lege 2 Karten aus deiner Hand verdeckt auf deinen Nachziehstapel."
 
-#: domination/cards/intrigue.py:395
+#: domination/cards/intrigue.py:396
 msgid "Which cards do you want to put on your deck?"
 msgstr "Welche Karten möchtest du auf deinen Nachziehstapel legen?"
 
-#: domination/cards/intrigue.py:404
+#: domination/cards/intrigue.py:405
 msgid "Shanty Town"
 msgstr "Armenviertel"
 
-#: domination/cards/intrigue.py:407
+#: domination/cards/intrigue.py:408
 msgid "+2 Actions, Reveal your hand. If you have no action cards in hand, +2 Cards."
 msgstr "+2 Aktionen. "
 
-#: domination/cards/intrigue.py:423
+#: domination/cards/intrigue.py:424
 msgid "Swindler"
 msgstr "Trickser"
 
-#: domination/cards/intrigue.py:426
+#: domination/cards/intrigue.py:427
 msgid "+2 Money, Each other player trashes the top card of his deck and gains a card with the same cost that you choose."
 msgstr "+2 Geld. Jeder Mitspieler muss die oberste Karte seine Nachziehstapels entsorgen. Du wählst eine Karte, die das gleiche kostet, wie die entsorgte Karte. Diese Karte muss sich der Spieler nehmen."
 
-#: domination/cards/intrigue.py:446
+#: domination/cards/intrigue.py:447
 msgid "Select a card that you want to give."
 msgstr "Wähle die Karte aus, die du abgeben möchtest."
 
-#: domination/cards/intrigue.py:461
+#: domination/cards/intrigue.py:462
 msgid "Steward"
 msgstr "Verwalter"
 
-#: domination/cards/intrigue.py:464
+#: domination/cards/intrigue.py:465
 msgid "Choose one: +2 Cards; or +2 Money; or trash two cards from your hand."
 msgstr "Wähle eins: +2 Karten; oder +2 Geld; oder entsorge genau 2 Karten aus deiner Hand."
 
-#: domination/cards/intrigue.py:467
+#: domination/cards/intrigue.py:468
 msgid "+2 Cards"
 msgstr "+2 Karten"
 
-#: domination/cards/intrigue.py:469
+#: domination/cards/intrigue.py:470
 msgid "Trash two cards"
 msgstr "Entsorge zwei Karten"
 
-#: domination/cards/intrigue.py:498
+#: domination/cards/intrigue.py:499
 msgid "Torturer"
 msgstr ""
 
-#: domination/cards/intrigue.py:502
+#: domination/cards/intrigue.py:503
 msgid "+3 Cards, Each other player chooses one: he discards 2 cards; or he gains a Curse card, putting it in his hand."
 msgstr ""
 
-#: domination/cards/intrigue.py:506
+#: domination/cards/intrigue.py:507
 msgid "Trading Post"
 msgstr "Handelsposten"
 
-#: domination/cards/intrigue.py:510
+#: domination/cards/intrigue.py:511
 msgid "Trash 2 cards from your hand. If you do, gain a Silver card; put it into your hand."
 msgstr "Entsorge 2 Karten aus deiner Hand. Wenn du das machst: Nimm dir ein Silber auf die Hand."
 
-#: domination/cards/intrigue.py:514
+#: domination/cards/intrigue.py:515
 msgid "Tribute"
 msgstr "Tribut"
 
-#: domination/cards/intrigue.py:518
+#: domination/cards/intrigue.py:519
 msgid "The player to your left reveals then discards the top 2 cards of his deck. For each differently named card revealed, if it is an Action Card: +2 Actions. If it is a Treasure Card: +2 Money. If it is a Victory Card: +2 Cards."
 msgstr "Dein linker Nachbar muss die obersten beiden Karten von seinem Nachziehstapel aufdecken und diese ablegen. Für jede Karte mit unterschiedlichem Namen erhältst du etwas: Bei einer Aktionskarte: +2 Aktionen. Bei einer Geldkarte: +2 Geld. Bei einer Punktekarte: +2 Karten."
 
-#: domination/cards/intrigue.py:525
+#: domination/cards/intrigue.py:526
 msgid "Upgrade"
 msgstr ""
 
-#: domination/cards/intrigue.py:529
+#: domination/cards/intrigue.py:530
 msgid "+1 Card, +1 Action, Trash a card from your hand. Gain a card costing exactly 1 more than it."
 msgstr ""
 
-#: domination/cards/intrigue.py:533
+#: domination/cards/intrigue.py:534
 msgid "Wishing Well"
 msgstr "Wunschbrunnen"
 
-#: domination/cards/intrigue.py:536
+#: domination/cards/intrigue.py:537
 msgid "+1 Card, +1 Action, Name a card. Reveal the top card of your deck. If it's the named card, put it into your hand."
 msgstr "+1 Karte, +1 Aktion. Benenne eine Karte. Decke die oberste Karte von deinem Nachziehstapel auf. Wenn es die benannte Karte ist, nimm sie auf die Hand."
 
-#: domination/cards/intrigue.py:545
+#: domination/cards/intrigue.py:546
 msgid "Name a card."
 msgstr "Benenne eine Karte."
 
-#: domination/cards/intrigue.py:548
+#: domination/cards/intrigue.py:549
 #, python-format
 msgid "%s names:"
 msgstr "%s benennt:"
 
-#: domination/cards/intrigue.py:566
+#: domination/cards/intrigue.py:567
 msgid "Victory Dance"
 msgstr "Siegestanz"
 
-#: domination/cards/intrigue.py:569
+#: domination/cards/intrigue.py:570
 msgid "Secret Schemes"
 msgstr "Geheime Pläne"
 
-#: domination/cards/intrigue.py:572
+#: domination/cards/intrigue.py:573
 msgid "Best Wishes"
 msgstr "Alles Gute"
 
-#: domination/cards/intrigue.py:575
+#: domination/cards/intrigue.py:576
 msgid "Deconstruction"
 msgstr "Rückbau"
 
-#: domination/cards/intrigue.py:578
+#: domination/cards/intrigue.py:579
 msgid "Hand Madness"
 msgstr "Manueller Wahnsinn"
 
-#: domination/cards/intrigue.py:581
+#: domination/cards/intrigue.py:582
 msgid "Underlings"
 msgstr "Untergebene"
 
@@ -1425,6 +1426,10 @@ msgstr "Das Spiel ist beendet."
 msgid "The following supplies are empty:"
 msgstr "Die folgenden Vorräte sind erschöpft:"
 
+#: domination/templates/game.html:77
+msgid "Aborted or crashed!"
+msgstr "Abgebrochen oder abgestürzt!"
+
 #: domination/templates/game.html:80
 #, python-format
 msgid "%(pname)s: %(cards)i cards, %(points)i points"
@@ -1582,3 +1587,5 @@ msgstr "%(cost)i Geld und %(potion)i Tränke"
 msgid "%(cost)i Money"
 msgstr "%(cost)i Geld"
 
+#~ msgid "Aborted!"
+#~ msgstr "Abgebrochen!"
