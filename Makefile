@@ -1,8 +1,5 @@
 default:
-	$(warning Choose compile, extract, init, or update!)
-
-compile:
-	pybabel compile -d domination/translations
+	$(warning Choose extract, init, or update!)
 
 extract:
 	pybabel extract -F domination/domination.babelconfig -o domination/translations/messages.pot domination

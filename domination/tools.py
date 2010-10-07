@@ -1,6 +1,12 @@
 import os
+import gettext
+from StringIO import StringIO
 
-from flaskext.babel import get_translations
+from flask import _request_ctx_stack
+from flaskext.babel import get_locale
+from babel.support import Translations
+from babel.messages.pofile import read_po
+from babel.messages.mofile import write_mo
 
 
 class Translatable(unicode):
@@ -33,4 +39,34 @@ def taint_filename(basename):
         basename = basename.replace(x, '_')
 
     return basename
+
+
+def get_translations():
+    """ Load .po file, cache .mo file repr in memory and return
+    a Babel Translations object. This function is meant for monkey patching
+    into Flask-Babel."""
+    ctx = _request_ctx_stack.top
+    if ctx is None:
+        return None
+    translations_dict = ctx.app.babel_translations_dict
+    lock = ctx.app.babel_translations_lock
+    locale = str(get_locale())
+    lock.acquire()
+    if translations_dict.get(locale) is None:
+        mo_file = StringIO()
+        dirname = os.path.join(ctx.app.root_path, 'translations')
+        transfilename = os.path.join(dirname, taint_filename(locale),
+                'LC_MESSAGES', "messages.po")
+        if os.path.exists(transfilename):
+            catalog = read_po(file(transfilename, "r"))
+            write_mo(mo_file, catalog)
+            mo_file.seek(0)
+            translations = Translations(fileobj=mo_file)
+        else:
+            translations = gettext.NullTranslations()
+        translations_dict[locale] = translations
+    else:
+        translations = translations_dict[locale]
+    lock.release()
+    return translations
 

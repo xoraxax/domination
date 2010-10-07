@@ -5,15 +5,19 @@ import pickle
 import optparse
 import traceback
 import gettext
+from threading import Lock
 
 from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
 from flaskext.babel import Babel
+import flaskext.babel
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 app = Flask(__name__)
 app.jinja_env.add_extension('jinja2.ext.i18n')
+app.babel_translations_dict = {}
+app.babel_translations_lock = Lock()
 babel = Babel(app, configure_jinja=False)
 app.secret_key = "".join(chr(random.randint(0, 255)) for _ in xrange(32))
 
@@ -23,8 +27,11 @@ from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
         YesNoQuestion, Question, MultipleChoice, card_sets, editions, \
         AIPlayer, Kibitzer, FRESH, ENDED, RUNNING, STATES
-from domination.tools import _
+from domination.tools import _, get_translations
 from domination.gzip_middleware import GzipMiddleware
+
+# monkeypatch flask-babel
+flaskext.babel.get_translations = get_translations
 
 AI_NAMES = ['Alan', 'Grace', 'Linus', 'Guido', 'Konrad', 'Donald',
             'Miranda', 'Ada', 'Hannah', 'Kim']
