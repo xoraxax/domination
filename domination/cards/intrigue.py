@@ -144,7 +144,7 @@ class Ironworks(ActionCard):
         # copied from Feast
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
             CardTypeRegistry.card_classes.itervalues() if c.cost <= 4 and
-            game.supply.get(c.__name__)],
+            game.supply.get(c.__name__) and c.potioncost == 0],
             msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop()
         player.discard_pile.append(new_card)
