@@ -300,8 +300,12 @@ class GameRunner(Thread):
 
     def store(self):
         from domination.main import app
-        f = file(app.game_storage_prefix + taint_filename(self.game.name
-            + app.game_storage_postfix), "wb")
+        path = app.game_storage_prefix + taint_filename(self.game.name
+            + app.game_storage_postfix)
+        if app.game_storage_path:
+            path = os.path.join(app.game_storage_path, taint_filename(self.game.name
+            + app.game_storage_postfix))
+        f = file(path, "wb")
         pickle.dump(self, f, -1)
         f.close()
 

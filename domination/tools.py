@@ -70,3 +70,6 @@ def get_translations():
     lock.release()
     return translations
 
+def ngettext(sing, plu, n, args=None):
+    raise NotImplementedError
+

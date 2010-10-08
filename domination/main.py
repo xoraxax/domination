@@ -27,7 +27,7 @@ from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
         YesNoQuestion, Question, MultipleChoice, card_sets, editions, \
         AIPlayer, Kibitzer, FRESH, ENDED, RUNNING, STATES
-from domination.tools import _, get_translations
+from domination.tools import _, get_translations, ngettext
 from domination.gzip_middleware import GzipMiddleware
 
 # monkeypatch flask-babel
@@ -47,7 +47,8 @@ app.all_card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues(
                     if cls.optional & cls.implemented ]
 app.card_classes = lambda: sorted(app.all_card_classes, key=lambda x: x.name.__str__())
 app.template_context_processors[None].append(lambda: {'app': app, 'store': get_store()})
-app.jinja_env.globals.update(gettext=_)
+app.jinja_env.globals.update(gettext=_, ngettext=ngettext)
+app.game_storage_path = None
 
 
 @babel.localeselector
@@ -382,6 +383,8 @@ def main(argv):
             type="int", help='port to run the server on', default=8080)
     parser.add_option('-r', '--restore', dest='restore', action='append',
             type="string", help='File to restore a game from', default=[])
+    parser.add_option('-s', '--storage-path', dest='storagepath', action='store',
+            type="string", help='Path to store savegames in', default=None)
     parser.add_option('-D', '--debug', dest='debug', action='store_true',
             help='Debug mode', default=None)
 
@@ -397,6 +400,10 @@ def main(argv):
                 print "\n"
             1/0
         app.secret_key = "insecure"
+
+    if options.storagepath:
+        # XXX does not really work
+        app.game_storage_path = options.storagepath
 
     for filename in options.restore:
         restore_game(filename)
