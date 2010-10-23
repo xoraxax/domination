@@ -1,6 +1,6 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      DurationCard, AttackCard, ReactionCard, CardSet, Seaside
-from domination.cards.base import Duchy, Estate, Copper
+from domination.cards.base import Duchy, Estate, Copper, Province
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, CardTypeRegistry, Defended, YesNoQuestion
 from domination.tools import _
@@ -21,13 +21,15 @@ class Lookout(ActionCard):
 class MerchantShip(ActionCard, DurationCard):
     name = _("Merchant Ship")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("Now and at the start of next turn: +2 Money")
 
     def activate_action(self, game, player):
         player.virtual_money += 2
-        pass #FIXME
+        self.durationaction_activated = True
+
+    def duration_action(self, game, player):
+        player.virtual_money += 2
 
 class Navigator(ActionCard):
     name = _("Navigator")
@@ -61,7 +63,6 @@ class Outpost(ActionCard, DurationCard):
         def extra_turn_with_three():
             pass
         player.register_turn_cleanup(extra_turn_with_three)
-        pass #FIXME
 
 class PearlDiver(ActionCard):
     name = _("Pearl Diver")
@@ -127,7 +128,10 @@ class Caravan(ActionCard):
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(1)
-        pass #FIXME
+        self.durationaction_activated = True
+
+    def duration_action(self, game, player):
+        player.draw_cards(1)
 
 class Bazaar(ActionCard):
     name = _("Bazaar")
@@ -184,13 +188,21 @@ class Embargo(ActionCard):
 class Lighthouse(ActionCard, DurationCard):
     name = _("Lighthouse")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 2
     desc = _("+1 Action. Now and at the start of your next turn: +1 Money. While this is in play, when another player plays an Attack card it doesn't affect you.")
 
+    def defend_action(self, game, player, card):
+        # Lighthouse always defends
+        # FIXME: Lighthouse does not only defend while on hand, but when on play (duration_cards, aux_cards), too
+        raise Defended
+
     def activate_action(self, game, player):
         player.remaining_actions += 1
-        pass #FIXME
+        player.virtual_money += 1
+        self.durationaction_activated = True
+
+    def duration_action(self, game, player):
+        player.virtual_money += 1
 
 class GhostShip(AttackCard):
     name = _("Ghost Ship")
@@ -229,24 +241,43 @@ class Haven(ActionCard, DurationCard):
 class Explorer(ActionCard):
     name = _("Explorer")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("You may reveal a Province card from your hand. If you do, gain a Gold card, putting it into your hand. Otherwise, gain a Silver card, putting it into your hand.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        province_cards = [c for c in player.hand if isinstance(c, Province)]
+        if province_cards:
+            new_card = game.supply["Gold"].pop()
+            player.hand.append(new_card)
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
+            for val in game.check_empty_pile("Gold"):
+                yield val
+        else:
+            new_card = game.supply["Silver"].pop()
+            player.hand.append(new_card)
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
+            for val in game.check_empty_pile("Silver"):
+                yield val
+
 
 class FishingVillage(ActionCard, DurationCard):
     name = _("Fishing Village")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 3
     desc = _("+2 Actions, +1 Money. At the start of your next turn: +1 Action, +1 Money.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 2
         player.virtual_money += 1
-        pass #FIXME
+        self.durationaction_activated = True
+
+    def duration_action(self, game, player):
+        player.remaining_actions += 1
+        player.virtual_money += 1
 
 class Warehouse(ActionCard):
     name = _("Warehouse")
@@ -306,12 +337,25 @@ class Ambassador(AttackCard):
 class Tactician(ActionCard, DurationCard):
     name = _("Tactician")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("Discard your hand. If you discarded any cards this way, then at the start of your next turn, +5 Cards, +1 Buy, and +1 Action")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        original_hand = player.hand[:]
+        for card in original_hand:
+            card.discard(player)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(
+                game, info_player,
+                _("%s discards this hand:",
+                (player.name, )), original_hand)
+        if original_hand:
+            self.durationaction_activated = True
+
+    def duration_action(self, game, player):
+        player.remaining_actions += 1
+        player.remaining_deals += 1
+        player.draw_cards(5)
 
 class NativeVillage(ActionCard):
     name = _("Native Village")
@@ -327,14 +371,17 @@ class NativeVillage(ActionCard):
 class Wharf(ActionCard, DurationCard):
     name = _("Wharf")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("Now and at the start of your next turn: +2 Cards, +1 Buy.")
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
         player.draw_cards(2)
-        pass #FIXME
+        self.durationaction_activated = True
+
+    def duration_action(self, game, player):
+        player.remaining_deals += 1
+        player.draw_cards(2)
 
 class TreasureMap(ActionCard):
     name = _("Treasure Map")

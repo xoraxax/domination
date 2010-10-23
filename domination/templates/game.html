@@ -255,6 +255,12 @@
         {% for card in player.sorted_hand %}
           {{ macros.render_card(card) }}
         {% endfor %}
+      {% if player.duration_cards %}
+        <h3>{% trans %}Duration Cards from last round{% endtrans %}</h3>
+          {% for card in player.duration_cards %}
+            {{ macros.render_card(card) }}
+          {% endfor %}
+        {% endif %}
       {% endif %}
     {% endif %}
   {% endif %}

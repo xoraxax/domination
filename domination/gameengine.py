@@ -309,6 +309,7 @@ class GameRunner(Thread):
         pickle.dump(self, f, -1)
         f.close()
 
+from domination.cards import DurationCard
 
 class Game(object):
     def __init__(self, name):
@@ -357,6 +358,20 @@ class Game(object):
         for player in self.players[:]:
             with player:
                 try:
+                    # duration actions from last round
+                    for card in player.duration_cards:
+                        duration_func = card.duration_action
+                        card.durationaction_activated = False
+                        gen = duration_func(self, player)
+                        generator_forward(gen)
+                    player.aux_cards.extend(player.duration_cards)
+                    if player.duration_cards:
+                        for other_player in self.participants:
+                            if other_player is not player:
+                                yield InfoRequest(self, other_player,
+                                        _("%s had duration cards:", (player.name, )), player.duration_cards)
+                    player.duration_cards=[]
+
                     # action
                     while player.remaining_actions and [c for c in player.hand
                             if isinstance(c, ActionCard)]:
@@ -404,7 +419,11 @@ class Game(object):
                         generator_forward(gen)
 
                 # cleanup pt. 2
-                player.discard_pile.extend(player.aux_cards)
+                for card in player.aux_cards:
+                    if card.durationaction_activated:
+                        player.duration_cards.append(card)
+                    else:
+                        player.discard_pile.append(card)
                 player.aux_cards = []
                 player.discard_pile.extend(player.hand)
                 player.hand = []
@@ -565,7 +584,6 @@ class Player(object):
         self.hand = []
         self.activated_cards = []
         self.aux_cards = [] # cards lying on the table etc.
-        self.duration_cards = [] # duration_cards from seaside
         self.remaining_deals = 0
         self.remaining_actions = 0
         self.used_money = 0
@@ -574,6 +592,7 @@ class Player(object):
         self.current = False
         self.kicked_by = None
         self.turn_cleanups = []
+        self.duration_cards = [] # duration_cards from seaside
 
         self.request_queue = []
         self.info_queue = []

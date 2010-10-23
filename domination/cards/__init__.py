@@ -49,6 +49,7 @@ class Card(object):
     implemented = True # show card for selection
     abstract = True    # abstract template?
     trash_after_playing = False  # does it go to trash after playing?
+    durationaction_activated = False # Seaside duration cards
     __slots__ = ()
 
     def __init__(self):
