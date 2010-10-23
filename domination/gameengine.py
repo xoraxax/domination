@@ -292,7 +292,7 @@ class GameRunner(Thread):
                 self.game.end_of_game()
             except EndOfGameException:
                 pass
-        for player in self.game.players + self.game.kibitzers:
+        for player in self.participants:
             cv = player.response_condition
             cv.acquire()
             cv.notifyAll()
@@ -388,7 +388,7 @@ class Game(object):
                             player.used_money += card.cost
                             player.used_potion += card.potioncost
                             player.discard_pile.append(card)
-                            for other_player in self.players + self.kibitzers:
+                            for other_player in self.participants:
                                 if other_player is not player:
                                     yield InfoRequest(self, other_player,
                                             _("%s buys:", (player.name, )), [card])
