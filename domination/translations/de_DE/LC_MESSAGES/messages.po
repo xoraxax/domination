@@ -1,9 +1,10 @@
+
 msgid ""
 msgstr ""
-"Project-Id-Version: Domination\n"
+"Project-Id-Version:  Domination\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-04 21:49+0100\n"
-"PO-Revision-Date: 2010-10-07 08:47+0100\n"
+"PO-Revision-Date: 2010-12-22 17:07+0100\n"
 "Last-Translator: David ‘Bombe’ Roden <bombe@pterodactylus.net>\n"
 "Language-Team: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -21,78 +22,83 @@ msgstr "%(kicker)s hat %(kickee)s rausgeworfen."
 msgid " (kicked)"
 msgstr " (rausgeworfen)"
 
-#: domination/gameengine.py:333
+#: domination/gameengine.py:338
 #, python-format
 msgid "%s plays:"
 msgstr "%s spielt:"
 
-#: domination/gameengine.py:360
+#: domination/gameengine.py:372
+#, fuzzy, python-format
+msgid "%s had duration cards:"
+msgstr "Dauerkarte"
+
+#: domination/gameengine.py:379
 #, python-format
 msgid "Which action card do you want to play? (%i actions left)"
 msgstr "Welche Aktionskarte möchstest du spielen? (Noch %i Aktionen übrig.)"
 
-#: domination/gameengine.py:376
+#: domination/gameengine.py:395
 msgid "Which card do you want to buy?"
 msgstr "Welche Karte möchtest du kaufen?"
 
-#: domination/gameengine.py:390
+#: domination/gameengine.py:409
 #, python-format
 msgid "%s buys:"
 msgstr "%s kauft:"
 
-#: domination/gameengine.py:449
+#: domination/gameengine.py:472
 #, python-format
 msgid "The pile %s is empty."
 msgstr "Der Vorrat „%s“ ist erschöpft."
 
-#: domination/main.py:65
+#: domination/main.py:73
 msgid "Game not found!"
 msgstr "Spiel nicht gefunden!"
 
-#: domination/main.py:112
+#: domination/main.py:120
 #, python-format
 msgid "You need to select at least %i cards!"
 msgstr "Du musst mindestens %i Karten auswählen!"
 
-#: domination/main.py:115
+#: domination/main.py:123
 #, python-format
 msgid "You may select at most %i cards!"
 msgstr "Du darfst höchstens %i Karten auswählen!"
 
-#: domination/main.py:126
+#: domination/main.py:134
 msgid "Username already in use."
 msgstr "Benutzername schon belegt."
 
-#: domination/main.py:164
+#: domination/main.py:172
 msgid "Game with this name is already existing!"
 msgstr "Ein Spiel mit diesem Namen existiert bereits!"
 
-#: domination/main.py:166
+#: domination/main.py:174
 msgid "Please enter a name!"
 msgstr "Bitte einen Namen eingeben!"
 
-#: domination/main.py:189
+#: domination/main.py:197
 #, python-format
 msgid "Game of %s"
 msgstr "Spiel von %s"
 
-#: domination/main.py:262
+#: domination/main.py:270
 msgid "Game has begun or ended already."
 msgstr "Spiel hat bereits begonnen oder ist bereits beendet."
 
-#: domination/main.py:269
+#: domination/main.py:277
 msgid "Too many players in the game!"
 msgstr "Zu viele Spieler im Spiel!"
 
-#: domination/main.py:315
+#: domination/main.py:323
 msgid "You cannot kick yourself!"
 msgstr "Du kannst dich nicht selbst rauswerfen!"
 
-#: domination/main.py:318
+#: domination/main.py:326
 msgid "You can only kick a player if you are waiting for him!"
 msgstr "Du kannst einen Spieler nur rauswerfen, wenn auf ihn gewartet wird!"
 
-#: domination/main.py:322
+#: domination/main.py:330
 msgid "You cannot kick your last opponent!"
 msgstr "Du kannst deinen letzten Gegner nicht rauswerfen!"
 
@@ -112,48 +118,48 @@ msgstr "Die Alchemisten"
 msgid "Seaside game"
 msgstr "Seaside"
 
-#: domination/cards/__init__.py:65
+#: domination/cards/__init__.py:66
 msgid "Victory/Treasure card"
 msgstr "Punktekarte/Geldkarte"
 
-#: domination/cards/__init__.py:67
+#: domination/cards/__init__.py:68
 msgid "Action/Victory card"
 msgstr "Aktionskarte/Punktekarte"
 
-#: domination/cards/__init__.py:98
+#: domination/cards/__init__.py:99
 msgid "Action card"
 msgstr "Aktionskarte"
 
-#: domination/cards/__init__.py:105
+#: domination/cards/__init__.py:106
 msgid "Duration card"
 msgstr "Dauerkarte"
 
-#: domination/cards/__init__.py:110
+#: domination/cards/__init__.py:111
 msgid "Attack card"
 msgstr "Angriffskarte"
 
-#: domination/cards/__init__.py:120
+#: domination/cards/__init__.py:121
 msgid "Do you want to flash a card in response to the attack?"
 msgstr "Möchtest du eine Reaktionskarte aufdecken?"
 
-#: domination/cards/__init__.py:132
+#: domination/cards/__init__.py:133
 #, python-format
 msgid "%s reacts with:"
 msgstr "%s reagiert mit:"
 
-#: domination/cards/__init__.py:147
+#: domination/cards/__init__.py:148
 msgid "Action/Reaction card"
 msgstr "Aktionskarte/Reaktionskarte"
 
-#: domination/cards/__init__.py:153
+#: domination/cards/__init__.py:154
 msgid "Victory card"
 msgstr "Punktekarte"
 
-#: domination/cards/__init__.py:159
+#: domination/cards/__init__.py:160
 msgid "Treasure card"
 msgstr "Geldkarte"
 
-#: domination/cards/__init__.py:165
+#: domination/cards/__init__.py:166
 msgid "Curse card"
 msgstr "Fluchkarte"
 
@@ -174,8 +180,13 @@ msgid "Alchemist"
 msgstr "Alchemist"
 
 #: domination/cards/alchemy.py:36
-msgid "+2 Cards, + 1 Action. When you discard this from play, you may put this on top of your deck if you have a Potion in play."
-msgstr "+2 Karten, +1 Aktion. Wenn diese Karte und ein Trank im Spiel sind und du den Alchemisten ablegst, darfst du diesen verdeckt oben auf deinen Nachziehstapel legen."
+msgid ""
+"+2 Cards, + 1 Action. When you discard this from play, you may put this "
+"on top of your deck if you have a Potion in play."
+msgstr ""
+"+2 Karten, +1 Aktion. Wenn diese Karte und ein Trank im Spiel sind und du"
+" den Alchemisten ablegst, darfst du diesen verdeckt oben auf deinen "
+"Nachziehstapel legen."
 
 #: domination/cards/alchemy.py:47
 msgid "Do you want to put your alchemist card onto your deck when cleaning up?"
@@ -186,13 +197,18 @@ msgid "Apothecary"
 msgstr "Apotheker"
 
 #: domination/cards/alchemy.py:57
-msgid "+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed Coppers and Potions into your hand. Put the other cards back on top of your deck in any order."
-msgstr "+1 Karte, +1 Aktion. Decke die obersten 4 Karten von deinem Nachziehstapel auf. Nimm alle aufgedeckten Kupfer und Tränke auf die Hand. Lege die übrigens Karten in beliebiger Reihenfolge verdeckt zurück auf deinen Nachziehstapel."
+msgid ""
+"+1 Card, +1 Action. Reveal the top 4 cards of your deck. Put the revealed"
+" Coppers and Potions into your hand. Put the other cards back on top of "
+"your deck in any order."
+msgstr ""
+"+1 Karte, +1 Aktion. Decke die obersten 4 Karten von deinem "
+"Nachziehstapel auf. Nimm alle aufgedeckten Kupfer und Tränke auf die "
+"Hand. Lege die übrigens Karten in beliebiger Reihenfolge verdeckt zurück "
+"auf deinen Nachziehstapel."
 
-#: domination/cards/alchemy.py:67
-#: domination/cards/alchemy.py:156
-#: domination/cards/alchemy.py:273
-#: domination/cards/base.py:258
+#: domination/cards/alchemy.py:67 domination/cards/alchemy.py:156
+#: domination/cards/alchemy.py:274 domination/cards/base.py:258
 #: domination/cards/intrigue.py:555
 #, python-format
 msgid "%s reveals:"
@@ -207,19 +223,20 @@ msgid "Apprentice"
 msgstr "Lehrling"
 
 #: domination/cards/alchemy.py:85
-msgid "+1 Action. Trash a card from your hand. +1 Card per Money it costs. +2 Cards if it has potion in its cost."
-msgstr "+1 Aktion. Entsorge eine Karte aus deiner Hand. +1 Karte pro Geld, das die Karte kostet und zusätzliche +2 Karten, wenn sie Tränke kostet."
+msgid ""
+"+1 Action. Trash a card from your hand. +1 Card per Money it costs. +2 "
+"Cards if it has potion in its cost."
+msgstr ""
+"+1 Aktion. Entsorge eine Karte aus deiner Hand. +1 Karte pro Geld, das "
+"die Karte kostet und zusätzliche +2 Karten, wenn sie Tränke kostet."
 
-#: domination/cards/alchemy.py:92
-#: domination/cards/alchemy.py:291
+#: domination/cards/alchemy.py:92 domination/cards/alchemy.py:292
 #: domination/cards/intrigue.py:190
 msgid "Which card do you want to trash?"
 msgstr "Welche Karte möchtest du entsorgen?"
 
-#: domination/cards/alchemy.py:106
-#: domination/cards/base.py:81
-#: domination/cards/intrigue.py:495
-#: domination/cards/seaside.py:98
+#: domination/cards/alchemy.py:106 domination/cards/base.py:81
+#: domination/cards/intrigue.py:495 domination/cards/seaside.py:99
 #, python-format
 msgid "%s trashes these cards:"
 msgstr "%s entsorgt diese Karten:"
@@ -232,8 +249,7 @@ msgstr "Vertrauter"
 msgid "+1 Card, +1 Action. Each other player gains a Curse."
 msgstr "+1 Karte, +1 Aktion. Jeder Mitspieler muss sich eine Fluchkarte nehmen."
 
-#: domination/cards/alchemy.py:128
-#: domination/cards/base.py:524
+#: domination/cards/alchemy.py:128 domination/cards/base.py:524
 #, python-format
 msgid "%s curses you. You gain a curse card."
 msgstr "%s verflucht dich. Du erhältst eine Fluchkarte."
@@ -243,8 +259,14 @@ msgid "Golem"
 msgstr "Golem"
 
 #: domination/cards/alchemy.py:138
-msgid "Reveal cards from your deck until you reveal 2 Action cards other than Golem cards. Discard the other cards, then play the Action cards in any order."
-msgstr "Decke solange Karten von deinem Nachziehstapel auf, bis 2 Aktionskarten (außer Golem-Karten) offen liegen. Lege sofort alle übrigen aufgedeckten Karten ab und spiele die beiden Aktionskarten in beliebiger Reihenfolge."
+msgid ""
+"Reveal cards from your deck until you reveal 2 Action cards other than "
+"Golem cards. Discard the other cards, then play the Action cards in any "
+"order."
+msgstr ""
+"Decke solange Karten von deinem Nachziehstapel auf, bis 2 Aktionskarten "
+"(außer Golem-Karten) offen liegen. Lege sofort alle übrigen aufgedeckten "
+"Karten ab und spiele die beiden Aktionskarten in beliebiger Reihenfolge."
 
 #: domination/cards/alchemy.py:168
 msgid "Which card do you want to play next?"
@@ -255,8 +277,13 @@ msgid "Herbalist"
 msgstr "Kräuterkundiger"
 
 #: domination/cards/alchemy.py:185
-msgid "+1 Buy, +1 Money. If you discard this from play, you may put one of your Treasures from play on top of your deck."
-msgstr "+1 Kauf, +1 Geld. Wenn diese Karte im Spiel ist und du sie ablegst, darfst du eine deiner Geldkarten im Spiel verdeckt oben auf deinen Nachziehstapel legen."
+msgid ""
+"+1 Buy, +1 Money. If you discard this from play, you may put one of your "
+"Treasures from play on top of your deck."
+msgstr ""
+"+1 Kauf, +1 Geld. Wenn diese Karte im Spiel ist und du sie ablegst, "
+"darfst du eine deiner Geldkarten im Spiel verdeckt oben auf deinen "
+"Nachziehstapel legen."
 
 #: domination/cards/alchemy.py:196
 msgid "Which treasure do you want to put on top of your deck?"
@@ -275,96 +302,116 @@ msgid "Possession"
 msgstr "Besessenheit"
 
 #: domination/cards/alchemy.py:221
-msgid "The player to your left takes an extra turn after this one, in which you can see all the cards he can and make all decisions for him. Any cards he would gain on that turn, you gain instead, any cards of his that are trashed are set aside and returned to his discard pile at the end of turn."
-msgstr "Der Spieler links von dir führt einen Extra-Zug direkt nach diesem aus. Dabei siehst du alle Karten, die auch er sieht, und du fällst alle Entscheidungen für ihn. Alle Karten, die er nimmt, oder kauft, legst du auf deinen Ablagestapel. Alle Karten, die er in diesem Zug entsorgt, werden zur Seite gelegt und am Ende des Zuges auf seinen Ablagestapel gelegt."
+msgid ""
+"The player to your left takes an extra turn after this one, in which you "
+"can see all the cards he can and make all decisions for him. Any cards he"
+" would gain on that turn, you gain instead, any cards of his that are "
+"trashed are set aside and returned to his discard pile at the end of "
+"turn."
+msgstr ""
+"Der Spieler links von dir führt einen Extra-Zug direkt nach diesem aus. "
+"Dabei siehst du alle Karten, die auch er sieht, und du fällst alle "
+"Entscheidungen für ihn. Alle Karten, die er nimmt, oder kauft, legst du "
+"auf deinen Ablagestapel. Alle Karten, die er in diesem Zug entsorgt, "
+"werden zur Seite gelegt und am Ende des Zuges auf seinen Ablagestapel "
+"gelegt."
 
 #: domination/cards/alchemy.py:231
 msgid "Scrying Pool"
 msgstr "Vision"
 
 #: domination/cards/alchemy.py:235
-msgid "Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice. Then reveal cards from the top of your deck until you reveal one that is not an Action. Put all your revealed cards into your hand."
-msgstr "+1 Aktion. Jeder Spieler (auch du selbst) muss die oberste Karte von seinem Nachziehstapel aufdecken. Du entscheidest, ob er sie ablegen oder auf seinen Nachziehstapel zurücklegen muss. Dann deckst du solange Karten von deinem Nachziehstapel auf, bis du eine Karte aufdeckst, die keine Aktionskarte ist. Nimm alle aufgedeckten Karten auf die Hand."
+msgid ""
+"+1 Action. Each player (including you) reveals the top card of his deck "
+"and either discards it or puts it back, your choice. Then reveal cards "
+"from the top of your deck until you reveal one that is not an Action. Put"
+" all your revealed cards into your hand."
+msgstr ""
+"+1 Aktion. Jeder Spieler (auch du selbst) muss die oberste Karte von "
+"seinem Nachziehstapel aufdecken. Du entscheidest, ob er sie ablegen oder "
+"auf seinen Nachziehstapel zurücklegen muss. Dann deckst du solange Karten"
+" von deinem Nachziehstapel auf, bis du eine Karte aufdeckst, die keine "
+"Aktionskarte ist. Nimm alle aufgedeckten Karten auf die Hand."
 
-#: domination/cards/alchemy.py:250
-#: domination/cards/base.py:421
+#: domination/cards/alchemy.py:251 domination/cards/base.py:421
 #, python-format
 msgid "%s reveals the top card of his deck:"
 msgstr "%s zeigt die oberste Karte von seinem Nachziehstapel:"
 
-#: domination/cards/alchemy.py:252
-#: domination/cards/base.py:423
+#: domination/cards/alchemy.py:253 domination/cards/base.py:423
 #, python-format
 msgid "Do you want to discard %(name)s's card '%(cardname)s'?"
 msgstr "Möchtest du die Karte %(cardname)s von %(name)s ablegen?"
 
-#: domination/cards/alchemy.py:257
-#: domination/cards/base.py:428
+#: domination/cards/alchemy.py:258 domination/cards/base.py:428
 #, python-format
 msgid "%(playername)s discarded %(player2name)s's card:"
 msgstr "%(playername)s hat diese Karte von %(player2name)s abgelegt:"
 
-#: domination/cards/alchemy.py:281
+#: domination/cards/alchemy.py:282
 msgid "Transmute"
 msgstr "Verwandlung"
 
-#: domination/cards/alchemy.py:285
-msgid "Trash a card from your hand. If it is an Action Card, gain a Duchy. If it is a Treasure card, gain a Transmute. If it is a Victory Card, gain a Gold."
-msgstr "Entsorge eine Karte aus deiner Hand. Ist es eine Aktionskarte, nimm dir ein Herzogtum. Ist es eine Geldkarte, nimm dir eine Verwandlung. Ist es eine Punktekarte, nimm dir ein Gold."
+#: domination/cards/alchemy.py:286
+msgid ""
+"Trash a card from your hand. If it is an Action Card, gain a Duchy. If it"
+" is a Treasure card, gain a Transmute. If it is a Victory Card, gain a "
+"Gold."
+msgstr ""
+"Entsorge eine Karte aus deiner Hand. Ist es eine Aktionskarte, nimm dir "
+"ein Herzogtum. Ist es eine Geldkarte, nimm dir eine Verwandlung. Ist es "
+"eine Punktekarte, nimm dir ein Gold."
 
-#: domination/cards/alchemy.py:296
-#: domination/cards/intrigue.py:197
+#: domination/cards/alchemy.py:297 domination/cards/intrigue.py:197
 #, python-format
 msgid "%s trashes this card:"
 msgstr "%s entsorgt diese Karte:"
 
-#: domination/cards/alchemy.py:303
-#: domination/cards/alchemy.py:309
-#: domination/cards/alchemy.py:315
-#: domination/cards/alchemy.py:340
-#: domination/cards/base.py:168
-#: domination/cards/base.py:216
-#: domination/cards/base.py:340
-#: domination/cards/base.py:553
-#: domination/cards/intrigue.py:153
-#: domination/cards/intrigue.py:455
+#: domination/cards/alchemy.py:304 domination/cards/alchemy.py:310
+#: domination/cards/alchemy.py:316 domination/cards/alchemy.py:341
+#: domination/cards/base.py:168 domination/cards/base.py:216
+#: domination/cards/base.py:340 domination/cards/base.py:553
+#: domination/cards/intrigue.py:153 domination/cards/intrigue.py:455
+#: domination/cards/seaside.py:254 domination/cards/seaside.py:262
 #, python-format
 msgid "%s gains:"
 msgstr "%s erhält:"
 
-#: domination/cards/alchemy.py:319
+#: domination/cards/alchemy.py:320
 msgid "University"
 msgstr "Universität"
 
-#: domination/cards/alchemy.py:323
+#: domination/cards/alchemy.py:324
 msgid "+2 Actions. You may gain an Action card costing up to 5."
-msgstr "+2 Aktionen. Du darfst dir eine Aktionskarte nehmen, die bis zu 5 Geld kostet."
+msgstr ""
+"+2 Aktionen. Du darfst dir eine Aktionskarte nehmen, die bis zu 5 Geld "
+"kostet."
 
-#: domination/cards/alchemy.py:332
+#: domination/cards/alchemy.py:333
 msgid "Select a action card that you want to have."
 msgstr "Wähle eine Aktionskarte aus, die du haben möchtest."
 
-#: domination/cards/alchemy.py:356
+#: domination/cards/alchemy.py:357
 msgid "Forbidden Arts [A&D]"
 msgstr "Verbotene Künste (Alchemisten)"
 
-#: domination/cards/alchemy.py:359
+#: domination/cards/alchemy.py:360
 msgid "Potion Mixers [A&D]"
 msgstr "Braumeister (Alchemisten)"
 
-#: domination/cards/alchemy.py:362
+#: domination/cards/alchemy.py:363
 msgid "Chemistry Lesson [A&D]"
 msgstr "Chemiestunde (Alchemisten)"
 
-#: domination/cards/alchemy.py:365
+#: domination/cards/alchemy.py:366
 msgid "Servants [A&I]"
 msgstr "Diener (Alchemisten & Intrige)"
 
-#: domination/cards/alchemy.py:368
+#: domination/cards/alchemy.py:369
 msgid "Secret Research [A&I]"
 msgstr "Geheime Forschung (Alchemisten & Intrige)"
 
-#: domination/cards/alchemy.py:371
+#: domination/cards/alchemy.py:372
 msgid "Pools, Tools, and Fools [A&I]"
 msgstr "Harte Arbeit, unfairer Lohn (Alchemisten & Intrige)"
 
@@ -412,9 +459,8 @@ msgstr "Kapelle"
 msgid "Trash up to four cards from your hand."
 msgstr "Entsorge bis zu 4 Karten aus deiner Hand."
 
-#: domination/cards/base.py:72
-#: domination/cards/intrigue.py:486
-#: domination/cards/seaside.py:88
+#: domination/cards/base.py:72 domination/cards/intrigue.py:486
+#: domination/cards/seaside.py:89
 msgid "Which cards do you want to trash?"
 msgstr "Welche Karten möchtest du entsorgen?"
 
@@ -424,18 +470,17 @@ msgstr "Keller"
 
 #: domination/cards/base.py:87
 msgid "+1 Action, Discard any number of cards. +1 Card per card discarded."
-msgstr "+1 Aktion. Lege eine beliebige Anzahl Karten aus deiner Hand ab. Ziehe für jede abgelegte Karte eine Karte nach."
+msgstr ""
+"+1 Aktion. Lege eine beliebige Anzahl Karten aus deiner Hand ab. Ziehe "
+"für jede abgelegte Karte eine Karte nach."
 
-#: domination/cards/base.py:92
-#: domination/cards/intrigue.py:381
+#: domination/cards/base.py:92 domination/cards/intrigue.py:381
 msgid "Which cards do you want to discard?"
 msgstr "Welche Karten möchtest du ablegen?"
 
-#: domination/cards/base.py:101
-#: domination/cards/base.py:139
-#: domination/cards/intrigue.py:390
-#: domination/cards/seaside.py:166
-#: domination/cards/seaside.py:269
+#: domination/cards/base.py:101 domination/cards/base.py:139
+#: domination/cards/intrigue.py:390 domination/cards/seaside.py:170
+#: domination/cards/seaside.py:300
 #, python-format
 msgid "%s discards these cards:"
 msgstr "%s legt diese Karten ab:"
@@ -454,7 +499,9 @@ msgstr "Miliz"
 
 #: domination/cards/base.py:119
 msgid "+2 Money, Each other player discards down to three cards in his hand."
-msgstr "+2 Geld. Jeder Mitspieler legt Karten ab, bis er nur noch 3 Karten auf der Hand hat."
+msgstr ""
+"+2 Geld. Jeder Mitspieler legt Karten ab, bis er nur noch 3 Karten auf "
+"der Hand hat."
 
 #: domination/cards/base.py:132
 #, python-format
@@ -466,8 +513,12 @@ msgid "Mine"
 msgstr "Mine"
 
 #: domination/cards/base.py:145
-msgid "Trash a treasure card in your hand. Gain a treasure card costing up to three money more, put it in your hand."
-msgstr "Entsorge eine Geldkarte aus deiner Hand. Nimm dir eine Geldkarte, die bis zu 3 Geld mehr kostet. Nimm diese Geldkarte sofort auf die Hand."
+msgid ""
+"Trash a treasure card in your hand. Gain a treasure card costing up to "
+"three money more, put it in your hand."
+msgstr ""
+"Entsorge eine Geldkarte aus deiner Hand. Nimm dir eine Geldkarte, die bis"
+" zu 3 Geld mehr kostet. Nimm diese Geldkarte sofort auf die Hand."
 
 #: domination/cards/base.py:151
 msgid "Select a treasure card you want to convert to a potentially better card."
@@ -477,12 +528,9 @@ msgstr "Wähle eine Geldkarte aus, die du entsorgen möchtest."
 msgid "Select a treasure card that you want to have."
 msgstr "Wähle eine Geldkarte aus, die du haben möchtest."
 
-#: domination/cards/base.py:166
-#: domination/cards/base.py:214
-#: domination/cards/base.py:399
-#: domination/cards/base.py:468
-#: domination/cards/intrigue.py:442
-#: domination/cards/seaside.py:353
+#: domination/cards/base.py:166 domination/cards/base.py:214
+#: domination/cards/base.py:399 domination/cards/base.py:468
+#: domination/cards/intrigue.py:442 domination/cards/seaside.py:400
 #, python-format
 msgid "%s trashes:"
 msgstr "%s entsorgt:"
@@ -492,25 +540,32 @@ msgid "Moat"
 msgstr "Burggraben"
 
 #: domination/cards/base.py:176
-msgid "+2 Cards, When another player plays an attack card, you may reveal this from your hand. If you do, you are unaffected by the attack."
-msgstr "+2 Karten. Wenn ein Mitspieler eine Angriffskarte ausspielt, kannst du diese Karte aus deiner Hand vorzeigen. Der Angriff hat dann keine Wirkung auf dich."
+msgid ""
+"+2 Cards, When another player plays an attack card, you may reveal this "
+"from your hand. If you do, you are unaffected by the attack."
+msgstr ""
+"+2 Karten. Wenn ein Mitspieler eine Angriffskarte ausspielt, kannst du "
+"diese Karte aus deiner Hand vorzeigen. Der Angriff hat dann keine Wirkung"
+" auf dich."
 
 #: domination/cards/base.py:188
 msgid "Remodel"
 msgstr "Umbau"
 
 #: domination/cards/base.py:191
-msgid "Trash a card from your hand. Gain a card costing up to 2 Money more than the trashed card."
-msgstr "Entsorge eine Karte aus deiner Hand. Nimm dir eine Karte, die bis zu 2 Geld mehr kostet als die entsorgte Karte."
+msgid ""
+"Trash a card from your hand. Gain a card costing up to 2 Money more than "
+"the trashed card."
+msgstr ""
+"Entsorge eine Karte aus deiner Hand. Nimm dir eine Karte, die bis zu 2 "
+"Geld mehr kostet als die entsorgte Karte."
 
 #: domination/cards/base.py:199
 msgid "Select a card you want to trash."
 msgstr "Wähle die Karte, die du entsorgen möchtest."
 
-#: domination/cards/base.py:206
-#: domination/cards/base.py:335
-#: domination/cards/base.py:548
-#: domination/cards/intrigue.py:148
+#: domination/cards/base.py:206 domination/cards/base.py:335
+#: domination/cards/base.py:548 domination/cards/intrigue.py:148
 msgid "Select a card that you want to have."
 msgstr "Wähle die Karte, die du haben möchtest."
 
@@ -518,8 +573,7 @@ msgstr "Wähle die Karte, die du haben möchtest."
 msgid "Smithy"
 msgstr "Schmiede"
 
-#: domination/cards/base.py:224
-#: domination/cards/intrigue.py:279
+#: domination/cards/base.py:224 domination/cards/intrigue.py:279
 msgid "+3 Cards"
 msgstr "+3 Karten."
 
@@ -536,16 +590,28 @@ msgid "Adventurer"
 msgstr "Abenteurer"
 
 #: domination/cards/base.py:243
-msgid "Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards into your hand and discard the other revealed cards."
-msgstr "Decke solange Karten vom Nachziehstapel auf, bis 2 Geldkarten offen liegen. Nimm die Geldkarten auf die Hand, lege die übrigen aufgedeckten Karten ab."
+msgid ""
+"Reveal cards from your deck until you reveal 2 Treasure cards. Put those "
+"Treasure cards into your hand and discard the other revealed cards."
+msgstr ""
+"Decke solange Karten vom Nachziehstapel auf, bis 2 Geldkarten offen "
+"liegen. Nimm die Geldkarten auf die Hand, lege die übrigen aufgedeckten "
+"Karten ab."
 
 #: domination/cards/base.py:268
 msgid "Bureaucrat"
 msgstr "Bürokrat"
 
 #: domination/cards/base.py:271
-msgid "Gain a Silver card; put it on top of your deck. Each other player reveals a Victory card from his hand and puts it on his deck (or reveals a hand with no Victory cards)."
-msgstr "Nimm dir ein Silber und lege es verdeckt auf deinen Nachziehstapel. Jeder Mitspieler deckt eine Punktekarte aus seiner Hand auf und legt sie verdeckt auf seinen Nachziehstapel. Hat ein Spieler keine Punktekarte auf der Hand, muss er seine Kartenhand vorzeigen."
+msgid ""
+"Gain a Silver card; put it on top of your deck. Each other player reveals"
+" a Victory card from his hand and puts it on his deck (or reveals a hand "
+"with no Victory cards)."
+msgstr ""
+"Nimm dir ein Silber und lege es verdeckt auf deinen Nachziehstapel. Jeder"
+" Mitspieler deckt eine Punktekarte aus seiner Hand auf und legt sie "
+"verdeckt auf seinen Nachziehstapel. Hat ein Spieler keine Punktekarte auf"
+" der Hand, muss er seine Kartenhand vorzeigen."
 
 #: domination/cards/base.py:289
 msgid "Select a Victory card you want to reveal"
@@ -556,9 +622,8 @@ msgstr "Wähle die Punktekarte aus, die du aufdecken möchtest!"
 msgid "%s reveals a card:"
 msgstr "%s deckt eine Karte auf:"
 
-#: domination/cards/base.py:296
-#: domination/cards/intrigue.py:416
-#: domination/cards/seaside.py:170
+#: domination/cards/base.py:296 domination/cards/intrigue.py:416
+#: domination/cards/seaside.py:174
 #, python-format
 msgid "%s reveals his hand:"
 msgstr "%s deckt seine Hand auf:"
@@ -612,8 +677,14 @@ msgid "Library"
 msgstr "Bibliothek"
 
 #: domination/cards/base.py:369
-msgid "Draw until you have 7 cards in your hand. You may set aside any action cards drawn this way, as you draw them; discard the set aside cards after you finish drawing."
-msgstr "Ziehe solange Karten nach, bis du 7 Karten auf der Hand hast. Aktionskarten kannst du zur Seite legen, sobald du sie ziehst. Die zur Seite gelegten Karten werden am Ende der Aktion abgelegt."
+msgid ""
+"Draw until you have 7 cards in your hand. You may set aside any action "
+"cards drawn this way, as you draw them; discard the set aside cards after"
+" you finish drawing."
+msgstr ""
+"Ziehe solange Karten nach, bis du 7 Karten auf der Hand hast. "
+"Aktionskarten kannst du zur Seite legen, sobald du sie ziehst. Die zur "
+"Seite gelegten Karten werden am Ende der Aktion abgelegt."
 
 #: domination/cards/base.py:379
 #, python-format
@@ -633,16 +704,29 @@ msgid "Spy"
 msgstr "Spion"
 
 #: domination/cards/base.py:405
-msgid "+1 Card, +1 Action, Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice."
-msgstr "+1 Karte, +1 Aktion. Jeder Spieler (auch du selbst) deckt die oberste Karte von seinem Nachziehstapel auf. Du entscheidest, ob er sie ablegt oder zurück auf seinen Nachziehstapel legt."
+msgid ""
+"+1 Card, +1 Action, Each player (including you) reveals the top card of "
+"his deck and either discards it or puts it back, your choice."
+msgstr ""
+"+1 Karte, +1 Aktion. Jeder Spieler (auch du selbst) deckt die oberste "
+"Karte von seinem Nachziehstapel auf. Du entscheidest, ob er sie ablegt "
+"oder zurück auf seinen Nachziehstapel legt."
 
 #: domination/cards/base.py:435
 msgid "Thief"
 msgstr "Dieb"
 
 #: domination/cards/base.py:438
-msgid "Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards."
-msgstr "Jeder Mitspieler deckt die obersten beiden Karten von seinem Nachziehstapel auf. Haben die Mitspieler eine oder mehrere Geldkarten aufgedeckt, muss jeder eine davon (nach deiner Wahl) entsorgen. Du kannst eine beliebige Zahl der entsorgten Karten bei dir ablegen. Die übrigen aufgedeckten Karten legen die Spieler bei sich ab."
+msgid ""
+"Each other player reveals the top 2 cards of his deck. If they revealed "
+"any Treasure cards, they trash one of them that you choose. You may gain "
+"any or all of these trashed cards. They discard the other revealed cards."
+msgstr ""
+"Jeder Mitspieler deckt die obersten beiden Karten von seinem "
+"Nachziehstapel auf. Haben die Mitspieler eine oder mehrere Geldkarten "
+"aufgedeckt, muss jeder eine davon (nach deiner Wahl) entsorgen. Du kannst"
+" eine beliebige Zahl der entsorgten Karten bei dir ablegen. Die übrigen "
+"aufgedeckten Karten legen die Spieler bei sich ab."
 
 #: domination/cards/base.py:456
 #, python-format
@@ -670,12 +754,18 @@ msgstr "Thronsaal"
 
 #: domination/cards/base.py:484
 msgid "Choose an action card in your hand. Play it twice."
-msgstr "Wähle eine Aktionskarte aus deiner Hand. Spiele diese Aktionskarte zweimal aus."
+msgstr ""
+"Wähle eine Aktionskarte aus deiner Hand. Spiele diese Aktionskarte "
+"zweimal aus."
 
 #: domination/cards/base.py:491
 #, python-format
-msgid "Which action card do you want to play on the throne room? (%i actions left)"
-msgstr "Welche Aktionskarte möchtest du im Thronsaal ausspielen? (Noch %i Aktionen übrig.)"
+msgid ""
+"Which action card do you want to play on the throne room? (%i actions "
+"left)"
+msgstr ""
+"Welche Aktionskarte möchtest du im Thronsaal ausspielen? (Noch %i "
+"Aktionen übrig.)"
 
 #: domination/cards/base.py:508
 msgid "Witch"
@@ -726,8 +816,12 @@ msgid "Baron"
 msgstr "Baron"
 
 #: domination/cards/intrigue.py:14
-msgid "+1 Buy, You may discard an Estate card. If you do, +4 Money. Otherwise gain an Estate card."
-msgstr "Du darfst ein Anwesen ablegen. Wenn du das machst: +4 Geld. Ansonsten: Nimm ein Anwesen."
+msgid ""
+"+1 Buy, You may discard an Estate card. If you do, +4 Money. Otherwise "
+"gain an Estate card."
+msgstr ""
+"Du darfst ein Anwesen ablegen. Wenn du das machst: +4 Geld. Ansonsten: "
+"Nimm ein Anwesen."
 
 #: domination/cards/intrigue.py:21
 msgid "Do you want to discard an Estate card?"
@@ -743,16 +837,25 @@ msgid "Bridge"
 msgstr "Brücke"
 
 #: domination/cards/intrigue.py:41
-msgid "+1 Buy, +1 Money, All cards (including cards in players' hands) cost 1 Money less this turn, but not less than 0 Money."
-msgstr "+1 Kauf, +1 Geld. Alle Karten (auch die Karten, die die Spieler auf der Hand halten), kosten in diesem Zug 1 Geld weniger, niemals jedoch weniger als 0 Geld."
+msgid ""
+"+1 Buy, +1 Money, All cards (including cards in players' hands) cost 1 "
+"Money less this turn, but not less than 0 Money."
+msgstr ""
+"+1 Kauf, +1 Geld. Alle Karten (auch die Karten, die die Spieler auf der "
+"Hand halten), kosten in diesem Zug 1 Geld weniger, niemals jedoch weniger"
+" als 0 Geld."
 
 #: domination/cards/intrigue.py:60
 msgid "Conspirator"
 msgstr "Verschwörer"
 
 #: domination/cards/intrigue.py:63
-msgid "+2 Money, If you've played 3 or more Actions this turn (counting this): +1 Card, +1 Action"
-msgstr "+2 Geld. Wenn du in diesem Zug 3 oder mehr Aktionskarten ausgespielt hast (diese eingeschlossen): +1 Karte, +1 Aktion."
+msgid ""
+"+2 Money, If you've played 3 or more Actions this turn (counting this): "
+"+1 Card, +1 Action"
+msgstr ""
+"+2 Geld. Wenn du in diesem Zug 3 oder mehr Aktionskarten ausgespielt hast"
+" (diese eingeschlossen): +1 Karte, +1 Aktion."
 
 #: domination/cards/intrigue.py:74
 msgid "Coppersmith"
@@ -768,7 +871,9 @@ msgstr "Burghof"
 
 #: domination/cards/intrigue.py:91
 msgid "+3 Cards, put a card from your hand on top of your deck."
-msgstr "+3 Karten. Lege eine Karte aus deiner Hand verdeckt auf deinen Nachziehstapel."
+msgstr ""
+"+3 Karten. Lege eine Karte aus deiner Hand verdeckt auf deinen "
+"Nachziehstapel."
 
 #: domination/cards/intrigue.py:96
 msgid "Select a card to put on your deck."
@@ -799,16 +904,26 @@ msgid "Ironworks"
 msgstr "Eisenhütte"
 
 #: domination/cards/intrigue.py:140
-msgid "Gain a card costing up to 4. If it is an Action card: +1 Action; Treasure card: +1 Money; Victory Card: +1 Card"
-msgstr "Nimm dir eine Karte, die bis zu 4 Geld kostet. Ist es eine Aktionskarte, +1 Aktion. Ist es eine Geldkarte, +1 Geld. Ist es eine Punktekarte, +1 Karte."
+msgid ""
+"Gain a card costing up to 4. If it is an Action card: +1 Action; Treasure"
+" card: +1 Money; Victory Card: +1 Card"
+msgstr ""
+"Nimm dir eine Karte, die bis zu 4 Geld kostet. Ist es eine Aktionskarte, "
+"+1 Aktion. Ist es eine Geldkarte, +1 Geld. Ist es eine Punktekarte, +1 "
+"Karte."
 
 #: domination/cards/intrigue.py:166
 msgid "Masquerade"
 msgstr "Maskerade"
 
 #: domination/cards/intrigue.py:169
-msgid "+2 Cards, Each player passes a card from his hand to the left at once. Then you may trash a card from your hand."
-msgstr "+2 Karten. Alle Spieler (auch du selbst) müssen gleichzeitig eine Karte aus ihrer Hand an ihren linken Nachbarn weiter geben. Danach darfst du eine Karte aus deiner Hand entsorgen."
+msgid ""
+"+2 Cards, Each player passes a card from his hand to the left at once. "
+"Then you may trash a card from your hand."
+msgstr ""
+"+2 Karten. Alle Spieler (auch du selbst) müssen gleichzeitig eine Karte "
+"aus ihrer Hand an ihren linken Nachbarn weiter geben. Danach darfst du "
+"eine Karte aus deiner Hand entsorgen."
 
 #: domination/cards/intrigue.py:178
 msgid "Which card do you want to pass left?"
@@ -823,8 +938,12 @@ msgid "Mining Village"
 msgstr "Bergwerk"
 
 #: domination/cards/intrigue.py:204
-msgid "+1 Card, +2 Actions, You may trash this card immediately. If you do, +2 Money."
-msgstr "+1 Karte, +2 Aktionen. Du darfst diese Karte sofort entsorgen. Wenn du das machst: +2 Geld."
+msgid ""
+"+1 Card, +2 Actions, You may trash this card immediately. If you do, +2 "
+"Money."
+msgstr ""
+"+1 Karte, +2 Aktionen. Du darfst diese Karte sofort entsorgen. Wenn du "
+"das machst: +2 Geld."
 
 #: domination/cards/intrigue.py:212
 msgid "Do you want to trash your Mining Village?"
@@ -835,11 +954,16 @@ msgid "Minion"
 msgstr "Lakai"
 
 #: domination/cards/intrigue.py:221
-msgid "+1 Action, Choose one: +2 Money, or discard your hand, +4 Cards, and each other player with at least 5 cards in hand discards his hand and draws 4 cards."
-msgstr "+1 Aktion. Wähle eins: +2 Geld; oder lege alle deine Handkarten ab: +4 Karten. Jeder Mitspieler, der mindestens 5 Karten auf der Hand hat, muss alle seine Handkarten ablegen und 4 Karten nachziehen."
+msgid ""
+"+1 Action, Choose one: +2 Money, or discard your hand, +4 Cards, and each"
+" other player with at least 5 cards in hand discards his hand and draws 4"
+" cards."
+msgstr ""
+"+1 Aktion. Wähle eins: +2 Geld; oder lege alle deine Handkarten ab: +4 "
+"Karten. Jeder Mitspieler, der mindestens 5 Karten auf der Hand hat, muss "
+"alle seine Handkarten ablegen und 4 Karten nachziehen."
 
-#: domination/cards/intrigue.py:227
-#: domination/cards/intrigue.py:469
+#: domination/cards/intrigue.py:227 domination/cards/intrigue.py:469
 msgid "+2 Money"
 msgstr "+2 Geld"
 
@@ -847,21 +971,17 @@ msgstr "+2 Geld"
 msgid "Discard hand and draw 4 cards, attack other players"
 msgstr "Hand ablegen und 4 Karten ziehen, andere Spieler angreifen"
 
-#: domination/cards/intrigue.py:230
-#: domination/cards/intrigue.py:472
+#: domination/cards/intrigue.py:230 domination/cards/intrigue.py:472
 msgid "What do you want to do?"
 msgstr "Was möchtest du tun?"
 
-#: domination/cards/intrigue.py:235
-#: domination/cards/intrigue.py:287
-#: domination/cards/intrigue.py:316
-#: domination/cards/intrigue.py:477
+#: domination/cards/intrigue.py:235 domination/cards/intrigue.py:287
+#: domination/cards/intrigue.py:316 domination/cards/intrigue.py:477
 #, python-format
 msgid "%(player)s chooses '%(action)s'"
 msgstr "%(player)s wählt „%(action)s“"
 
-#: domination/cards/intrigue.py:248
-#: domination/cards/intrigue.py:268
+#: domination/cards/intrigue.py:248 domination/cards/intrigue.py:268
 #, python-format
 msgid "%s discards this hand and draws 4 cards:"
 msgstr "%s legt seine Hand ab und zieht 4 Karten:"
@@ -891,7 +1011,9 @@ msgid "Pawn"
 msgstr "Handlanger"
 
 #: domination/cards/intrigue.py:299
-msgid "Choose two: +1 Card, +1 Action, +1 Buy, +1 Money. (The choices must be different.)"
+msgid ""
+"Choose two: +1 Card, +1 Action, +1 Buy, +1 Money. (The choices must be "
+"different.)"
 msgstr "Wähle zwei verschiedene: +1 Karte, +1 Aktion, +1 Kauf, +1 Geld."
 
 #: domination/cards/intrigue.py:303
@@ -919,16 +1041,29 @@ msgid "Saboteur"
 msgstr "Saboteur"
 
 #: domination/cards/intrigue.py:334
-msgid "Each other player reveals cards from the top of his deck until revealing one costing 3 or more. He trashes that card and may gain a card costing at most 2 less than it. He discards the other revealed cards."
-msgstr "Jeder Mitspieler muss solange Karten von seinem Nachziehstapel aufdecken, bis er eine Karte aufdeckt, die 3 Geld oder mehr kostet. Er muss diese Karte entsorgen und darf sich eine Karte nehmen, die mindestens 2 weniger kostet. Die übrigens aufgedeckten Karten legt er ab."
+msgid ""
+"Each other player reveals cards from the top of his deck until revealing "
+"one costing 3 or more. He trashes that card and may gain a card costing "
+"at most 2 less than it. He discards the other revealed cards."
+msgstr ""
+"Jeder Mitspieler muss solange Karten von seinem Nachziehstapel aufdecken,"
+" bis er eine Karte aufdeckt, die 3 Geld oder mehr kostet. Er muss diese "
+"Karte entsorgen und darf sich eine Karte nehmen, die mindestens 2 weniger"
+" kostet. Die übrigens aufgedeckten Karten legt er ab."
 
 #: domination/cards/intrigue.py:341
 msgid "Scout"
 msgstr "Späher"
 
 #: domination/cards/intrigue.py:344
-msgid "+1 Action, Reveal the top 4 cards of your deck. Put the revealed Victory cards into your hand. Put the other cards on top of your deck in any order."
-msgstr "+1 Aktion. Decke die obersten 4 Karten von deinem Nachziehstapel auf. Nimm alle aufgedeckten Punktekarten auf die Hand. Lege die übrigen Karten in beliebiger Reihenfolge verdeckt zurück auf deinen Nachziehstapel."
+msgid ""
+"+1 Action, Reveal the top 4 cards of your deck. Put the revealed Victory "
+"cards into your hand. Put the other cards on top of your deck in any "
+"order."
+msgstr ""
+"+1 Aktion. Decke die obersten 4 Karten von deinem Nachziehstapel auf. "
+"Nimm alle aufgedeckten Punktekarten auf die Hand. Lege die übrigen Karten"
+" in beliebiger Reihenfolge verdeckt zurück auf deinen Nachziehstapel."
 
 #: domination/cards/intrigue.py:355
 #, python-format
@@ -944,8 +1079,15 @@ msgid "Secret Chamber"
 msgstr "Geheimkammer"
 
 #: domination/cards/intrigue.py:373
-msgid "Discard any number of cards. +1 Money per card discarded.  When another player plays an attack card, you may reveal this from your hand. If you do, +2 Cards, then put 2 cards from your hand on top of your deck."
-msgstr "Lege eine beliebige Anzahl Karten aus deiner Hand ab: +1 Geld für jede abgelegte Karte. Wenn ein Mitspieler eine Angriffskarte ausspielt, darfst du diese Karte aus deiner Hand aufdecken. Wenn du das machst: +2 Karten, dann lege 2 Karten aus deiner Hand verdeckt auf deinen Nachziehstapel."
+msgid ""
+"Discard any number of cards. +1 Money per card discarded.  When another "
+"player plays an attack card, you may reveal this from your hand. If you "
+"do, +2 Cards, then put 2 cards from your hand on top of your deck."
+msgstr ""
+"Lege eine beliebige Anzahl Karten aus deiner Hand ab: +1 Geld für jede "
+"abgelegte Karte. Wenn ein Mitspieler eine Angriffskarte ausspielt, darfst"
+" du diese Karte aus deiner Hand aufdecken. Wenn du das machst: +2 Karten,"
+" dann lege 2 Karten aus deiner Hand verdeckt auf deinen Nachziehstapel."
 
 #: domination/cards/intrigue.py:396
 msgid "Which cards do you want to put on your deck?"
@@ -956,7 +1098,9 @@ msgid "Shanty Town"
 msgstr "Armenviertel"
 
 #: domination/cards/intrigue.py:408
-msgid "+2 Actions, Reveal your hand. If you have no action cards in hand, +2 Cards."
+msgid ""
+"+2 Actions, Reveal your hand. If you have no action cards in hand, +2 "
+"Cards."
 msgstr "+2 Aktionen. "
 
 #: domination/cards/intrigue.py:424
@@ -964,8 +1108,13 @@ msgid "Swindler"
 msgstr "Trickser"
 
 #: domination/cards/intrigue.py:427
-msgid "+2 Money, Each other player trashes the top card of his deck and gains a card with the same cost that you choose."
-msgstr "+2 Geld. Jeder Mitspieler muss die oberste Karte seine Nachziehstapels entsorgen. Du wählst eine Karte, die das gleiche kostet, wie die entsorgte Karte. Diese Karte muss sich der Spieler nehmen."
+msgid ""
+"+2 Money, Each other player trashes the top card of his deck and gains a "
+"card with the same cost that you choose."
+msgstr ""
+"+2 Geld. Jeder Mitspieler muss die oberste Karte seine Nachziehstapels "
+"entsorgen. Du wählst eine Karte, die das gleiche kostet, wie die "
+"entsorgte Karte. Diese Karte muss sich der Spieler nehmen."
 
 #: domination/cards/intrigue.py:447
 msgid "Select a card that you want to give."
@@ -977,7 +1126,9 @@ msgstr "Verwalter"
 
 #: domination/cards/intrigue.py:465
 msgid "Choose one: +2 Cards; or +2 Money; or trash two cards from your hand."
-msgstr "Wähle eins: +2 Karten; oder +2 Geld; oder entsorge genau 2 Karten aus deiner Hand."
+msgstr ""
+"Wähle eins: +2 Karten; oder +2 Geld; oder entsorge genau 2 Karten aus "
+"deiner Hand."
 
 #: domination/cards/intrigue.py:468
 msgid "+2 Cards"
@@ -992,7 +1143,9 @@ msgid "Torturer"
 msgstr ""
 
 #: domination/cards/intrigue.py:503
-msgid "+3 Cards, Each other player chooses one: he discards 2 cards; or he gains a Curse card, putting it in his hand."
+msgid ""
+"+3 Cards, Each other player chooses one: he discards 2 cards; or he gains"
+" a Curse card, putting it in his hand."
 msgstr ""
 
 #: domination/cards/intrigue.py:507
@@ -1000,23 +1153,37 @@ msgid "Trading Post"
 msgstr "Handelsposten"
 
 #: domination/cards/intrigue.py:511
-msgid "Trash 2 cards from your hand. If you do, gain a Silver card; put it into your hand."
-msgstr "Entsorge 2 Karten aus deiner Hand. Wenn du das machst: Nimm dir ein Silber auf die Hand."
+msgid ""
+"Trash 2 cards from your hand. If you do, gain a Silver card; put it into "
+"your hand."
+msgstr ""
+"Entsorge 2 Karten aus deiner Hand. Wenn du das machst: Nimm dir ein "
+"Silber auf die Hand."
 
 #: domination/cards/intrigue.py:515
 msgid "Tribute"
 msgstr "Tribut"
 
 #: domination/cards/intrigue.py:519
-msgid "The player to your left reveals then discards the top 2 cards of his deck. For each differently named card revealed, if it is an Action Card: +2 Actions. If it is a Treasure Card: +2 Money. If it is a Victory Card: +2 Cards."
-msgstr "Dein linker Nachbar muss die obersten beiden Karten von seinem Nachziehstapel aufdecken und diese ablegen. Für jede Karte mit unterschiedlichem Namen erhältst du etwas: Bei einer Aktionskarte: +2 Aktionen. Bei einer Geldkarte: +2 Geld. Bei einer Punktekarte: +2 Karten."
+msgid ""
+"The player to your left reveals then discards the top 2 cards of his "
+"deck. For each differently named card revealed, if it is an Action Card: "
+"+2 Actions. If it is a Treasure Card: +2 Money. If it is a Victory Card: "
+"+2 Cards."
+msgstr ""
+"Dein linker Nachbar muss die obersten beiden Karten von seinem "
+"Nachziehstapel aufdecken und diese ablegen. Für jede Karte mit "
+"unterschiedlichem Namen erhältst du etwas: Bei einer Aktionskarte: +2 "
+"Aktionen. Bei einer Geldkarte: +2 Geld. Bei einer Punktekarte: +2 Karten."
 
 #: domination/cards/intrigue.py:526
 msgid "Upgrade"
 msgstr ""
 
 #: domination/cards/intrigue.py:530
-msgid "+1 Card, +1 Action, Trash a card from your hand. Gain a card costing exactly 1 more than it."
+msgid ""
+"+1 Card, +1 Action, Trash a card from your hand. Gain a card costing "
+"exactly 1 more than it."
 msgstr ""
 
 #: domination/cards/intrigue.py:534
@@ -1024,8 +1191,13 @@ msgid "Wishing Well"
 msgstr "Wunschbrunnen"
 
 #: domination/cards/intrigue.py:537
-msgid "+1 Card, +1 Action, Name a card. Reveal the top card of your deck. If it's the named card, put it into your hand."
-msgstr "+1 Karte, +1 Aktion. Benenne eine Karte. Decke die oberste Karte von deinem Nachziehstapel auf. Wenn es die benannte Karte ist, nimm sie auf die Hand."
+msgid ""
+"+1 Card, +1 Action, Name a card. Reveal the top card of your deck. If "
+"it's the named card, put it into your hand."
+msgstr ""
+"+1 Karte, +1 Aktion. Benenne eine Karte. Decke die oberste Karte von "
+"deinem Nachziehstapel auf. Wenn es die benannte Karte ist, nimm sie auf "
+"die Hand."
 
 #: domination/cards/intrigue.py:546
 msgid "Name a card."
@@ -1065,224 +1237,341 @@ msgid "Lookout"
 msgstr "Ausguck"
 
 #: domination/cards/seaside.py:15
-msgid "+1 Action. Look at the top 3 Cards of your deck. Trash one of them. Discard one of them. Put the other one on top of your deck."
-msgstr "+1 Aktion. Sieh dir die obersten 3 Karten von deinem Nachziehstapel an. Entsorge eine davon. Lege eine davon ab. Lege eine davon verdeckt zurück auf deinen Nachziehstapel."
+msgid ""
+"+1 Action. Look at the top 3 Cards of your deck. Trash one of them. "
+"Discard one of them. Put the other one on top of your deck."
+msgstr ""
+"+1 Aktion. Sieh dir die obersten 3 Karten von deinem Nachziehstapel an. "
+"Entsorge eine davon. Lege eine davon ab. Lege eine davon verdeckt zurück "
+"auf deinen Nachziehstapel."
 
 #: domination/cards/seaside.py:22
 msgid "Merchant Ship"
 msgstr "Handelsschiff"
 
-#: domination/cards/seaside.py:26
+#: domination/cards/seaside.py:25
 msgid "Now and at the start of next turn: +2 Money"
 msgstr "+2 Geld. Bei Beginn deines nächsten Zuges: +2 Geld."
 
-#: domination/cards/seaside.py:33
+#: domination/cards/seaside.py:35
 msgid "Navigator"
 msgstr "Navigator"
 
-#: domination/cards/seaside.py:37
-msgid "+2 Money. Look at the top 5 Cards of your deck. Either discard all of them, or put them back on top of your deck in any order."
-msgstr "+2 Geld. Sieh dir die obersten 5 Karten von deinem Nachziehstapel an. Lege entweder all diese Karten ab oder lege sie in beliebiger Reihenfolge verdeckt zurück auf deinen Nachziehstapel."
+#: domination/cards/seaside.py:39
+msgid ""
+"+2 Money. Look at the top 5 Cards of your deck. Either discard all of "
+"them, or put them back on top of your deck in any order."
+msgstr ""
+"+2 Geld. Sieh dir die obersten 5 Karten von deinem Nachziehstapel an. "
+"Lege entweder all diese Karten ab oder lege sie in beliebiger Reihenfolge"
+" verdeckt zurück auf deinen Nachziehstapel."
 
-#: domination/cards/seaside.py:44
+#: domination/cards/seaside.py:46
 msgid "Pirate Ship"
 msgstr "Piratenschiff"
 
-#: domination/cards/seaside.py:48
-msgid "Choose one: Each Player reveals the top 2 cards of his deck, trashes a revealed Treasure that you choose, discards the rest, and if anyone trashed a Treasure you take a Coin token; or + 1 Money per Coin token you have taken with pirate Ships this game."
-msgstr "Wähle eins: Jeder Mitspieler muss die obersten beiden Karten von seinem Nachziehstapel aufdecken. Haben die Mitspieler eine oder mehrere Geldkarten aufgedeckt, muss jeder eine davon (nach deiner Wahl) entsorgen. Wenn auf diese Weise mindestens 1 Geldkarte entsorgt wird, erhältst du 1 Geldmarker auf dein Tableau Piratenschiff. Die übrigen aufgedeckten Karten legen die Spieler bei sich ab; oder: +1 Geld für jeden Geldmarker auf deinem Tableau Piratenschiff."
+#: domination/cards/seaside.py:50
+msgid ""
+"Choose one: Each Player reveals the top 2 cards of his deck, trashes a "
+"revealed Treasure that you choose, discards the rest, and if anyone "
+"trashed a Treasure you take a Coin token; or + 1 Money per Coin token you"
+" have taken with pirate Ships this game."
+msgstr ""
+"Wähle eins: Jeder Mitspieler muss die obersten beiden Karten von seinem "
+"Nachziehstapel aufdecken. Haben die Mitspieler eine oder mehrere "
+"Geldkarten aufgedeckt, muss jeder eine davon (nach deiner Wahl) "
+"entsorgen. Wenn auf diese Weise mindestens 1 Geldkarte entsorgt wird, "
+"erhältst du 1 Geldmarker auf dein Tableau Piratenschiff. Die übrigen "
+"aufgedeckten Karten legen die Spieler bei sich ab; oder: +1 Geld für "
+"jeden Geldmarker auf deinem Tableau Piratenschiff."
 
-#: domination/cards/seaside.py:54
+#: domination/cards/seaside.py:56
 msgid "Outpost"
 msgstr "Außenposten"
 
-#: domination/cards/seaside.py:58
-msgid "You only draw 3 cards (instead of 5) in this turns Clean-up phase. Take an extra turn after this one. This can't cause you to take more than two consecutive turns."
-msgstr "Ziehe in der folgenden Aufräumphase nur 3 Karten nach. Führe danach sofort einen weiteren Zug aus. Du kannst auf diese Weise nur einen weiteren Zug ausführen."
+#: domination/cards/seaside.py:60
+msgid ""
+"You only draw 3 cards (instead of 5) in this turns Clean-up phase. Take "
+"an extra turn after this one. This can't cause you to take more than two "
+"consecutive turns."
+msgstr ""
+"Ziehe in der folgenden Aufräumphase nur 3 Karten nach. Führe danach "
+"sofort einen weiteren Zug aus. Du kannst auf diese Weise nur einen "
+"weiteren Zug ausführen."
 
-#: domination/cards/seaside.py:67
+#: domination/cards/seaside.py:68
 msgid "Pearl Diver"
 msgstr "Perlentaucher"
 
-#: domination/cards/seaside.py:71
-msgid "+1 Card, +1 Action. Look at the bottom card of your deck. You may put it on top."
-msgstr "+1 Karte, +1 Aktion. Sieh dir die unterste Karte von deinem Nachziehstapel an. Du darfst diese Karte verdeckt auf deinen Nachziehstapel legen."
+#: domination/cards/seaside.py:72
+msgid ""
+"+1 Card, +1 Action. Look at the bottom card of your deck. You may put it "
+"on top."
+msgstr ""
+"+1 Karte, +1 Aktion. Sieh dir die unterste Karte von deinem "
+"Nachziehstapel an. Du darfst diese Karte verdeckt auf deinen "
+"Nachziehstapel legen."
 
-#: domination/cards/seaside.py:79
+#: domination/cards/seaside.py:80
 msgid "Salvager"
 msgstr "Müllverwerter"
 
-#: domination/cards/seaside.py:82
+#: domination/cards/seaside.py:83
 msgid "+1 Buy. Trash a Card from your hand. +Money equal to its costs."
-msgstr "+1 Kauf. Entsorge eine Karte aus deiner Hand. +X Geld entsprechend den Kosten der entsorgten Karte."
+msgstr ""
+"+1 Kauf. Entsorge eine Karte aus deiner Hand. +X Geld entsprechend den "
+"Kosten der entsorgten Karte."
 
-#: domination/cards/seaside.py:101
+#: domination/cards/seaside.py:102
 msgid "Sea Hag"
 msgstr "Seehexe"
 
-#: domination/cards/seaside.py:105
-msgid "Each other player discards the top card of his deck, then gains a Curse card, putting it on top of his deck."
-msgstr "Jeder Mitspieler muss die oberste Karte seines Nachziehstapels ablegen und sich dann einen Fluch nehmen, den er verdeckt auf seinen Nachziehstapel legt."
+#: domination/cards/seaside.py:106
+msgid ""
+"Each other player discards the top card of his deck, then gains a Curse "
+"card, putting it on top of his deck."
+msgstr ""
+"Jeder Mitspieler muss die oberste Karte seines Nachziehstapels ablegen "
+"und sich dann einen Fluch nehmen, den er verdeckt auf seinen "
+"Nachziehstapel legt."
 
-#: domination/cards/seaside.py:111
+#: domination/cards/seaside.py:112
 msgid "Smugglers"
 msgstr "Schmuggler"
 
-#: domination/cards/seaside.py:115
-msgid "Gain a copy of a Card costing up to 6 that the player to your rigth gained on his last turn."
-msgstr "Nimm dir eine Karte, die der Spieler rechts von dir in seinem letzten Zug genommen oder gekauft hat und die bis zu 6 Geld kostet."
+#: domination/cards/seaside.py:116
+msgid ""
+"Gain a copy of a Card costing up to 6 that the player to your rigth "
+"gained on his last turn."
+msgstr ""
+"Nimm dir eine Karte, die der Spieler rechts von dir in seinem letzten Zug"
+" genommen oder gekauft hat und die bis zu 6 Geld kostet."
 
-#: domination/cards/seaside.py:121
+#: domination/cards/seaside.py:122
 msgid "Caravan"
 msgstr "Karawane"
 
-#: domination/cards/seaside.py:125
+#: domination/cards/seaside.py:126
 msgid "+1 Card, +1 Action. At the start of your next turn, +1 Card."
 msgstr "+1 Karte, +1 Aktion. Bei Beginn deines nächsten Zuges: +1 Karte."
 
-#: domination/cards/seaside.py:133
+#: domination/cards/seaside.py:137
 msgid "Bazaar"
 msgstr "Bazar"
 
-#: domination/cards/seaside.py:136
+#: domination/cards/seaside.py:140
 msgid "+1 Card, +2 Actions, +1 Money"
 msgstr "+1 Karte, +2 Aktionen, +1 Geld."
 
-#: domination/cards/seaside.py:144
+#: domination/cards/seaside.py:148
 msgid "Cutpurse"
 msgstr "Beutelschneider"
 
-#: domination/cards/seaside.py:147
-msgid "+2 Money. Each other player discards a Copper card (or reveals a hand with no Copper)."
-msgstr "+2 Geld. Jeder Mitspieler muss ein Kupfer aus seiner Hand ablegen. Hat ein Spieler kein Kupfer auf der Hand, muss er seine Kartenhand vorzeigen."
+#: domination/cards/seaside.py:151
+msgid ""
+"+2 Money. Each other player discards a Copper card (or reveals a hand "
+"with no Copper)."
+msgstr ""
+"+2 Geld. Jeder Mitspieler muss ein Kupfer aus seiner Hand ablegen. Hat "
+"ein Spieler kein Kupfer auf der Hand, muss er seine Kartenhand vorzeigen."
 
-#: domination/cards/seaside.py:160
+#: domination/cards/seaside.py:164
 #, python-format
 msgid "%s played Cutpurse. Which Copper do you want to discard?"
 msgstr "%s hat „Beutelschneider“ gespielt. Welches Kupfer möchtest du ablegen?"
 
-#: domination/cards/seaside.py:174
+#: domination/cards/seaside.py:178
 msgid "Embargo"
 msgstr ""
 
-#: domination/cards/seaside.py:178
-msgid "+2 Money. Trash this card. Put an Embargo token on top of a Supply pile. When a player buys a card, he gains a Curse card per Embargo token on that pile."
+#: domination/cards/seaside.py:182
+msgid ""
+"+2 Money. Trash this card. Put an Embargo token on top of a Supply pile. "
+"When a player buys a card, he gains a Curse card per Embargo token on "
+"that pile."
 msgstr ""
 
-#: domination/cards/seaside.py:185
+#: domination/cards/seaside.py:189
 msgid "Lighthouse"
 msgstr "Leuchtturm"
 
-#: domination/cards/seaside.py:189
-msgid "+1 Action. Now and at the start of your next turn: +1 Money. While this is in play, when another player plays an Attack card it doesn't affect you."
-msgstr "+1 Aktion, +1 Geld. Bei Beginn deines nächsten Zuges: +1 Geld. Solange diese Karte im Spiel ist, bist du von Angriffen deiner Mitspieler nicht betroffen."
+#: domination/cards/seaside.py:192
+msgid ""
+"+1 Action. Now and at the start of your next turn: +1 Money. While this "
+"is in play, when another player plays an Attack card it doesn't affect "
+"you."
+msgstr ""
+"+1 Aktion, +1 Geld. Bei Beginn deines nächsten Zuges: +1 Geld. Solange "
+"diese Karte im Spiel ist, bist du von Angriffen deiner Mitspieler nicht "
+"betroffen."
 
-#: domination/cards/seaside.py:196
+#: domination/cards/seaside.py:208
 msgid "Ghost Ship"
 msgstr "Geisterschiff"
 
-#: domination/cards/seaside.py:199
-msgid "+2 Cards. Each other player with 4 or more cards in hand puts cards from his hand on top of his deck until he has 3 cards in his hand."
-msgstr "+2 Karten. Jeder Mitspieler, der mindestens 4  Karten auf der Hand hat, muss solange Karten aus seiner Hand verdeckt auf seinen Nachziehstapel legen, bis er nur noch 3 Karten auf der Hand hat."
+#: domination/cards/seaside.py:211
+msgid ""
+"+2 Cards. Each other player with 4 or more cards in hand puts cards from "
+"his hand on top of his deck until he has 3 cards in his hand."
+msgstr ""
+"+2 Karten. Jeder Mitspieler, der mindestens 4  Karten auf der Hand hat, "
+"muss solange Karten aus seiner Hand verdeckt auf seinen Nachziehstapel "
+"legen, bis er nur noch 3 Karten auf der Hand hat."
 
-#: domination/cards/seaside.py:212
+#: domination/cards/seaside.py:224
 #, python-format
-msgid "%s played Ghost Ship. Which cards do you want to put on the top of your deck?"
-msgstr "%s hat „Geisterschiff“ gespielt. Welche Karten möchtest du auf deinen Nachziehstapel legen?"
+msgid ""
+"%s played Ghost Ship. Which cards do you want to put on the top of your "
+"deck?"
+msgstr ""
+"%s hat „Geisterschiff“ gespielt. Welche Karten möchtest du auf deinen "
+"Nachziehstapel legen?"
 
-#: domination/cards/seaside.py:218
+#: domination/cards/seaside.py:230
 msgid "Haven"
 msgstr "Hafen"
 
-#: domination/cards/seaside.py:222
-msgid "+1 Card, + 1 Action. Set aside a card from your hand face down. At the start of your next turn, put it into your hand."
-msgstr "+1 Karte, +1 Aktion. Lege eine Karte aus deiner Hand verdeckt zur Seite. Bei Beginn deines nächsten Zuges: Nimm die zur Seite gelegte Karte auf die Hand."
+#: domination/cards/seaside.py:234
+msgid ""
+"+1 Card, + 1 Action. Set aside a card from your hand face down. At the "
+"start of your next turn, put it into your hand."
+msgstr ""
+"+1 Karte, +1 Aktion. Lege eine Karte aus deiner Hand verdeckt zur Seite. "
+"Bei Beginn deines nächsten Zuges: Nimm die zur Seite gelegte Karte auf "
+"die Hand."
 
-#: domination/cards/seaside.py:230
+#: domination/cards/seaside.py:242
 msgid "Explorer"
 msgstr "Entdecker"
 
-#: domination/cards/seaside.py:234
-msgid "You may reveal a Province card from your hand. If you do, gain a Gold card, putting it into your hand. Otherwise, gain a Silver card, putting it into your hand."
-msgstr "Du darfst eine Provinz aus deiner Hand aufdecken. Wenn du das machst: Nimm dir ein Gold auf die Hand. Ansonsten: Nimm dir ein Silber auf die Hand."
+#: domination/cards/seaside.py:245
+msgid ""
+"You may reveal a Province card from your hand. If you do, gain a Gold "
+"card, putting it into your hand. Otherwise, gain a Silver card, putting "
+"it into your hand."
+msgstr ""
+"Du darfst eine Provinz aus deiner Hand aufdecken. Wenn du das machst: "
+"Nimm dir ein Gold auf die Hand. Ansonsten: Nimm dir ein Silber auf die "
+"Hand."
 
-#: domination/cards/seaside.py:240
+#: domination/cards/seaside.py:268
 msgid "Fishing Village"
 msgstr "Fischerdorf"
 
-#: domination/cards/seaside.py:244
+#: domination/cards/seaside.py:271
 msgid "+2 Actions, +1 Money. At the start of your next turn: +1 Action, +1 Money."
-msgstr "+2 Aktionen, +1 Geld. Bei Beginn deines nächsten Zuges: +1 Aktion, +1 Geld."
+msgstr ""
+"+2 Aktionen, +1 Geld. Bei Beginn deines nächsten Zuges: +1 Aktion, +1 "
+"Geld."
 
-#: domination/cards/seaside.py:252
+#: domination/cards/seaside.py:283
 msgid "Warehouse"
 msgstr "Lagerhaus"
 
-#: domination/cards/seaside.py:255
+#: domination/cards/seaside.py:286
 msgid "+3 Cards, +1 Actions. Discard 3 Cards."
 msgstr "+3 Karten, +1 Aktion. Lege 3 Karten aus deiner Hand ab."
 
-#: domination/cards/seaside.py:261
+#: domination/cards/seaside.py:292
 msgid "Which 3 cards do you want to discard?"
 msgstr "Welche 3 Karten möchtest du ablegen?"
 
-#: domination/cards/seaside.py:272
+#: domination/cards/seaside.py:303
 msgid "Treasury"
 msgstr "Schatzkammer"
 
-#: domination/cards/seaside.py:276
-msgid "+1 Card, +1 Action, +1 Money. When you discard this from play, if you didn't buy a Victory card this turn, you may put this on top of your deck."
-msgstr "+1 Karte, +1 Aktion, +1 Geld. Wenn du in diesem Zug keine Punktekarte gekauft hast und diese Karte im Spiel ist, darfst du diese Karte verdeckt auf deinen Nachziehstapel legen, anstatt sie abzulegen."
+#: domination/cards/seaside.py:307
+msgid ""
+"+1 Card, +1 Action, +1 Money. When you discard this from play, if you "
+"didn't buy a Victory card this turn, you may put this on top of your "
+"deck."
+msgstr ""
+"+1 Karte, +1 Aktion, +1 Geld. Wenn du in diesem Zug keine Punktekarte "
+"gekauft hast und diese Karte im Spiel ist, darfst du diese Karte verdeckt"
+" auf deinen Nachziehstapel legen, anstatt sie abzulegen."
 
-#: domination/cards/seaside.py:285
+#: domination/cards/seaside.py:316
 msgid "Island"
 msgstr "Insel"
 
-#: domination/cards/seaside.py:290
-msgid "Set aside this and another card from your hand. Return them to your deck at the end of the game."
-msgstr "Lege diese Karte und eine andere Karte aus deiner Hand offen zur Seite auf dein Tableau Insel. Nimm die Karten am Ende des Spiels zurück in deinen Kartenstapel. Wert: 2 Punkte."
+#: domination/cards/seaside.py:321
+msgid ""
+"Set aside this and another card from your hand. Return them to your deck "
+"at the end of the game."
+msgstr ""
+"Lege diese Karte und eine andere Karte aus deiner Hand offen zur Seite "
+"auf dein Tableau Insel. Nimm die Karten am Ende des Spiels zurück in "
+"deinen Kartenstapel. Wert: 2 Punkte."
 
-#: domination/cards/seaside.py:297
+#: domination/cards/seaside.py:328
 msgid "Ambassador"
 msgstr "Botschafter"
 
-#: domination/cards/seaside.py:301
-msgid "Reveal a card from your hand. Return 2 copies of it from your hand to the Supply. Then each other player gains a copy of it."
-msgstr "Decke eine Karte aus deiner Hand auf. Lege bis zu 2 dieser Karten aus deiner Hand zurück in den Vorrat. Jeder Mitspieler muss sich eine solche Karte vom Vorrat nehmen."
+#: domination/cards/seaside.py:332
+msgid ""
+"Reveal a card from your hand. Return 2 copies of it from your hand to the"
+" Supply. Then each other player gains a copy of it."
+msgstr ""
+"Decke eine Karte aus deiner Hand auf. Lege bis zu 2 dieser Karten aus "
+"deiner Hand zurück in den Vorrat. Jeder Mitspieler muss sich eine solche "
+"Karte vom Vorrat nehmen."
 
-#: domination/cards/seaside.py:307
+#: domination/cards/seaside.py:338
 msgid "Tactician"
 msgstr "Taktiker"
 
-#: domination/cards/seaside.py:311
-msgid "Discard your hand. If you discarded any cards this way, then at the start of your next turn, +5 Cards, +1 Buy, and +1 Action"
-msgstr "Lege deine übrigen Handkarten ab. Wenn du auf diese Weise mindestens eine Karte abgelegt hast: Bei Beginn deines nächsten Zuges: +5 Karten, +1 Aktion, +1 Kauf."
+#: domination/cards/seaside.py:341
+msgid ""
+"Discard your hand. If you discarded any cards this way, then at the start"
+" of your next turn, +5 Cards, +1 Buy, and +1 Action"
+msgstr ""
+"Lege deine übrigen Handkarten ab. Wenn du auf diese Weise mindestens eine"
+" Karte abgelegt hast: Bei Beginn deines nächsten Zuges: +5 Karten, +1 "
+"Aktion, +1 Kauf."
 
-#: domination/cards/seaside.py:317
+#: domination/cards/seaside.py:351
+#, fuzzy, python-format
+msgid "%s discards this hand:"
+msgstr "%s legt diese Karten ab:"
+
+#: domination/cards/seaside.py:361
 msgid "Native Village"
 msgstr "Eingeborenendorf"
 
-#: domination/cards/seaside.py:321
-msgid "+2 Actions. Choose one: Set aside the top card of your deck face down on your Native Village mat; or put all cards from your mat into your hand. You may look at the cards on your mat at any time; return them to your deck at the end of the game."
-msgstr "+2 Aktionen. Wähle eins: Lege die oberste Karte von deinem Nachziehstapel verdeckt zur Seite auf dein Tableau Eingeborenendorf; oder nimm alle Karten von deinem Tableau Eingeborenendorf auf die Hand."
+#: domination/cards/seaside.py:365
+msgid ""
+"+2 Actions. Choose one: Set aside the top card of your deck face down on "
+"your Native Village mat; or put all cards from your mat into your hand. "
+"You may look at the cards on your mat at any time; return them to your "
+"deck at the end of the game."
+msgstr ""
+"+2 Aktionen. Wähle eins: Lege die oberste Karte von deinem Nachziehstapel"
+" verdeckt zur Seite auf dein Tableau Eingeborenendorf; oder nimm alle "
+"Karten von deinem Tableau Eingeborenendorf auf die Hand."
 
-#: domination/cards/seaside.py:328
+#: domination/cards/seaside.py:372
 msgid "Wharf"
 msgstr "Werft"
 
-#: domination/cards/seaside.py:332
+#: domination/cards/seaside.py:375
 msgid "Now and at the start of your next turn: +2 Cards, +1 Buy."
 msgstr "+2 Karten, +1 Kauf. Bei Beginn deines nächsten Zuges: +2 Karten, +1 Kauf."
 
-#: domination/cards/seaside.py:340
+#: domination/cards/seaside.py:387
 msgid "Treasure Map"
 msgstr "Schatzkarte"
 
-#: domination/cards/seaside.py:344
-msgid "Trash this and another copy of Treasure map from your hand. If you do trash two Treasure maps, gain 4 Gold cards, putting them on top of your deck."
-msgstr "Entsorge diese und eine weitere Schatzkarte aus deiner Hand. Wenn du das machst: Nimm dir 4 Gold und lege diese verdeckt auf deinen Nachziehstapel."
+#: domination/cards/seaside.py:391
+msgid ""
+"Trash this and another copy of Treasure map from your hand. If you do "
+"trash two Treasure maps, gain 4 Gold cards, putting them on top of your "
+"deck."
+msgstr ""
+"Entsorge diese und eine weitere Schatzkarte aus deiner Hand. Wenn du das "
+"machst: Nimm dir 4 Gold und lege diese verdeckt auf deinen "
+"Nachziehstapel."
 
-#: domination/cards/seaside.py:359
+#: domination/cards/seaside.py:406
 #, python-format
 msgid "%s gains on top of his deck:"
 msgstr "%s erhält auf seinem Nachziehstapel:"
@@ -1323,8 +1612,11 @@ msgstr "Name des Spiels: "
 #: domination/templates/create_game.html:73
 msgid ""
 "Add\n"
-"      <input type=\"text\" name=\"numai\" value=\"1\" maxlength=\"1\" size=\"3\"> AI player(s)"
-msgstr "Füge <input type=\"text\" name=\"numai\" value=\"1\" maxlength=\"1\" size=\"3\"> Computergegner hinzu"
+"      <input type=\"text\" name=\"numai\" value=\"1\" maxlength=\"1\" "
+"size=\"3\"> AI player(s)"
+msgstr ""
+"Füge <input type=\"text\" name=\"numai\" value=\"1\" maxlength=\"1\" "
+"size=\"3\"> Computergegner hinzu"
 
 #: domination/templates/create_game.html:75
 msgid "Editions:"
@@ -1344,14 +1636,15 @@ msgstr "Zufällig"
 
 #: domination/templates/create_game.html:90
 msgid "Which 10 cards? You selected <span id=\"noofcards\"></span> card(s)."
-msgstr "Welche 10 Karten? Du hast <span id=\"noofcards\"></span> Karte(n) ausgewählt."
+msgstr ""
+"Welche 10 Karten? Du hast <span id=\"noofcards\"></span> Karte(n) "
+"ausgewählt."
 
 #: domination/templates/create_game.html:102
 msgid "Create game"
 msgstr "Neues Spiel"
 
-#: domination/templates/error.html:2
-#: domination/templates/error.html:4
+#: domination/templates/error.html:2 domination/templates/error.html:4
 msgid "Error"
 msgstr "Fehler"
 
@@ -1359,168 +1652,167 @@ msgstr "Fehler"
 msgid "Game: "
 msgstr "Spiel: "
 
-#: domination/templates/game.html:23
+#: domination/templates/game.html:28
 msgid "(stopped)"
 msgstr "(angehalten)"
 
-#: domination/templates/game.html:24
+#: domination/templates/game.html:29
 #, python-format
 msgid "(round %i)"
 msgstr "(Runde %i)"
 
-#: domination/templates/game.html:28
+#: domination/templates/game.html:33
 msgid "Join"
 msgstr "Mitspielen"
 
-#: domination/templates/game.html:33
-#: domination/templates/login.html:8
+#: domination/templates/game.html:38 domination/templates/login.html:8
 msgid "Start"
 msgstr "Starten"
 
-#: domination/templates/game.html:38
+#: domination/templates/game.html:43
 msgid "Abort game"
 msgstr "Spiel abbrechen"
 
-#: domination/templates/game.html:43
-#: domination/templates/index.html:6
+#: domination/templates/game.html:48 domination/templates/index.html:6
 msgid "Players"
 msgstr "Spieler"
 
-#: domination/templates/game.html:46
+#: domination/templates/game.html:51
 #, python-format
 msgid "(%(handcount)s of %(totalcount)s cards in hand)"
 msgstr "(%(totalcount)s Karten, %(handcount)s auf der Hand)"
 
-#: domination/templates/game.html:47
+#: domination/templates/game.html:52
 msgid "(waiting for this player)"
 msgstr "(am Zug)"
 
-#: domination/templates/game.html:50
+#: domination/templates/game.html:55
 msgid "Kick"
 msgstr "Rauswerfen"
 
-#: domination/templates/game.html:58
+#: domination/templates/game.html:63
 msgid "Kibitzers"
 msgstr "Zuschauer"
 
-#: domination/templates/game.html:68
+#: domination/templates/game.html:73
 msgid "Your deck"
 msgstr "Dein Nachziehstapel"
 
-#: domination/templates/game.html:69
-#: domination/templates/game.html:71
+#: domination/templates/game.html:74 domination/templates/game.html:76
 #, python-format
 msgid "%i cards"
 msgstr "%i Karten"
 
-#: domination/templates/game.html:70
+#: domination/templates/game.html:75
 msgid "Your discard pile"
 msgstr "Dein Ablagestapel"
 
-#: domination/templates/game.html:72
+#: domination/templates/game.html:77
 msgid "Discard pile"
 msgstr "Ablagestapel"
 
-#: domination/templates/game.html:72
+#: domination/templates/game.html:77
 msgid "Show"
 msgstr "Anzeigen"
 
-#: domination/templates/game.html:84
+#: domination/templates/game.html:89
 msgid "The game has ended."
 msgstr "Das Spiel ist beendet."
 
-#: domination/templates/game.html:84
+#: domination/templates/game.html:89
 msgid "The following supplies are empty:"
 msgstr "Die folgenden Vorräte sind erschöpft:"
 
-#: domination/templates/game.html:84
+#: domination/templates/game.html:89
 msgid "Aborted or crashed!"
 msgstr "Abgebrochen oder abgestürzt!"
 
-#: domination/templates/game.html:87
+#: domination/templates/game.html:92
 #, python-format
 msgid "%(pname)s: %(cards)i cards, %(points)i points"
 msgstr "%(pname)s: %(cards)i Karten, %(points)i Punkte"
 
-#: domination/templates/game.html:91
+#: domination/templates/game.html:96
 msgid "Your cards:"
 msgstr "Deine Karten:"
 
-#: domination/templates/game.html:122
+#: domination/templates/game.html:127
 #, python-format
-msgid "You have %(money)i Money, %(potion)i Potion(s) and %(buys)i buys remaining!"
+msgid ""
+"You have %(money)i Money, %(potion)i Potion(s) and %(buys)i buys "
+"remaining!"
 msgstr "Du hast noch %(money)i Geld, %(potion)i Tränke und %(buys)i Käufe übrig!"
 
-#: domination/templates/game.html:125
+#: domination/templates/game.html:130
 #, python-format
 msgid "You have %(money)i Money and %(buys)i buys remaining!"
 msgstr "Du hast noch %(money)i Geld und %(buys)i Käufe übrig!"
 
-#: domination/templates/game.html:132
-#: domination/templates/game.html:192
-#: domination/templates/game.html:266
+#: domination/templates/game.html:137 domination/templates/game.html:197
+#: domination/templates/game.html:277
 #, python-format
 msgid "%i left"
 msgstr "noch %i übrig"
 
-#: domination/templates/game.html:137
+#: domination/templates/game.html:142
 msgid "Buy"
 msgstr "Kaufen"
 
-#: domination/templates/game.html:144
-#: domination/templates/game.html:170
-#: domination/templates/game.html:181
+#: domination/templates/game.html:149 domination/templates/game.html:175
+#: domination/templates/game.html:186
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: domination/templates/game.html:148
+#: domination/templates/game.html:153
 #, python-format
 msgid "You should select exactly %i cards."
 msgstr "Du musst genau %i Karten auswählen!"
 
-#: domination/templates/game.html:151
+#: domination/templates/game.html:156
 #, python-format
 msgid "You may select at most %i cards."
 msgstr "Du darfst höchstens %i Karten auswählen!"
 
-#: domination/templates/game.html:154
+#: domination/templates/game.html:159
 #, python-format
 msgid "You need to select at least %i cards."
 msgstr "Du musst mindestens %i Karten auswählen!"
 
-#: domination/templates/game.html:168
-#: domination/templates/game.html:184
-#: domination/templates/game.html:197
-#: domination/templates/game.html:228
+#: domination/templates/game.html:173 domination/templates/game.html:189
+#: domination/templates/game.html:202 domination/templates/game.html:233
 msgid "Select"
 msgstr "Auswählen"
 
-#: domination/templates/game.html:205
+#: domination/templates/game.html:210
 msgid "Yes"
 msgstr "Ja"
 
-#: domination/templates/game.html:210
+#: domination/templates/game.html:215
 msgid "No"
 msgstr "Nein"
 
-#: domination/templates/game.html:237
+#: domination/templates/game.html:242
 msgid "Waiting for further players ..."
 msgstr "Auf weitere Spieler warten…"
 
-#: domination/templates/game.html:239
+#: domination/templates/game.html:244
 #, python-format
 msgid "Waiting for %s to start the game ..."
 msgstr "%s wird das Spiel gleich starten…"
 
-#: domination/templates/game.html:243
+#: domination/templates/game.html:248
 msgid "Activated action cards"
 msgstr "Gespielte Aktionskarten"
 
-#: domination/templates/game.html:249
+#: domination/templates/game.html:254
 msgid "Your hand"
 msgstr "Deine Hand"
 
 #: domination/templates/game.html:259
+msgid "Duration Cards from last round"
+msgstr ""
+
+#: domination/templates/game.html:270
 msgid "Supply"
 msgstr "Vorrat"
 

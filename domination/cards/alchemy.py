@@ -232,12 +232,13 @@ class ScryingPool(AttackCard):
     edition = Alchemy
     cost = 2
     potioncost = 1
-    desc = _("Each player (including you) reveals the top card of his deck and either"
+    desc = _("+1 Action. Each player (including you) reveals the top card of his deck and either"
              " discards it or puts it back, your choice. Then reveal cards from the top"
              " of your deck until you reveal one that is not an Action. Put all your"
              " revealed cards into your hand.")
 
     def activate_action(self, game, player):
+        player.remaining_actions += 1
         for other_player in game.players:
             try:
                 handle_defense(self, game, other_player)
