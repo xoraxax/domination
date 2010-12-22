@@ -327,7 +327,6 @@ class Pawn(ActionCard):
 
 
 class Saboteur(AttackCard):
-    implemented = False # FIXME not implemented completely
     name = _("Saboteur")
     edition = Intrigue
     cost = 5
@@ -335,6 +334,44 @@ class Saboteur(AttackCard):
              "revealing one costing 3 or more. He trashes that card and may gain "
              "a card costing at most 2 less than it. He discards the other "
              "revealed cards.")
+
+    def activate_action(self, game, player):
+        for other_player in game.following_participants(player):
+            revealed_cards = []
+            try:
+                handle_defense(self, game, other_player)
+            except Defended:
+                continue
+            cost = None
+            while cost is None or cost < 3:
+                if not other_player.draw_cards(1):
+                    break
+                card = other_player.hand.pop()
+                revealed_cards.append(card)
+                cost = card.cost
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals these cards:",
+                (other_player.name, )), revealed_cards)
+            # last card in revealed cards is the one costing 3 or more
+            # except if the deck is empty
+            if revealed_cards[-1].cost >= 3:
+                game.trash_pile.append(revealed_cards[-1])
+
+                # gain a card
+                card_cls = yield SelectCard(game, other_player, card_classes=[c for c in
+                    CardTypeRegistry.card_classes.itervalues() if c.cost <= revealed_cards[-1].cost + 2 and
+                    game.supply.get(c.__name__) and c.potioncost == 0],
+                    msg=_("Select a card that you want to have."), show_supply_count=True)
+                new_card = game.supply[card_cls.__name__].pop()
+                other_player.discard_pile.append(new_card)
+                for info_player in game.following_participants(other_player):
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:", (other_player.name, )), [new_card])
+                for val in game.check_empty_pile(card_cls.__name__):
+                    yield val
+            # We put nearly all cards together onto the discard pile
+            other_player.discard_pile.extend(revealed_cards[:-1])
+            
 
 
 class Scout(ActionCard):
@@ -583,6 +620,5 @@ card_sets = [
             [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
              Pawn, Steward, Witch]),
     CardSet('Intrigue Test',
-            [Masquerade, ShantyTown, Swindler, WishingWell, Baron,
-             Bridge, Conspirator, Coppersmith, MiningVillage, Scout]),
+            [Saboteur]),
 ]
