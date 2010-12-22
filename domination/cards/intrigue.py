@@ -359,7 +359,7 @@ class Saboteur(AttackCard):
 
                 # gain a card
                 card_cls = yield SelectCard(game, other_player, card_classes=[c for c in
-                    CardTypeRegistry.card_classes.itervalues() if c.cost <= revealed_cards[-1].cost + 2 and
+                    CardTypeRegistry.card_classes.itervalues() if c.cost <= revealed_cards[-1].cost - 2 and
                     game.supply.get(c.__name__) and c.potioncost == 0],
                     msg=_("Select a card that you want to have."), show_supply_count=True)
                 new_card = game.supply[card_cls.__name__].pop()
