@@ -354,7 +354,7 @@ class Saboteur(AttackCard):
                 (other_player.name, )), revealed_cards)
             # last card in revealed cards is the one costing 3 or more
             # except if the deck is empty
-            if revealed_cards[-1].cost >= 3:
+            if revealed_cards and revealed_cards[-1].cost >= 3:
                 game.trash_pile.append(revealed_cards[-1])
 
                 # gain a card
