@@ -344,7 +344,7 @@ class Saboteur(AttackCard):
                 continue
             cost = None
             while cost is None or cost < 3:
-                if not other_player.draw_cards(1):
+                if other_player.draw_cards(1) is False:
                     break
                 card = other_player.hand.pop()
                 revealed_cards.append(card)
