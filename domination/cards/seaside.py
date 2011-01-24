@@ -118,10 +118,9 @@ class Smugglers(ActionCard):
     def activate_action(self, game, player):
         pass #FIXME
 
-class Caravan(ActionCard):
+class Caravan(ActionCard, DurationCard):
     name = _("Caravan")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 4
     desc = _("+1 Card, +1 Action. At the start of your next turn, +1 Card.")
 
@@ -398,14 +397,15 @@ class TreasureMap(ActionCard):
             for other_player in game.participants:
                 yield InfoRequest(game, other_player,
                             _("%s trashes:", (player.name, )), [card])
+            new_cards = []
             for i in range(0, 4):
-                new_card = game.supply["Gold"].pop()
-                player.deck.append(new_card)
-                for other_player in game.participants:
-                    yield InfoRequest(game, other_player,
-                            _("%s gains on top of his deck:", (player.name, )), [new_card])
+                new_cards.append(game.supply["Gold"].pop())
                 for val in game.check_empty_pile("Gold"):
                     yield val
+            player.deck.extend(new_cards)
+            for other_player in game.participants:
+                yield InfoRequest(game, other_player,
+                        _("%s gains on top of his deck:", (player.name, )), new_cards)
 
 
 from domination.cards.base import \
