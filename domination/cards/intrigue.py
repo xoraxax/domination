@@ -47,8 +47,8 @@ class Bridge(ActionCard):
         player.virtual_money += 1
         decreased_for_cards = []
         for card in CardTypeRegistry.card_classes.itervalues():
-            if card.cost != 0:
-                card.cost = card.cost - 1
+            if card.cost >= 1:
+                card.cost -= 1
                 decreased_for_cards.append(card)
         def restore_cards(player):
             for card in decreased_for_cards:
@@ -371,7 +371,6 @@ class Saboteur(AttackCard):
                     yield val
             # We put nearly all cards together onto the discard pile
             other_player.discard_pile.extend(revealed_cards[:-1])
-            
 
 
 class Scout(ActionCard):
@@ -434,8 +433,7 @@ class SecretChamber(ReactionCard):
         if not cards:
             return
         for card in cards:
-            player.hand.remove(card)
-            player.deck.append(card)
+            card.backondeck(game, player)
 
 
 class ShantyTown(ActionCard):
@@ -535,10 +533,41 @@ class Steward(ActionCard):
 class Torturer(AttackCard):
     name = _("Torturer")
     edition = Intrigue
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("+3 Cards, Each other player chooses one: he discards 2 cards; or he gains a Curse card, putting it in his hand.")
 
+    def activate_action(self, game, player):
+        for other_player in game.following_players(player):
+            try:
+                handle_defense(self, game, other_player)
+            except Defended:
+                continue
+        choices = [("discard",   _("discard 2 cards")),
+                   ("curse",  _("gain a Curse"))]
+        choice = yield Question(game, other_player, _("What do you want to do?"), choices)
+
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player,
+                    _("%(player)s choose to '%(action)s'", {"player": other_player.name, "action": choice}), [])
+
+        if choice == "discard":
+            cards = yield SelectHandCards(game, other_player, count_lower=2, count_upper=2,
+                    msg=_("%s played Torturer, you chose to discard two cards. Which cards do you want to discard?", (player.name, )))
+            for card in cards:
+                card.discard(other_player)
+            for info_player in game.participants:
+                if info_player is not other_player:
+                    # TODO: info players may only see one of the discarded cards
+                    yield InfoRequest(game, info_player,
+                            _("%s discards these cards:", (other_player.name, )), cards)
+        elif choice == "curse":
+            curse_cards = game.supply["Curse"]
+            other_player.discard_pile.append(curse_cards.pop())
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s tortures %s. You gain a curse card.", (player.name, other_player.name)), [])
+            for val in game.check_empty_pile("Curse"):
+                yield val
 
 class TradingPost(ActionCard):
     name = _("Trading Post")
@@ -577,6 +606,24 @@ class Tribute(ActionCard):
              "an Action Card: +2 Actions. If it is a Treasure Card: +2 Money. "
              "If it is a Victory Card: +2 Cards.")
 
+    def activate_action(self, game, player):
+        cards = []
+        other_player = player.left(game)
+        other_player.draw_cards(2)
+        cards.append(other_player.hand.pop())
+        cards.append(other_player.hand.pop())
+        for info_player in game.participants:
+            yield InfoRequest(game, info_player, _("%s reveals the top 2 cards of his deck:",
+                    (other_player.name, )), cards[:])
+        for card in cards:
+            if isinstance(card, ActionCard):
+                player.remaining_actions += 2
+            if isinstance(card, TreasureCard):
+                player.virtual_money += 2
+            if isinstance(card, VictoryCard):
+                player.draw_cards(2)
+            card.discard(other_player)
+        #FIXME only if the second card is different from the first
 
 class Upgrade(ActionCard):
     name = _("Upgrade")

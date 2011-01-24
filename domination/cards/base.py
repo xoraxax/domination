@@ -420,7 +420,7 @@ class Spy(AttackCard):
                 yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:",
                         (other_player.name, )), [card])
             if (yield YesNoQuestion(game, player,
-                _("Do you want to discard %(name)s's card '%(cardname)s'?", 
+                _("Do you want to discard %(name)s's card '%(cardname)s'?",
                 {"cardname": card.name, "name": other_player.name}))):
                 other_player.discard_pile.append(card)
                 for info_player in game.following_participants(player):

@@ -50,7 +50,18 @@ class PirateShip(AttackCard):
     desc = _("Choose one: Each Player reveals the top 2 cards of his deck, trashes a revealed Treasure that you choose, discards the rest, and if anyone trashed a Treasure you take a Coin token; or + 1 Money per Coin token you have taken with pirate Ships this game.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        for other_player in game.players:
+            try:
+                handle_defense(self, game, other_player)
+            except Defended:
+                continue
+            other_player.draw_cards(2)
+            cards = []
+            cards.append(other_player.hand.pop())
+            cards.append(other_player.hand.pop())
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:",
+                        (other_player.name, )), cards)
 
 class Outpost(ActionCard, DurationCard):
     name = _("Outpost")
@@ -353,7 +364,37 @@ class Ambassador(AttackCard):
     desc = _("Reveal a card from your hand. Return 2 copies of it from your hand to the Supply. Then each other player gains a copy of it.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        if player.hand:
+#            card_classes = [type(c) for c in player.hand]
+#            card_classes_count = {}
+#            for card_class in card_classes:
+#                same_cards = [c for c in player.hand if isinstance(c, TreasureMap)]
+#                if len(treasure_map_cards) >= 1: # only need one other treasure map in hand, because the other has already been played
+
+            cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
+                    msg=_("Which card do you want to Ambassador?"))
+            card = cards[0]
+            samecards = [c for c in player.hand if isinstance(c, type(card))]
+            if len(samecards) >=2:
+                for info_player in game.participants:
+                    yield InfoRequest(game, info_player, _("%s reveals:",
+                            (player.name, )), [samecards[0]])
+                for i in range(2):
+                    player.hand.remove(samecards[i])
+                    game.supply(type(samecards[i])).append(samecards[i])
+                curse_cards = game.supply["Curse"]
+                for other_player in game.following_players(player):
+                    if curse_cards:
+                        try:
+                            handle_defense(self, game, other_player)
+                        except Defended:
+                            continue
+                        other_player.discard_pile.append(game.supply(type(card)).pop(0))
+                        yield InfoRequest(game, other_player,
+                                _("%s curses you. You gain a curse card.", (player.name, )), [])
+                        for val in game.check_empty_pile(type(card)):
+                            yield val
+
 
 class Tactician(ActionCard, DurationCard):
     name = _("Tactician")
