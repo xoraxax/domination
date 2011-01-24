@@ -91,7 +91,7 @@ class Salvager(ActionCard):
         player.remaining_deals += 1
         if player.hand:
             cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
-                    msg=_("Which cards do you want to trash?"))
+                    msg=_("Which card do you want to trash?"))
         else:
             return
         # trash cards
