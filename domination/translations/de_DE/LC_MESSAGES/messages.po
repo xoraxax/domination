@@ -497,7 +497,7 @@ msgstr "Entsorge eine Geldkarte aus deiner Hand. Nimm dir eine Geldkarte, die bi
 
 #: domination/cards/base.py:151
 msgid "Select a treasure card you want to convert to a potentially better card."
-msgstr "Wähle eine Geldkarte aus, die du entsorgen möchtest."
+msgstr "Wähle eine Geldkarte aus, die du zu einer möglicherweise besseren Karte verwandeln möchtest."
 
 #: domination/cards/base.py:159
 msgid "Select a treasure card that you want to have."
@@ -762,11 +762,11 @@ msgstr "Baron"
 
 #: domination/cards/intrigue.py:14
 msgid "+1 Buy, You may discard an Estate card. If you do, +4 Money. Otherwise gain an Estate card."
-msgstr "Du darfst ein Anwesen ablegen. Wenn du das machst: +4 Geld. Ansonsten: Nimm ein Anwesen."
+msgstr "Du darfst ein Anwesen ablegen. Wenn du das machst: +4 Geld. Ansonsten: Nimm dir ein Anwesen."
 
 #: domination/cards/intrigue.py:21
 msgid "Do you want to discard an Estate card?"
-msgstr "Möchtest du ein „Anwesen“ ablegen?"
+msgstr "Möchtest du ein Anwesen ablegen?"
 
 #: domination/cards/intrigue.py:27
 #, python-format
@@ -992,7 +992,7 @@ msgstr "Armenviertel"
 
 #: domination/cards/intrigue.py:408
 msgid "+2 Actions, Reveal your hand. If you have no action cards in hand, +2 Cards."
-msgstr "+2 Aktionen. "
+msgstr "+2 Aktionen. Wenn du keine Aktionskarten auf der Hand hast: 2 Karten"
 
 #: domination/cards/intrigue.py:424
 msgid "Swindler"
@@ -1000,7 +1000,7 @@ msgstr "Trickser"
 
 #: domination/cards/intrigue.py:427
 msgid "+2 Money, Each other player trashes the top card of his deck and gains a card with the same cost that you choose."
-msgstr "+2 Geld. Jeder Mitspieler muss die oberste Karte seine Nachziehstapels entsorgen. Du wählst eine Karte, die das gleiche kostet, wie die entsorgte Karte. Diese Karte muss sich der Spieler nehmen."
+msgstr "+2 Geld. Jeder Mitspieler muss die oberste Karte seines Nachziehstapels entsorgen. Du wählst eine Karte, die das gleiche kostet, wie die entsorgte Karte. Diese Karte muss sich der Spieler nehmen."
 
 #: domination/cards/intrigue.py:447
 msgid "Select a card that you want to give."
@@ -1012,7 +1012,7 @@ msgstr "Verwalter"
 
 #: domination/cards/intrigue.py:465
 msgid "Choose one: +2 Cards; or +2 Money; or trash two cards from your hand."
-msgstr "Wähle eins: +2 Karten; oder +2 Geld; oder entsorge genau 2 Karten aus deiner Hand."
+msgstr "Wähle eins: +2 Karten oder +2 Geld oder entsorge genau 2 Karten aus deiner Hand."
 
 #: domination/cards/intrigue.py:468
 msgid "+2 Cards"
@@ -1024,11 +1024,11 @@ msgstr "Entsorge zwei Karten"
 
 #: domination/cards/intrigue.py:499
 msgid "Torturer"
-msgstr ""
+msgstr "Kerkermeister"
 
 #: domination/cards/intrigue.py:503
 msgid "+3 Cards, Each other player chooses one: he discards 2 cards; or he gains a Curse card, putting it in his hand."
-msgstr ""
+msgstr "+3 Karten. Jeder Mitspieler muss eins wählen: 2 Karten ablegen oder eine Fluchkarte auf die Hand nehmen."
 
 #: domination/cards/intrigue.py:507
 msgid "Trading Post"
@@ -1048,11 +1048,11 @@ msgstr "Dein linker Nachbar muss die obersten beiden Karten von seinem Nachziehs
 
 #: domination/cards/intrigue.py:545
 msgid "Upgrade"
-msgstr ""
+msgstr "Anbau"
 
 #: domination/cards/intrigue.py:548
 msgid "+1 Card, +1 Action, Trash a card from your hand. Gain a card costing exactly 1 more than it."
-msgstr ""
+msgstr "+1 Karte, +1 Aktion. Entsorge eine Karte aus deiner Hand. Nimm dir eine Karte, die genau 1 Geld mehr kostet als die entsorgte Karte."
 
 #: domination/cards/intrigue.py:584
 msgid "Wishing Well"
