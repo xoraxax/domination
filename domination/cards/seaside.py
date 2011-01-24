@@ -67,14 +67,19 @@ class Outpost(ActionCard, DurationCard):
 class PearlDiver(ActionCard):
     name = _("Pearl Diver")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 2
     desc = _("+1 Card, +1 Action. Look at the bottom card of your deck. You may put it on top.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(1)
-        pass #FIXME
+        card = player.deck.pop(0)
+        if (yield YesNoQuestion(game, player,
+            _("Do you want to put your '%(cardname)' on top of your deck?",
+            {"cardname": card.name}))):
+            player.deck.append(card)
+        else:
+            player.deck.insert(0,card)
 
 class Salvager(ActionCard):
     name = _("Salvager")
@@ -101,12 +106,29 @@ class Salvager(ActionCard):
 class SeaHag(AttackCard):
     name = _("Sea Hag")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 4
     desc = _("Each other player discards the top card of his deck, then gains a Curse card, putting it on top of his deck.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        curse_cards = game.supply["Curse"]
+        for other_player in game.following_players(player):
+            try:
+                handle_defense(self, game, other_player)
+            except Defended:
+                continue
+            other_player.draw_cards(1)
+            card = other_player.hand.pop()
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s discards the top card of his deck:",
+                        (other_player.name, )), [card])
+            other_player.discard_pile.append(card)
+            if curse_cards:
+                other_player.deck.append(curse_cards.pop())
+                yield InfoRequest(game, other_player,
+                        _("%s curses you. You gain a curse card.", (player.name, )), [])
+                for val in game.check_empty_pile("Curse"):
+                    yield val
+
 
 class Smugglers(ActionCard):
     name = _("Smugglers")

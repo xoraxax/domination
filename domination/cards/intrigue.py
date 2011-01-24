@@ -357,7 +357,7 @@ class Saboteur(AttackCard):
             if revealed_cards and revealed_cards[-1].cost >= 3:
                 game.trash_pile.append(revealed_cards[-1])
 
-                # gain a card
+                # gain a card, XXX missing cancel
                 card_cls = yield SelectCard(game, other_player, card_classes=[c for c in
                     CardTypeRegistry.card_classes.itervalues() if c.cost <= revealed_cards[-1].cost - 2 and
                     game.supply.get(c.__name__) and c.potioncost == 0],
@@ -543,10 +543,29 @@ class Torturer(AttackCard):
 class TradingPost(ActionCard):
     name = _("Trading Post")
     edition = Intrigue
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("Trash 2 cards from your hand. If you do, gain a Silver card; put it into your hand.")
 
+    def activate_action(self, game, player):
+        if player.hand:
+            cards = yield SelectHandCards(game, player, count_lower=2, count_upper=2,
+                    msg=_("Which cards do you want to trash?"))
+        else:
+            return
+        # trash cards
+        for card in cards:
+            card.trash(game, player)
+        for other_player in game.participants:
+            if other_player is not player:
+                yield InfoRequest(game, other_player,
+                        _("%s trashes these cards:", (player.name, )), cards)
+        new_card = game.supply["Silver"].pop()
+        player.hand.append(new_card)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player,
+                    _("%s gains:", (player.name, )), [new_card])
+        for val in game.check_empty_pile("Silver"):
+            yield val
 
 class Tribute(ActionCard):
     name = _("Tribute")
@@ -562,9 +581,40 @@ class Tribute(ActionCard):
 class Upgrade(ActionCard):
     name = _("Upgrade")
     edition = Intrigue
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("+1 Card, +1 Action, Trash a card from your hand. Gain a card costing exactly 1 more than it.")
+
+    def activate_action(self, game, player):
+        player.remaining_actions += 1
+        player.draw_cards(1)
+
+        if not player.hand:
+            return
+        cards = yield SelectHandCards(game, player,
+                    count_lower=0, count_upper=1,
+                    msg=_("Select a card you want to trash."))
+        if cards:
+            card = cards[0]
+            selectable_card_classes=[c for c in CardTypeRegistry.card_classes.itervalues() if c.cost == card.cost + 1 and game.supply.get(c.__name__) and c.potioncost == card.potioncost]
+            new_card = None
+            if selectable_card_classes:
+                card_cls = yield SelectCard(game, player, card_classes=selectable_card_classes,
+                    msg=_("Select a card that you want to have."), show_supply_count=True)
+                new_card = game.supply[card_cls.__name__].pop()
+                player.discard_pile.append(new_card)
+            card.trash(game, player)
+
+            for info_player in game.participants:
+                if info_player is not player:
+                    yield InfoRequest(game, info_player,
+                            _("%s trashes:", (player.name, )), [card])
+                    if new_card:
+                        yield InfoRequest(game, info_player,
+                                _("%s gains:", (player.name, )), [new_card])
+            if new_card:
+                for val in game.check_empty_pile(card_cls.__name__):
+                    yield val
+
 
 
 class WishingWell(ActionCard):
