@@ -161,7 +161,7 @@ class SelectDeal(Request):
 
     @property
     def choices(self):
-        l = [c for c in self.cards if self.is_buyable(c) and c.points not in (-1, 1) and c.worth != 1]
+        l = [c for c in self.cards if self.is_buyable(c) and c.points not in (-1, 1) and c.get_worth != 1]
         random.shuffle(l)
         # we want to buy the most expensive card but not the same one every time
         l.sort(key=lambda c: c.cost, reverse=True)
@@ -482,8 +482,14 @@ class Game(object):
         return u", ".join(unicode(card.name) for card in
                 CardTypeRegistry.keys2classes(empty_batches))
 
+    @property
+    def empty_pile_count(self):
+        empty_batches = [card_key for card_key, cards in self.supply.items()
+                if not cards]
+        return len(empty_batches)
 
 from domination.cards import Alchemy
+from domination.cards import Prosperity
 
 class DominationGame(Game):
     MAX_PLAYERS = 6 # maximum allowed number of players
@@ -513,9 +519,6 @@ class DominationGame(Game):
             game.add_supply(Silver, 40)
             game.add_supply(Gold, 30)
 
-        if any([c.potioncost + (c.__name__ == "BlackMarket") for c in selected_cards]):
-            game.add_supply(Potion, 16)
-
         # add victory cards (except victory kingdom cards)
         if no_players == 2:
             victory_cards = 8
@@ -530,6 +533,23 @@ class DominationGame(Game):
             victory_cards = 12
             province_cards = 12
         curse_cards = (no_players - 1) * 10
+
+        if any([c.potioncost + (c.__name__ == "BlackMarket") for c in selected_cards]):
+            game.add_supply(Potion, 16)
+
+        if any([c.edition == Prosperity for c in selected_cards]):
+            if no_players == 2:
+                game.add_supply(Platinum, 8)
+                game.add_supply(Colony, 8)
+            elif no_players == 5:
+                game.add_supply(Platinum, 12)
+                game.add_supply(Colony, 12)
+            elif no_players == 6:
+                game.add_supply(Platinum, 12)
+                game.add_supply(Colony, 12)
+            else:
+                game.add_supply(Platinum, 12)
+                game.add_supply(Colony, 12)
 
         game.add_supply(Curse, curse_cards)
         game.add_supply(Estate, victory_cards)
@@ -552,7 +572,9 @@ class DominationGame(Game):
 
     def check_end_of_game(self):
         no_players = len(self.players) # number of players
-        if not self.supply["Province"]: # check if province supply is empty
+        if not self.supply["Province"]: # check if Province supply is empty
+            return True
+        if self.supply.get("Colony", None): # check if Colony supply is empty
             return True
         # fill empty_batches with card keys of cards the supply of which is empty
         empty_batches = [card_key for card_key, cards in self.supply.items()
@@ -589,6 +611,7 @@ class Player(object):
         self.used_money = 0
         self.virtual_money = 0
         self.used_potion = 0
+        self.tokens = 0 # points from prosperity
         self.current = False
         self.kicked_by = None
         self.turn_cleanups = []
@@ -647,7 +670,7 @@ class Player(object):
         return self.hand + self.discard_pile + self.deck + self.aux_cards
 
     def points(self, game):
-        return sum(card.get_points(game, self) for card in self.deck)
+        return sum(card.get_points(game, self) for card in self.deck) + self.tokens
 
     def prepare_hand(self):
         assert not self.hand
@@ -688,10 +711,12 @@ from domination.cards import CardTypeRegistry, ActionCard, VictoryCard
 from domination.cards.base import (Copper, Silver, Gold, Curse,
                                    Estate, Duchy, Province, Gardens)
 from domination.cards.alchemy import Potion, Vineyard
+from domination.cards.prosperity import Platinum, Colony
 
 from domination.cards.base import card_sets as card_sets_base
 from domination.cards.intrigue import card_sets as card_sets_intrigue
 from domination.cards.alchemy import card_sets as card_sets_alchemy
 from domination.cards.seaside import card_sets as card_sets_seaside
+from domination.cards.prosperity import card_sets as card_sets_prosperity
 
-card_sets = card_sets_base + card_sets_intrigue + card_sets_alchemy + card_sets_seaside
+card_sets = card_sets_base + card_sets_intrigue + card_sets_alchemy + card_sets_seaside + card_sets_prosperity

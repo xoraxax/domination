@@ -12,7 +12,8 @@ BaseGame = Edition('base', _("Base game"), optional=False)
 Intrigue = Edition('intrigue', _("Intrigue game"))
 Alchemy = Edition('alchemy', _("Alchemy game"))
 Seaside = Edition('seaside', _("Seaside game"))
-editions = [BaseGame, Intrigue, Alchemy, Seaside]
+Prosperity = Edition('prosperity', _("Prosperity game"))
+editions = [BaseGame, Intrigue, Alchemy, Seaside, Prosperity]
 
 
 class CardTypeRegistry(type):
