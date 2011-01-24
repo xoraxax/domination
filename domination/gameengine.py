@@ -292,8 +292,8 @@ class GameRunner(Thread):
                 self.game.end_of_game()
             except EndOfGameException:
                 pass
-        for player in self.participants:
-            cv = player.response_condition
+        for participant in self.game.participants:
+            cv = participant.response_condition
             cv.acquire()
             cv.notifyAll()
             cv.release()
