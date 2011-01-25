@@ -109,10 +109,9 @@ class Salvager(ActionCard):
         for card in cards:
             player.virtual_money += card.cost
             card.trash(game, player)
-        for other_player in game.participants:
-            if other_player is not player:
-                yield InfoRequest(game, other_player,
-                        _("%s trashes these cards:", (player.name, )), cards)
+        for other_player in game.following_participants(player):
+            yield InfoRequest(game, other_player,
+                   _("%s trashes these cards:", (player.name, )), cards)
 
 class SeaHag(AttackCard):
     name = _("Sea Hag")
@@ -196,10 +195,9 @@ class Cutpurse(AttackCard):
                         msg=_("%s played Cutpurse. Which Copper do you want to discard?", (player.name, )), cls=Copper)
                 for card in cards:
                     card.discard(other_player)
-                    for other_player in game.participants:
-                        if other_player is not player:
-                            yield InfoRequest(game, other_player,
-                                _("%s discards these cards:", (other_player.name, )), cards)
+                    for info_player in game.following_participants(other_player):
+                        yield InfoRequest(game, info_player,
+                            _("%s discards these cards:", (other_player.name, )), cards)
             else:
                 for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player, _("%s reveals his hand:",
@@ -326,10 +324,9 @@ class Warehouse(ActionCard):
         if cards is not None:
             for card in cards:
                 card.discard(player)
-            for other_player in game.participants:
-                if other_player is not player:
-                    yield InfoRequest(game, other_player,
-                            _("%s discards these cards:", (player.name, )), cards)
+            for other_player in game.following_participants(player):
+                yield InfoRequest(game, other_player,
+                       _("%s discards these cards:", (player.name, )), cards)
 
 class Treasury(ActionCard):
     name = _("Treasury")
@@ -457,8 +454,8 @@ class TreasureMap(ActionCard):
         if len(treasure_map_cards) >= 1: # only need one other treasure map in hand, because the other has already been played
             card = treasure_map_cards[0]
             card.trash(game, player)
-            for other_player in game.participants:
-                yield InfoRequest(game, other_player,
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player,
                             _("%s trashes:", (player.name, )), [card])
             new_cards = []
             for i in range(0, 4):
@@ -466,8 +463,8 @@ class TreasureMap(ActionCard):
                 for val in game.check_empty_pile("Gold"):
                     yield val
             player.deck.extend(new_cards)
-            for other_player in game.participants:
-                yield InfoRequest(game, other_player,
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player,
                         _("%s gains on top of his deck:", (player.name, )), new_cards)
 
 

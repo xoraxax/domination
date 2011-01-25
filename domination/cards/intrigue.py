@@ -420,10 +420,9 @@ class SecretChamber(ReactionCard):
         player.virtual_money += len(cards)
         for card in cards:
             card.discard(player)
-        for other_player in game.participants:
-            if other_player is not player:
-                yield InfoRequest(game, other_player,
-                    _("%s discards these cards:", (player.name, )), cards)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, other_player,
+                _("%s discards these cards:", (player.name, )), cards)
 
     def defend_action(self, game, player, card):
         player.draw_cards(2)
@@ -584,10 +583,9 @@ class TradingPost(ActionCard):
         # trash cards
         for card in cards:
             card.trash(game, player)
-        for other_player in game.participants:
-            if other_player is not player:
-                yield InfoRequest(game, other_player,
-                        _("%s trashes these cards:", (player.name, )), cards)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player,
+                    _("%s trashes these cards:", (player.name, )), cards)
         new_card = game.supply["Silver"].pop()
         player.hand.append(new_card)
         for info_player in game.following_participants(player):
@@ -651,13 +649,12 @@ class Upgrade(ActionCard):
                 player.discard_pile.append(new_card)
             card.trash(game, player)
 
-            for info_player in game.participants:
-                if info_player is not player:
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s trashes:", (player.name, )), [card])
+                if new_card:
                     yield InfoRequest(game, info_player,
-                            _("%s trashes:", (player.name, )), [card])
-                    if new_card:
-                        yield InfoRequest(game, info_player,
-                                _("%s gains:", (player.name, )), [new_card])
+                            _("%s gains:", (player.name, )), [new_card])
             if new_card:
                 for val in game.check_empty_pile(card_cls.__name__):
                     yield val
@@ -679,7 +676,7 @@ class WishingWell(ActionCard):
             c.__name__ in game.supply],
             msg=_("Name a card."), show_supply_count=True)
 
-        for info_player in game.participants:
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player, _("%s names:", (player.name, )),
                     [card_cls])
         player.draw_cards(1)

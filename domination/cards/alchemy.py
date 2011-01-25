@@ -100,10 +100,9 @@ class Apprentice(ActionCard):
                 drawcount += 2
             card.trash(game, player)
             player.draw_cards(drawcount)
-        for other_player in game.participants:
-            if other_player is not player:
-                yield InfoRequest(game, other_player,
-                        _("%s trashes these cards:", (player.name, )), cards)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player,
+                    _("%s trashes these cards:", (player.name, )), cards)
 
 
 class Familiar(AttackCard):
@@ -335,10 +334,9 @@ class University(ActionCard):
             new_card = game.supply[card_cls.__name__].pop()
             player.discard_pile.append(new_card)
 
-            for info_player in game.participants:
-                if info_player is not player:
-                    yield InfoRequest(game, info_player,
-                            _("%s gains:", (player.name, )), [new_card])
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
             for val in game.check_empty_pile(card_cls.__name__):
                 yield val
 

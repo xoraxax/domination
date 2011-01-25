@@ -160,12 +160,11 @@ class Mine(ActionCard):
             card.trash(game, player)
             new_card = game.supply[card_cls.__name__].pop()
             player.hand.append(new_card)
-            for info_player in game.participants:
-                if info_player is not player:
-                    yield InfoRequest(game, info_player,
-                            _("%s trashes:", (player.name, )), [card])
-                    yield InfoRequest(game, info_player,
-                            _("%s gains:", (player.name, )), [new_card])
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s trashes:", (player.name, )), [card])
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
             for val in game.check_empty_pile(card_cls.__name__):
                 yield val
 
@@ -208,12 +207,11 @@ class Remodel(ActionCard):
             new_card = game.supply[card_cls.__name__].pop()
             player.discard_pile.append(new_card)
 
-            for info_player in game.participants:
-                if info_player is not player:
-                    yield InfoRequest(game, info_player,
-                            _("%s trashes:", (player.name, )), [card])
-                    yield InfoRequest(game, info_player,
-                            _("%s gains:", (player.name, )), [new_card])
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s trashes:", (player.name, )), [card])
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
             for val in game.check_empty_pile(card_cls.__name__):
                 yield val
 
