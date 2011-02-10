@@ -512,11 +512,28 @@ class Peddler(ActionCard):
 
 
 from domination.cards.base import \
-    Cellar, CouncilRoom, Festival, Mine, Adventurer, Spy, Village,\
-    Chancellor, Festival, Militia, Workshop, Library, Market, Moneylender,\
-    Witch
+    Cellar, CouncilRoom, Mine, Adventurer, Spy, Village, Chancellor, Moneylender, Laboratory, Bureaucrat, Moat, Gardens, Chancellor
+
+from domination.cards.intrigue import \
+    Upgrade, ShantyTown, Baron, Pawn, Harem, MiningVillage, Bridge, GreatHall, Torturer, Bridge, GreatHall, Coppersmith, Tribute, Swindler, WishingWell
 
 card_sets = [
-    CardSet(u" [P]",
-        []),
+    CardSet(u" Anfänger [P]",
+        [Venture, WorkersVillage, Expand, Bank, Monument, Rabble, Goons, RoyalSeal, CountingHouse, Watchtower]),
+    CardSet(u" Freundliche Interaktion [P]",
+        [WorkersVillage, Bishop, Vault, TradeRoute, Peddler, Hoard, RoyalSeal, Forge, Contraband, City]),
+    CardSet(u" Grosse Aktionen [P]",
+        [Expand, Rabble, Vault, GrandMarket, KingsCourt, Loan, Mint, City, Quarry, Talisman]),
+    CardSet(u" Haufenweise Geld [P+B]",
+        [Venture, Bank, GrandMarket, RoyalSeal, Mint, Adventurer, Moneylender, Laboratory, Mine, Spy]),
+    CardSet(u" Die Armee des Königs [P+B]",
+        [Expand, Rabble, Vault, Pawn, KingsCourt, Bureaucrat, Moat, Village, CouncilRoom, Spy]),
+    CardSet(u" Ein gutes Leben [P+B]",
+        [Monument, Hoard, CountingHouse, Mountebank, Contraband, Bureaucrat, Village, Gardens, Chancellor, Cellar]),
+    CardSet(u" Pfade zum Sieg [P+I]",
+        [Bishop, Monument, Goons, Peddler, CountingHouse, Upgrade, ShantyTown, Baron, Pawn, Harem]),
+    CardSet(u" All along the Watchtowe [P+I]",
+        [Vault, TradeRoute, Hoard, Talisman, Watchtower, MiningVillage, Bridge, GreatHall, Pawn, Torturer]),
+    CardSet(u" Glücksritter [P+I]",
+        [Expand, Bank, Vault, KingsCourt, Forge, Bridge, Coppersmith, Tribute, Swindler, WishingWell]),
 ]
