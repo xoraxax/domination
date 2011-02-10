@@ -10,13 +10,44 @@ from domination.macros.__macros__ import handle_defense
 class Lookout(ActionCard):
     name = _("Lookout")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 3
     desc = _("+1 Action. Look at the top 3 Cards of your deck. Trash one of them. Discard one of them. Put the other one on top of your deck.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
-        pass #FIXME
+        player.draw_cards(3)
+        player.draw_cards(3)
+        cards = []
+        cards.append(player.hand.pop())
+        cards.append(player.hand.pop())
+        cards.append(player.hand.pop())
+        yield InfoRequest(game, info_player, _("You draw:",), cards)
+
+        card_classes = [type(c) for c in cards]
+        card_cls = (yield SelectCard(game, player,
+            _("Which card do you want to trash?"),
+            card_classes=card_classes))
+        card = [c for c in cards if isinstance(c, card_cls)][0]
+        cards.remove(card)
+        card.trash(game, player)
+        #FIXME announce
+
+        card_classes = [type(c) for c in cards]
+        card_cls = (yield SelectCard(game, player,
+            _("Which card do you want to discard?"),
+            card_classes=card_classes))
+        card = [c for c in cards if isinstance(c, card_cls)][0]
+        cards.remove(card)
+        player.discard_pile.append(card)
+        #FIXME announce
+
+        card_classes = [type(c) for c in cards]
+        card_cls = (yield SelectCard(game, player,
+            _("Which card do you want to put back on deck?"),
+            card_classes=card_classes))
+        card = [c for c in cards if isinstance(c, card_cls)][0]
+        cards.remove(card)
+        card.backondeck()
 
 class MerchantShip(ActionCard, DurationCard):
     name = _("Merchant Ship")
@@ -34,34 +65,77 @@ class MerchantShip(ActionCard, DurationCard):
 class Navigator(ActionCard):
     name = _("Navigator")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 4
     desc = _("+2 Money. Look at the top 5 Cards of your deck. Either discard all of them, or put them back on top of your deck in any order.")
 
     def activate_action(self, game, player):
         player.virtual_money += 2
-        pass #FIXME
+        player.draw_cards(5)
+        cards = []
+        cards.append(player.hand.pop())
+        cards.append(player.hand.pop())
+        cards.append(player.hand.pop())
+        cards.append(player.hand.pop())
+        cards.append(player.hand.pop())
+        yield InfoRequest(game, info_player, _("You draw:",), cards)
+        actions = [("discard",    _("discard all 5 cards")),
+                   ("backondeck", _("put the cards back in your specified order"))]
+
+        answer = yield Question(game, player, _("What do you want to do?"), actions)
+        if answer == "discard":
+            player.discard_pile.extend(cards)
+        else:
+            while cards:
+                card_classes = [type(c) for c in cards]
+                card_cls = (yield SelectCard(game, player,
+                    _("Which card do you want to put back?"),
+                    card_classes=card_classes))
+                card = [c for c in cards if isinstance(c, card_cls)][0]
+                cards.remove(card)
+                player.discard_pile.append(card)
+
 
 class PirateShip(AttackCard):
     name = _("Pirate Ship")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 4
-    desc = _("Choose one: Each Player reveals the top 2 cards of his deck, trashes a revealed Treasure that you choose, discards the rest, and if anyone trashed a Treasure you take a Coin token; or + 1 Money per Coin token you have taken with pirate Ships this game.")
+    desc = _("Choose one: Each Player reveals the top 2 cards of his deck, trashes a revealed Treasure that you choose, discards the rest, and if anyone trashed a Treasure you take a Coin token; or +1 Money per Coin token you have taken with pirate Ships this game.")
 
     def activate_action(self, game, player):
-        for other_player in game.players:
-            try:
-                handle_defense(self, game, other_player)
-            except Defended:
-                continue
-            other_player.draw_cards(2)
-            cards = []
-            cards.append(other_player.hand.pop())
-            cards.append(other_player.hand.pop())
-            for info_player in game.participants:
-                yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:",
-                        (other_player.name, )), cards)
+        actions = [("cardstrashtreasure", _("Others reveal 2 cards and trash a Treasure you choose")),
+                   ("moneyfortokens",     _("+1 Money per Coin token"))]
+
+        answer = yield Question(game, player, _("What do you want to do?"),
+                                actions)
+        if answer == "cardstrashtreasure":
+            for other_player in game.following_players(player):
+                try:
+                    handle_defense(self, game, other_player)
+                except Defended:
+                    continue
+                other_player.draw_cards(2)
+                cards = []
+                cards.append(other_player.hand.pop())
+                cards.append(other_player.hand.pop())
+                for info_player in game.participants:
+                    yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:",
+                            (other_player.name, )), cards)
+                trashed = False
+                for card in cards:
+                    if isinstance(card, TreasureCard) and not trashed:
+                        if (yield YesNoQuestion(game, player,
+                            _("Do you want to trash %(name)s's card '%(cardname)s'?",
+                            {"cardname": card.name, "name": other_player.name}))):
+                            for info_player in game.participants:
+                                yield InfoRequest(game, info_player, _("%s trashes %s Treasure:",
+                                        (player.name, other_player.name, )), cards)
+                            card.trash(game, other_player)
+                            trashed = True
+                        else:
+                            other_player.discard_pile.append(card)
+        else:
+            player.virtual_money += player.pirateshipcointokens
+
 
 class Outpost(ActionCard, DurationCard):
     name = _("Outpost")
@@ -109,8 +183,8 @@ class Salvager(ActionCard):
         for card in cards:
             player.virtual_money += card.cost
             card.trash(game, player)
-        for other_player in game.following_participants(player):
-            yield InfoRequest(game, other_player,
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player,
                    _("%s trashes these cards:", (player.name, )), cards)
 
 class SeaHag(AttackCard):
@@ -143,12 +217,28 @@ class SeaHag(AttackCard):
 class Smugglers(ActionCard):
     name = _("Smugglers")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 3
     desc = _("Gain a copy of a Card costing up to 6 that the player to your rigth gained on his last turn.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        if len(player.right(game).cards_gained) > 1:
+            card_classes = [c for c in player.right(game).cards_gained
+                            if c.cost <= 6 and
+                            game.supply.get(c.__name__)]
+            card_cls = yield SelectCard(game, player, card_classes=card_classes,
+                msg=_("Select a treasure card that you want to have."), show_supply_count=True)
+        else:
+            card_cls = type(player.right(game).cards_gained[0])
+            new_card = game.supply[card_cls.__name__].pop()
+            player.discard_pile.append(new_card)
+
+            for other_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
+            for val in game.check_empty_pile(card_cls.__name__):
+                yield val
+
+
 
 class Caravan(ActionCard, DurationCard):
     name = _("Caravan")
@@ -324,8 +414,8 @@ class Warehouse(ActionCard):
         if cards is not None:
             for card in cards:
                 card.discard(player)
-            for other_player in game.following_participants(player):
-                yield InfoRequest(game, other_player,
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
                        _("%s discards these cards:", (player.name, )), cards)
 
 class Treasury(ActionCard):
