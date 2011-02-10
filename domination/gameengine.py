@@ -575,7 +575,8 @@ class DominationGame(Game):
         if not self.supply["Province"]: # check if Province supply is empty
             return True
         if self.supply.get("Colony", None): # check if Colony supply is empty
-            return True
+            if not self.supply["Colony"]: # check if Province supply is empty
+                return True
         # fill empty_batches with card keys of cards the supply of which is empty
         empty_batches = [card_key for card_key, cards in self.supply.items()
                 if not cards]
