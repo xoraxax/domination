@@ -421,7 +421,7 @@ class SecretChamber(ReactionCard):
         for card in cards:
             card.discard(player)
         for info_player in game.following_participants(player):
-            yield InfoRequest(game, other_player,
+            yield InfoRequest(game, info_player,
                 _("%s discards these cards:", (player.name, )), cards)
 
     def defend_action(self, game, player, card):
