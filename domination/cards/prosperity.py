@@ -90,7 +90,7 @@ class Bishop(ActionCard):
     def activate_action(self, game, player):
         player.virtual_money += 1
         player.tokens += 1
-        if  player.hand:
+        if player.hand:
             cards = yield SelectHandCards(game, player,
                         count_lower=0, count_upper=1,
                         msg=_("Select a card you want to trash."))
@@ -101,15 +101,15 @@ class Bishop(ActionCard):
                 for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player,
                             _("%s trashes:", (player.name, )), [card])
-            for other_player in game.following_players(player):
-                cards = yield SelectHandCards(game, other_player, count_lower=0, count_upper=1,
-                        msg=_("%s played Bishop. You may trash a card:?", (player.name, )))
-                if cards:
-                    for card in cards:
-                        card.trash(game, other_player)
-                        for info_player in game.following_participants(other_player):
-                            yield InfoRequest(game, info_player,
-                                _("%s trashes:", (other_player.name, )), cards)
+        for other_player in game.following_players(player):
+            cards = yield SelectHandCards(game, other_player, count_lower=0, count_upper=1,
+                    msg=_("%s played Bishop. You may trash a card:?", (player.name, )))
+            if cards:
+                for card in cards:
+                    card.trash(game, other_player)
+                    for info_player in game.following_participants(other_player):
+                        yield InfoRequest(game, info_player,
+                            _("%s trashes:", (other_player.name, )), cards)
 
 class Monument(ActionCard):
     name = _("Monument")
