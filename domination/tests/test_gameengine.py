@@ -20,7 +20,7 @@ def doesnt_raise(card):
 class TestRandomRunner(object):
     def test_random_run(self):
         card_classes = random.sample([c for c in
-            CardTypeRegistry.card_classes.values() if c.optional
+            CardTypeRegistry.raw_card_classes.values() if c.optional
             and doesnt_raise(c())], 10)
         print "Chose ", card_classes
         self.do_test_run(card_classes)
@@ -28,7 +28,7 @@ class TestRandomRunner(object):
     def test_intrigue_test_run(self):
         card_classes = dict(((x.name, x.card_classes) for x in card_sets))['Intrigue Test']
         card_classes += random.sample([c for c in
-            CardTypeRegistry.card_classes.values() if c.optional
+            CardTypeRegistry.raw_card_classes.values() if c.optional
             and doesnt_raise(c())], 10 - len(card_classes))
         print "Chose ", card_classes
         self.do_test_run(card_classes)

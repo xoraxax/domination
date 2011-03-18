@@ -2,7 +2,7 @@ from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      DurationCard, AttackCard, ReactionCard, CardSet, Seaside
 from domination.cards.base import Duchy, Estate, Copper, Province
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
-     InfoRequest, SelectCard, CardTypeRegistry, Defended, YesNoQuestion
+     InfoRequest, SelectCard, Defended, YesNoQuestion
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense
 

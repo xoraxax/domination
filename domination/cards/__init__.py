@@ -1,3 +1,5 @@
+import copy
+
 from domination.gameengine import Defended
 from domination.tools import _
 
@@ -17,7 +19,7 @@ editions = [BaseGame, Intrigue, Alchemy, Seaside, Prosperity]
 
 
 class CardTypeRegistry(type):
-    card_classes = {}
+    raw_card_classes = {}
 
     def __new__(cls, name, bases, d):
         abstract = d.pop("abstract", False)
@@ -26,14 +28,18 @@ class CardTypeRegistry(type):
             d['second_card_type'] = len(bases) > 1 and bases[1].__name__ or ''
         kls = type.__new__(cls, name, bases, d)
         if not abstract:
-            CardTypeRegistry.card_classes[name] = kls
+            CardTypeRegistry.raw_card_classes[name] = kls
         return kls
+
+    @classmethod
+    def get_card_classes_copy(cls):
+        return copy.deepcopy(cls.raw_card_classes)
 
     @staticmethod
     def keys2classes(keys):
         classes = []
         for key in keys:
-            cls = CardTypeRegistry.card_classes[key]
+            cls = CardTypeRegistry.raw_card_classes[key]
             classes.append(cls)
         return classes
 

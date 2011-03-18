@@ -43,9 +43,9 @@ app.users = {}
 app.languages = {}
 app.game_storage_prefix = os.path.join(root_dir, "game-")
 app.game_storage_postfix = ".pickle"
-app.all_card_classes = [cls for cls in CardTypeRegistry.card_classes.itervalues()
-                    if cls.optional & cls.implemented ]
-app.card_classes = lambda: sorted(app.all_card_classes, key=lambda x: x.name.__str__())
+all_card_classes = [cls for cls in CardTypeRegistry.raw_card_classes.itervalues()
+                    if cls.optional and cls.implemented]
+app.card_classes = lambda: sorted(all_card_classes, key=lambda x: x.name.__str__()) # not for in-game usage
 app.template_context_processors[None].append(lambda: {'app': app, 'store': get_store()})
 app.jinja_env.globals.update(gettext=_, ngettext=ngettext)
 app.game_storage_path = None

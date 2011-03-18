@@ -2,7 +2,7 @@ from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
      DurationCard, AttackCard, ReactionCard, CardSet, Prosperity
 from domination.cards.base import Duchy, Estate, Copper, Province
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
-     InfoRequest, SelectCard, CardTypeRegistry, Defended, YesNoQuestion, \
+     InfoRequest, SelectCard, Defended, YesNoQuestion, \
      SelectActionCard
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense, generator_forward
@@ -130,7 +130,7 @@ class Quarry(TreasureCard):
 
     def activate_action(self, game, player):
         decreased_for_cards = []
-        action_card_classes  = [cls for cls in CardTypeRegistry.card_classes.itervalues()
+        action_card_classes  = [cls for cls in game.card_classes.itervalues()
                     if isinstance(cls, ActionCard)]
         for card in action_card_classes:
             if card.cost >= 1:
@@ -313,7 +313,7 @@ class Contraband(TreasureCard):
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
-        card_cls = yield SelectCard(game, player.left(game), card_classes=CardTypeRegistry.card_classes,
+        card_cls = yield SelectCard(game, player.left(game), card_classes=game.card_classes,
                    msg=_("Select a card that %(playername)s shouldn't buy.",  {"playername": player.name}), show_supply_count=True)
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%(player2name)s does not allow %(player2name)s's to buy:",
@@ -400,7 +400,7 @@ class Expand(ActionCard):
         if cards:
             card = cards[0]
             card_cls = yield SelectCard(game, player, card_classes=[c for c in
-                CardTypeRegistry.card_classes.itervalues()
+                game.card_classes.itervalues()
                 if c.cost <= card.cost + 3 and game.supply.get(c.__name__)
                 and c.potioncost == card.potioncost],
                 msg=_("Select a card that you want to have."), show_supply_count=True)
@@ -479,7 +479,7 @@ class Forge(ActionCard):
                 Forge_money += card.cost
                 card.trash(game, player)
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
-            CardTypeRegistry.card_classes.itervalues()
+            game.card_classes.itervalues()
             if c.cost == Forge_money and game.supply.get(c.__name__)
             and c.potioncost == 0],
             msg=_("Select a card that you want to have."), show_supply_count=True)

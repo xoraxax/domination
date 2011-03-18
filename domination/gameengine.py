@@ -313,6 +313,7 @@ from domination.cards import DurationCard
 
 class Game(object):
     def __init__(self, name):
+        from domination.cards import CardTypeRegistry
         self.players = []
         self.kibitzers = []
         self.supply = {}
@@ -320,6 +321,7 @@ class Game(object):
         self.end_of_game_reason = False
         self.round = 0
         self.name = name
+        self.card_classes = CardTypeRegistry.get_card_classes_copy()
 
     def __hash__(self):
         return hash(self.name)

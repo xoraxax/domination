@@ -2,7 +2,7 @@ from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Alchemy
 from domination.cards.base import Duchy, Estate, Copper, Gold
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
-     InfoRequest, SelectCard, CardTypeRegistry, Defended, YesNoQuestion
+     InfoRequest, SelectCard, Defended, YesNoQuestion
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense, generator_forward,\
         fetch_card_from_supply
@@ -324,7 +324,7 @@ class University(ActionCard):
 
     def activate_action(self, game, player):
         player.remaining_actions += 2
-        card_classes = [c for c in CardTypeRegistry.card_classes.itervalues()
+        card_classes = [c for c in game.card_classes.itervalues()
                         if c.cost <= 5 and c.potioncost == 0 and
                         game.supply.get(c.__name__) and
                         issubclass(c, ActionCard)]

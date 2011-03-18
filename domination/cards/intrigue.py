@@ -2,7 +2,7 @@ from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
 from domination.cards.base import Duchy, Estate, Copper
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
-     InfoRequest, SelectCard, CardTypeRegistry, Defended, YesNoQuestion
+     InfoRequest, SelectCard, Defended, YesNoQuestion
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense
 
@@ -46,7 +46,7 @@ class Bridge(ActionCard):
         player.remaining_deals += 1
         player.virtual_money += 1
         decreased_for_cards = []
-        for card in CardTypeRegistry.card_classes.itervalues():
+        for card in game.card_classes.itervalues():
             if card.cost >= 1:
                 card.cost -= 1
                 decreased_for_cards.append(card)
@@ -143,7 +143,7 @@ class Ironworks(ActionCard):
     def activate_action(self, game, player):
         # copied from Feast
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
-            CardTypeRegistry.card_classes.itervalues() if c.cost <= 4 and
+            game.card_classes.itervalues() if c.cost <= 4 and
             game.supply.get(c.__name__) and c.potioncost == 0],
             msg=_("Select a card that you want to have."), show_supply_count=True)
         new_card = game.supply[card_cls.__name__].pop()
@@ -359,7 +359,7 @@ class Saboteur(AttackCard):
 
                 # gain a card, XXX missing cancel
                 card_cls = yield SelectCard(game, other_player, card_classes=[c for c in
-                    CardTypeRegistry.card_classes.itervalues() if c.cost <= revealed_cards[-1].cost - 2 and
+                    game.card_classes.itervalues() if c.cost <= revealed_cards[-1].cost - 2 and
                     game.supply.get(c.__name__) and c.potioncost == 0],
                     msg=_("Select a card that you want to have."), show_supply_count=True)
                 new_card = game.supply[card_cls.__name__].pop()
@@ -476,7 +476,7 @@ class Swindler(AttackCard):
                         (other_player.name, )), [card])
 
             req = SelectCard(game, player, card_classes=[c for c in
-                CardTypeRegistry.card_classes.itervalues() if c.cost == card.cost and
+                game.card_classes.itervalues() if c.cost == card.cost and
                 game.supply.get(c.__name__)],
                 msg=_("Select a card that you want to give."), show_supply_count=True)
             if not req.fulfillable():
@@ -640,7 +640,7 @@ class Upgrade(ActionCard):
                     msg=_("Select a card you want to trash."))
         if cards:
             card = cards[0]
-            selectable_card_classes=[c for c in CardTypeRegistry.card_classes.itervalues() if c.cost == card.cost + 1 and game.supply.get(c.__name__) and c.potioncost == card.potioncost]
+            selectable_card_classes=[c for c in game.card_classes.itervalues() if c.cost == card.cost + 1 and game.supply.get(c.__name__) and c.potioncost == card.potioncost]
             new_card = None
             if selectable_card_classes:
                 card_cls = yield SelectCard(game, player, card_classes=selectable_card_classes,
@@ -672,7 +672,7 @@ class WishingWell(ActionCard):
         player.draw_cards(1)
         player.remaining_actions += 1
         card_cls = yield SelectCard(game, player, card_classes=[c for c in
-            CardTypeRegistry.card_classes.itervalues() if
+            game.card_classes.itervalues() if
             c.__name__ in game.supply],
             msg=_("Name a card."), show_supply_count=True)
 
