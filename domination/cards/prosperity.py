@@ -1,6 +1,6 @@
 from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
      DurationCard, AttackCard, ReactionCard, CardSet, Prosperity
-from domination.cards.base import Duchy, Estate, Copper, Province
+from domination.cards.base import Duchy, Estate, Copper, Province, Curse
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, Defended, YesNoQuestion, \
      SelectActionCard
@@ -290,8 +290,10 @@ class Mountebank(AttackCard):
                     curse_discarded = True
                     break
             if not curse_discarded:
-                new_cards.append(game.supply["Curse"].pop())
-                new_cards.append(game.supply["Copper"].pop())
+                with fetch_card_from_supply(game, Curse) as new_card:
+                    new_cards.append(new_card)
+                with fetch_card_from_supply(game, Copper) as new_card:
+                    new_cards.append(new_card)
                 for info_player in game.participants:
                      yield InfoRequest(game, info_player,
                              _("%(playername)s played Mountebank: %(player2name)s's gains:",
