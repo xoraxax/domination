@@ -134,7 +134,7 @@ def login():
             return render_error(_("Username already in use."))
         session['username'] = username
         if request.args.get('url'):
-            return redirect(request.args['url'])
+            return redirect(request.args['url'].encode("ascii"))
         else:
             return redirect(url_for('index'))
     return render_template("login.html")
