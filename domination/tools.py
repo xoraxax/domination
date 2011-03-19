@@ -7,6 +7,7 @@ from flaskext.babel import get_locale
 from babel.support import Translations
 from babel.messages.pofile import read_po
 from babel.messages.mofile import write_mo
+from jinja2 import Markup
 
 
 class Translatable(unicode):
@@ -15,11 +16,17 @@ class Translatable(unicode):
         inst.parameters = parameters
         return inst
 
+    def __str__(self):
+        raise NotImplementedError
+
     def __unicode__(self):
         t = get_translations()
         if t is None:
             return self % self.parameters
         return t.ugettext(self[:]) % self.parameters
+
+    def __html__(self):
+        return Markup.escape(unicode(self))
 
 
 def _(string, parameters=()):

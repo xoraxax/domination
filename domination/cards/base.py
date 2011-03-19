@@ -375,7 +375,7 @@ class Library(ActionCard):
             drawn_card = player.hand[-1]
             if isinstance(drawn_card, ActionCard) and (yield YesNoQuestion(game,
                 player, _("Do you want to set aside"
-                " the card '%s'?", [drawn_card.name]))):
+                " the card '%s'?", (drawn_card.name, )))):
                 player.hand.pop(-1)
                 set_aside_cards.append(drawn_card)
         player.discard_pile.extend(set_aside_cards)
