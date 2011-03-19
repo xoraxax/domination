@@ -5,3 +5,4 @@ env/*
 *.mo
 *.pot
 *.pickle
+domination/static/cardimages/*

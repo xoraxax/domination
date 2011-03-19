@@ -11,6 +11,7 @@ from flask import Flask, render_template, session, redirect, url_for, \
         request, abort, jsonify
 from flaskext.babel import Babel
 import flaskext.babel
+from jinja2 import Markup
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -37,7 +38,7 @@ AI_NAMES = ['Alan', 'Grace', 'Linus', 'Guido', 'Konrad', 'Donald',
             'Miranda', 'Ada', 'Hannah', 'Kim']
 MAX_SEQNO_DIFF = 8
 
-# init app object
+# init app object and jinja env
 app.games = {}
 app.users = {}
 app.languages = {}
@@ -45,9 +46,19 @@ app.game_storage_prefix = os.path.join(root_dir, "game-")
 app.game_storage_postfix = ".pickle"
 all_card_classes = [cls for cls in CardTypeRegistry.raw_card_classes.itervalues()
                     if cls.optional and cls.implemented]
-app.card_classes = lambda: sorted(all_card_classes, key=lambda x: x.name.__str__()) # not for in-game usage
+app.card_classes = lambda: sorted(all_card_classes, key=lambda x: unicode(x.name)) # not for in-game usage
+def make_image_url(cardcls):
+    locale = str(get_locale())
+    path = os.path.join(root_dir, "domination", "static", "cardimages", locale, cardcls.__name__) + ".jpg"
+    if os.path.exists(path):
+        return url_for('static', filename="cardimages/%s/%s.jpg" % (locale, cardcls.__name__))
 app.template_context_processors[None].append(lambda: {'app': app, 'store': get_store()})
-app.jinja_env.globals.update(gettext=_, ngettext=ngettext)
+app.jinja_env.globals.update(gettext=_, ngettext=ngettext, make_image_url=make_image_url)
+def finalizer(x):
+    if isinstance(x, Markup):
+        return x
+    return unicode(x)
+app.jinja_env.finalize = finalizer
 app.game_storage_path = None
 
 

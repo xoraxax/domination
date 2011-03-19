@@ -3,32 +3,36 @@
   <h4>{{ card.name }} <span class="costs">&nbsp;{{ card.cost }}&nbsp;</span>{% if card.potioncost %} <span class="potioncosts">&nbsp;{{ card.potioncost }}&nbsp;</span>{% endif %}</h4>
   <div style="display: none;">
     <div class="descriptionblock">
-      <h5 class="descheading">{% trans %}Description{% endtrans %}</h5>
-      <div class="description">
-        {{ card.desc }}
-      </div>
-      {% if card.worth %}
-      <div class="worth">
-        <em>{% trans %}Worth:{% endtrans %}</em> {{ card.worth }}
-      </div>
-      {% endif %}
-      {% if card.potion %}
-      <div class="potion">
-        <em>{% trans %}Potion(s):{% endtrans %}</em> {{ card.potion }}
-      </div>
-      {% endif %}
-      {% if card.points  %}
-      <div class="points">
-        <em>{% trans %}Point(s):{% endtrans %}</em> {{ card.points }}
-      </div>
-      {% endif %}
-      <em>{% trans %}Cost:{% endtrans %}</em>
-      {% if card.potioncost %}
-      {{ _('%(cost)i Money and %(potion)i Potion(s)', {"cost": card.cost, "potion": card.potioncost}) }}
+      {% if not make_image_url(card) %}
+        <h5 class="descheading">{% trans %}Description{% endtrans %}</h5>
+        <div class="description">
+          {{ card.desc }}
+        </div>
+        {% if card.worth %}
+        <div class="worth">
+          <em>{% trans %}Worth:{% endtrans %}</em> {{ card.worth }}
+        </div>
+        {% endif %}
+        {% if card.potion %}
+        <div class="potion">
+          <em>{% trans %}Potion(s):{% endtrans %}</em> {{ card.potion }}
+        </div>
+        {% endif %}
+        {% if card.points  %}
+        <div class="points">
+          <em>{% trans %}Point(s):{% endtrans %}</em> {{ card.points }}
+        </div>
+        {% endif %}
+        <em>{% trans %}Cost:{% endtrans %}</em>
+        {% if card.potioncost %}
+        {{ _('%(cost)i Money and %(potion)i Potion(s)', {"cost": card.cost, "potion": card.potioncost}) }}
+        {% else %}
+        {{ _('%(cost)i Money', {"cost": card.cost}) }}
+        {% endif %}
+        <p>{{ card.classnames() }}</p>
       {% else %}
-      {{ _('%(cost)i Money', {"cost": card.cost}) }}
+        <img src="{{ make_image_url(card) }}" border="0" alt="{{ card.name }}">
       {% endif %}
-      <p>{{ card.classnames() }}</p>
     </div>
   </div>
   {% if caller %}
@@ -43,7 +47,8 @@
         bodyHandler: function() {
           return $($(this).find(".descriptionblock")).html()
         },
-        showURL: false
+        showURL: false,
+        track: true
       });
     });
     $(function() {

@@ -25,9 +25,6 @@ class Translatable(unicode):
             return self % self.parameters
         return t.ugettext(self[:]) % self.parameters
 
-    def __html__(self):
-        return Markup.escape(unicode(self))
-
 
 def _(string, parameters=()):
     return Translatable(string, parameters)
