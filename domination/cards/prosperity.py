@@ -5,7 +5,8 @@ from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, Defended, YesNoQuestion, \
      SelectActionCard
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense, generator_forward
+from domination.macros.__macros__ import handle_defense, generator_forward,\
+        fetch_card_from_supply
 
 
 class Platinum(TreasureCard):
