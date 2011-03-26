@@ -1,6 +1,6 @@
 import copy
 
-from domination.gameengine import Defended
+from domination.gameengine import Defended, TLS
 from domination.tools import _
 
 
@@ -26,14 +26,22 @@ class CardTypeRegistry(type):
         if not abstract:
             d['card_type'] = bases[0].__name__
             d['second_card_type'] = len(bases) > 1 and bases[1].__name__ or ''
+        if name != "Card":
+            cost = d.pop("cost", None)
+            d["raw_cost"] = cost
         kls = type.__new__(cls, name, bases, d)
         if not abstract:
             CardTypeRegistry.raw_card_classes[name] = kls
         return kls
 
-    @classmethod
-    def get_card_classes_copy(cls):
-        return copy.deepcopy(cls.raw_card_classes)
+    def _get_cost(self):
+        if getattr(TLS, "game", None) is None:
+            return self.raw_cost
+        return self.raw_cost + TLS.game.cost_delta.get(self.__name__, 0)
+    def _set_cost(self, value):
+        cd = TLS.game.cost_delta
+        cd[self.__name__] = value - self.raw_cost
+    cost = property(_get_cost, _set_cost)
 
     @staticmethod
     def keys2classes(keys):
@@ -47,7 +55,6 @@ class CardTypeRegistry(type):
 class Card(object):
     __metaclass__ = CardTypeRegistry
     name = "UNKNOWN"   # card name
-    cost = None        # card cost
     points = 0         # victory points
     worth = 0          # monetary worth
     potion = 0         # potion worth (alchemy)
@@ -66,6 +73,12 @@ class Card(object):
         assert self.points is not None or self.__class__.__dict__.get("get_points")
         assert self.worth is not None or self.__class__.__dict__.get("get_worth")
         assert self.potion is not None
+
+    def _get_cost(self):
+        return type(self).cost
+    def _set_cost(self, value):
+        type(self).cost = value
+    cost = property(_get_cost, _set_cost)
 
     @classmethod
     def classnames(cls):

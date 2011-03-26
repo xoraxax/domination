@@ -25,9 +25,9 @@
         {% endif %}
         <em>{% trans %}Cost:{% endtrans %}</em>
         {% if card.potioncost %}
-        {{ _('%(cost)i Money and %(potion)i Potion(s)', {"cost": card.cost, "potion": card.potioncost}) }}
+        {{ _('%(cost)s Money and %(potion)i Potion(s)', {"cost": card.cost, "potion": card.potioncost}) }}
         {% else %}
-        {{ _('%(cost)i Money', {"cost": card.cost}) }}
+        {{ _('%(cost)s Money', {"cost": card.cost}) }}
         {% endif %}
         <p>{{ card.classnames() }}</p>
       {% else %}
