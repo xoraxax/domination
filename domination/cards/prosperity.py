@@ -127,7 +127,7 @@ class Quarry(TreasureCard):
     edition = Prosperity
     cost = 4
     worth = 1
-    desc = _("|While this is in play, Action cards cost 2 Money less, but no less than 0.")
+    desc = _("While this is in play, Action cards cost 2 Money less, but no less than 0.")
 
     def activate_action(self, game, player):
         decreased_for_cards = []
