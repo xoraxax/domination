@@ -1,7 +1,7 @@
 import sys
 import pickle
 from random import SystemRandom
-from threading import Thread
+from threading import Thread, local
 from threading import _Condition as PristineCondition
 
 from domination.tools import _, taint_filename
@@ -9,6 +9,7 @@ from domination.macros.__macros__ import generator_forward, generator_forward_ex
 
 
 random = SystemRandom()
+TLS = local()
 
 
 class Condition(PristineCondition):
@@ -225,6 +226,7 @@ class GameRunner(Thread):
         return self.state is FRESH
 
     def run(self):
+        TLS.game = self.game
         try:
             self._run()
         except EndOfGameException:
@@ -321,7 +323,8 @@ class Game(object):
         self.end_of_game_reason = False
         self.round = 0
         self.name = name
-        self.card_classes = CardTypeRegistry.get_card_classes_copy()
+        self.card_classes = CardTypeRegistry.raw_card_classes
+        self.cost_delta = {}
 
     def __hash__(self):
         return hash(self.name)
@@ -576,10 +579,8 @@ class DominationGame(Game):
         no_players = len(self.players) # number of players
         if not self.supply["Province"]: # check if Province supply is empty
             return True
-        if self.supply.get("Colony", None): # check if Colony supply is empty
-            if not self.supply["Colony"]: # check if Province supply is empty
-                return True
-        # fill empty_batches with card keys of cards the supply of which is empty
+        if not self.supply.get("Colony", 1):
+            return True
         empty_batches = [card_key for card_key, cards in self.supply.items()
                 if not cards]
         if no_players < 5:

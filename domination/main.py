@@ -27,7 +27,7 @@ sys.path.append(root_dir)
 from domination.gameengine import DominationGame, CardTypeRegistry, Player,\
         GameRunner, DebugRequest, SelectDeal, SelectHandCards, SelectCard,\
         YesNoQuestion, Question, MultipleChoice, card_sets, editions, \
-        AIPlayer, Kibitzer, FRESH, ENDED, RUNNING, STATES
+        AIPlayer, Kibitzer, FRESH, ENDED, RUNNING, STATES, TLS
 from domination.tools import _, get_translations, ngettext
 from domination.gzip_middleware import GzipMiddleware
 
@@ -82,7 +82,9 @@ def gets_game(func):
     def innerfunc(name, *args, **kwargs):
         if name not in app.games:
             return render_error(_("Game not found!"))
-        return func(app.games[name], *args, **kwargs)
+        game_runner = app.games[name]
+        TLS.game = game_runner.game
+        return func(game_runner, *args, **kwargs)
     innerfunc.__name__ = func.__name__
     return innerfunc
 
