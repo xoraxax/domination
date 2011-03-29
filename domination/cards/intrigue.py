@@ -536,6 +536,7 @@ class Torturer(AttackCard):
     desc = _("+3 Cards, Each other player chooses one: he discards 2 cards; or he gains a Curse card, putting it in his hand.")
 
     def activate_action(self, game, player):
+        player.draw_cards(3)
         for other_player in game.following_players(player):
             try:
                 handle_defense(self, game, other_player)
@@ -560,13 +561,11 @@ class Torturer(AttackCard):
                     yield InfoRequest(game, info_player,
                             _("%s discards these cards:", (other_player.name, )), cards)
         elif choice == "curse":
-            curse_cards = game.supply["Curse"]
-            other_player.discard_pile.append(curse_cards.pop())
+            with fetch_card_from_supply(game, Curse) as new_card:
+                other_player.discard_pile.append(new_card)
             for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
                         _("%s tortures %s. You gain a curse card.", (player.name, other_player.name)), [])
-            for val in game.check_empty_pile("Curse"):
-                yield val
 
 class TradingPost(ActionCard):
     name = _("Trading Post")
