@@ -16,7 +16,6 @@ class Lookout(ActionCard):
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(3)
-        player.draw_cards(3)
         cards = []
         cards.append(player.hand.pop())
         cards.append(player.hand.pop())
@@ -29,8 +28,9 @@ class Lookout(ActionCard):
             card_classes=card_classes))
         card = [c for c in cards if isinstance(c, card_cls)][0]
         cards.remove(card)
-        card.trash(game, player)
-        #FIXME announce
+        game.trash_pile.append(card)
+        for info_player in game.participants:
+            yield InfoRequest(game, info_player, _("%s trashes:", (player.name, )), [card])
 
         card_classes = [type(c) for c in cards]
         card_cls = (yield SelectCard(game, player,
@@ -39,7 +39,8 @@ class Lookout(ActionCard):
         card = [c for c in cards if isinstance(c, card_cls)][0]
         cards.remove(card)
         player.discard_pile.append(card)
-        #FIXME announce
+        for info_player in game.participants:
+            yield InfoRequest(game, info_player, _("%s discards:", (player.name, )), [card])
 
         card_classes = [type(c) for c in cards]
         card_cls = (yield SelectCard(game, player,
