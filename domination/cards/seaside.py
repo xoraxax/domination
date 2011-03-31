@@ -21,7 +21,7 @@ class Lookout(ActionCard):
         cards.append(player.hand.pop())
         cards.append(player.hand.pop())
         cards.append(player.hand.pop())
-        yield InfoRequest(game, info_player, _("You draw:",), cards)
+        yield InfoRequest(game, player, _("You draw:",), cards)
 
         card_classes = [type(c) for c in cards]
         card_cls = (yield SelectCard(game, player,
