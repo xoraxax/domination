@@ -48,7 +48,7 @@ class Lookout(ActionCard):
             card_classes=card_classes))
         card = [c for c in cards if isinstance(c, card_cls)][0]
         cards.remove(card)
-        card.backondeck()
+        player.deck.append(card)
 
 class MerchantShip(ActionCard, DurationCard):
     name = _("Merchant Ship")
