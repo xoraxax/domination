@@ -543,30 +543,30 @@ class Torturer(AttackCard):
                 handle_defense(self, game, other_player)
             except Defended:
                 continue
-        choices = [("discard",   _("discard 2 cards")),
-                   ("curse",  _("gain a Curse"))]
-        choice = yield Question(game, other_player, _("What do you want to do?"), choices)
+            choices = [("discard",   _("discard 2 cards")),
+                       ("curse",  _("gain a Curse"))]
+            choice = yield Question(game, other_player, _("What do you want to do?"), choices)
 
-        for info_player in game.following_participants(player):
-            yield InfoRequest(game, info_player,
-                    _("%(player)s choose to '%(action)s'", {"player": other_player.name, "action": choice}), [])
-
-        if choice == "discard":
-            cards = yield SelectHandCards(game, other_player, count_lower=2, count_upper=2,
-                    msg=_("%s played Torturer, you chose to discard two cards. Which cards do you want to discard?", (player.name, )))
-            for card in cards:
-                card.discard(other_player)
-            for info_player in game.participants:
-                if info_player is not other_player:
-                    # TODO: info players may only see one of the discarded cards
-                    yield InfoRequest(game, info_player,
-                            _("%s discards these cards:", (other_player.name, )), cards)
-        elif choice == "curse":
-            with fetch_card_from_supply(game, Curse) as new_card:
-                other_player.discard_pile.append(new_card)
-            for info_player in game.following_participants(other_player):
+            for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
-                        _("%s tortures %s. You gain a curse card.", (player.name, other_player.name)), [])
+                        _("%(player)s choose to '%(action)s'", {"player": other_player.name, "action": choice}), [])
+
+            if choice == "discard":
+                cards = yield SelectHandCards(game, other_player, count_lower=2, count_upper=2,
+                        msg=_("%s played Torturer, you chose to discard two cards. Which cards do you want to discard?", (player.name, )))
+                for card in cards:
+                    card.discard(other_player)
+                for info_player in game.participants:
+                    if info_player is not other_player:
+                        # TODO: info players may only see one of the discarded cards
+                        yield InfoRequest(game, info_player,
+                                _("%s discards these cards:", (other_player.name, )), cards)
+            elif choice == "curse":
+                with fetch_card_from_supply(game, Curse) as new_card:
+                    other_player.discard_pile.append(new_card)
+                for info_player in game.following_participants(other_player):
+                    yield InfoRequest(game, info_player,
+                            _("%s tortures %s. He gains a curse card.", (player.name, other_player.name)), [])
 
 class TradingPost(ActionCard):
     name = _("Trading Post")
