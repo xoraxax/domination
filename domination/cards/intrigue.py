@@ -564,7 +564,7 @@ class Torturer(AttackCard):
         elif choice == "curse":
             with fetch_card_from_supply(game, Curse) as new_card:
                 other_player.discard_pile.append(new_card)
-            for info_player in game.following_participants(player):
+            for info_player in game.following_participants(other_player):
                 yield InfoRequest(game, info_player,
                         _("%s tortures %s. You gain a curse card.", (player.name, other_player.name)), [])
 
