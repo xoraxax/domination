@@ -4,7 +4,8 @@ from domination.cards.base import Duchy, Estate, Copper
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, Defended, YesNoQuestion
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense
+from domination.macros.__macros__ import handle_defense, generator_forward,\
+        fetch_card_from_supply
 
 
 class Baron(ActionCard):
