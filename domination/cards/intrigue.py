@@ -1,6 +1,6 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      AttackCard, ReactionCard, CardSet, Intrigue
-from domination.cards.base import Duchy, Estate, Copper
+from domination.cards.base import Duchy, Estate, Copper, Curse
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, Defended, YesNoQuestion
 from domination.tools import _
