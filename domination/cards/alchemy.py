@@ -20,7 +20,8 @@ class Vineyard(VictoryCard):
     name = _("Vineyard")
     edition = Alchemy
     optional = True
-    cost = 2
+    cost = 0
+    potioncost = 1
     desc = _("Worth 1 point for every 3 Action Cards in your deck (rounded down)")
 
     def get_points(self, game, player):
