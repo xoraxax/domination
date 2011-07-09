@@ -491,7 +491,7 @@ class Forge(ActionCard):
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
-                    _("%s trashes:", (player.name, )), [card])
+                    _("%s trashes:", (player.name, )), cards or [])
             yield InfoRequest(game, info_player,
                     _("%s gains:", (player.name, )), [new_card])
         for val in game.check_empty_pile(card_cls.__name__):
