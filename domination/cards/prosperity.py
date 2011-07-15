@@ -498,8 +498,9 @@ class Forge(ActionCard):
                     _("%s trashes:", (player.name, )), cards or [])
             yield InfoRequest(game, info_player,
                     _("%s gains:", (player.name, )), new_cards)
-        for val in game.check_empty_pile(card_cls.__name__):
-            yield val
+        if card_cls:
+            for val in game.check_empty_pile(card_cls.__name__):
+                yield val
 
 class Peddler(ActionCard):
     name = _("Peddler")
