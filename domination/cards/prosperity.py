@@ -486,14 +486,18 @@ class Forge(ActionCard):
             if c.cost == Forge_money and game.supply.get(c.__name__)
             and c.potioncost == 0],
             msg=_("Select a card that you want to have."), show_supply_count=True)
-        new_card = game.supply[card_cls.__name__].pop()
-        player.discard_pile.append(new_card)
+        if card_cls is not None:
+            new_card = game.supply[card_cls.__name__].pop()
+            player.discard_pile.append(new_card)
+            new_cards = [new_card]
+        else:
+            new_cards = []
 
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s trashes:", (player.name, )), cards or [])
             yield InfoRequest(game, info_player,
-                    _("%s gains:", (player.name, )), [new_card])
+                    _("%s gains:", (player.name, )), new_cards)
         for val in game.check_empty_pile(card_cls.__name__):
             yield val
 
