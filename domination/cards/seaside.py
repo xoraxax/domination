@@ -219,6 +219,7 @@ class Smugglers(ActionCard):
     name = _("Smugglers")
     edition = Seaside
     cost = 3
+    implemented = False # needs cards_gained!?
     desc = _("Gain a copy of a Card costing up to 6 that the player to your rigth gained on his last turn.")
 
     def activate_action(self, game, player):
