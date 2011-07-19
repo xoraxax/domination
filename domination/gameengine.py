@@ -699,6 +699,11 @@ class Player(object):
         i = gp.index(self)
         return gp[(i + 1) % len(gp)]
 
+    def right(self, game):
+        gp = game.players
+        i = gp.index(self)
+        return gp[(i - 1) % len(gp)]
+
 class AIPlayer(Player):
     is_ai = True
     def compute_response(self):
