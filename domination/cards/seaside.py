@@ -78,7 +78,7 @@ class Navigator(ActionCard):
         cards.append(player.hand.pop())
         cards.append(player.hand.pop())
         cards.append(player.hand.pop())
-        yield InfoRequest(game, info_player, _("You draw:",), cards)
+        yield InfoRequest(game, player, _("You draw:",), cards)
         actions = [("discard",    _("discard all 5 cards")),
                    ("backondeck", _("put the cards back in your specified order"))]
 
