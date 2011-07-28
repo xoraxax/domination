@@ -1371,8 +1371,8 @@ msgid "+1 Card, +1 Action. Look at the bottom card of your deck. You may put it 
 msgstr "+1 Karte, +1 Aktion. Sieh dir die unterste Karte von deinem Nachziehstapel an. Du darfst diese Karte verdeckt auf deinen Nachziehstapel legen."
 
 #: domination/cards/seaside.py:78
-msgid "Do you want to put your '%(cardname)' on top of your deck?"
-msgstr "Möchtest du '%(cardname)' auf deinen Nachziehstapel legen?"
+msgid "Do you want to put your '%(cardname)s' on top of your deck?"
+msgstr "Möchtest du '%(cardname)s' auf deinen Nachziehstapel legen?"
 
 #: domination/cards/seaside.py:85
 msgid "Salvager"
