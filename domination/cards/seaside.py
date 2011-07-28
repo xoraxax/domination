@@ -159,6 +159,9 @@ class PearlDiver(ActionCard):
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(1)
+        if not player.deck:
+            player.draw_cards(1)
+            player.deck.append(player.hand.pop())
         card = player.deck.pop(0)
         if (yield YesNoQuestion(game, player,
             _("Do you want to put your '%(cardname)' on top of your deck?",
