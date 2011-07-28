@@ -281,7 +281,7 @@ class GameRunner(Thread):
                 reply = PlayerKickedException(player)
                 for participant in self.game.participants:
                     participant.info_queue.append(InfoRequest(self.game, participant, _("%(kicker)s kicked %(kickee)s.", {"kicker": player.kicked_by.name, "kickee": player.name}), []))
-                player.name += _(" (kicked)")._(app.languages[player.preferred_language()])
+                player.name += " (kicked)"
             player.response_condition.release()
 
     def cancel(self):
