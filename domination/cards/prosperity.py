@@ -186,11 +186,11 @@ class Rabble(AttackCard):
     edition = Prosperity
     cost = 5
     desc = _("+3 Cards. Each other player reveals the top 3 cards of his deck, discards the revealed Actions and Treasures, and puts the rest back on top in any order he chooses.")
-    implemented=False
 
     def activate_action(self, game, player):
         player.draw_cards(3)
-        for other_player in game.players:
+        to_be_discarded = []
+        for other_player in game.following_players(player):
             try:
                 handle_defense(self, game, other_player)
             except Defended:
@@ -203,6 +203,13 @@ class Rabble(AttackCard):
             for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:",
                         (other_player.name, )), cards)
+            for card in cards:
+                if isinstance(card, TreasureCard) or isinstance(card, ActionCard):
+                    to_be_discarded.append(card)
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s discards:",
+                        (other_player.name, )), to_be_discarded)
+            player.discard_pile.extend(to_be_discarded)
 
 class Vault(ActionCard):
     name = _("Vault")
