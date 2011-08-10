@@ -579,8 +579,10 @@ class DominationGame(Game):
         no_players = len(self.players) # number of players
         if not self.supply["Province"]: # check if Province supply is empty
             return True
-        if not self.supply.get("Colony", 1):
-            return True
+        if self.supply.get("Colony", None): # check if there is a Colony supply
+            if not self.supply["Colony"]: # check if Colony supply is empty
+                return True
+        # fill empty_batches with card keys of cards the supply of which is empty
         empty_batches = [card_key for card_key, cards in self.supply.items()
                 if not cards]
         if no_players < 5:
@@ -727,5 +729,6 @@ from domination.cards.intrigue import card_sets as card_sets_intrigue
 from domination.cards.alchemy import card_sets as card_sets_alchemy
 from domination.cards.seaside import card_sets as card_sets_seaside
 from domination.cards.prosperity import card_sets as card_sets_prosperity
+from domination.cards.cornucopia import card_sets as card_sets_cornucopia
 
-card_sets = card_sets_base + card_sets_intrigue + card_sets_alchemy + card_sets_seaside + card_sets_prosperity
+card_sets = card_sets_base + card_sets_intrigue + card_sets_alchemy + card_sets_seaside + card_sets_prosperity + card_sets_cornucopia
