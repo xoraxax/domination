@@ -713,6 +713,4 @@ card_sets = [
     CardSet(_('Underlings'),
             [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
              Pawn, Steward, Witch]),
-    CardSet('Intrigue Test',
-            [Saboteur]),
 ]
