@@ -451,7 +451,6 @@ class Island(ActionCard, VictoryCard):
 class Ambassador(AttackCard):
     name = _("Ambassador")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 3
     desc = _("Reveal a card from your hand. Return 2 copies of it from your hand to the Supply. Then each other player gains a copy of it.")
 
@@ -473,18 +472,19 @@ class Ambassador(AttackCard):
                             (player.name, )), [samecards[0]])
                 for i in range(2):
                     player.hand.remove(samecards[i])
-                    game.supply(type(samecards[i])).append(samecards[i])
-                curse_cards = game.supply["Curse"]
+                    game.supply[samecards[i].__name__].append(samecards[i])
+                new_cards = game.supply[samecards[0].__name__]
                 for other_player in game.following_players(player):
-                    if curse_cards:
-                        try:
-                            handle_defense(self, game, other_player)
-                        except Defended:
-                            continue
-                        other_player.discard_pile.append(game.supply(type(card)).pop(0))
+                    try:
+                        handle_defense(self, game, other_player)
+                    except Defended:
+                        continue
+                    if new_cards:
+                        newcard = new_cards.pop()
                         yield InfoRequest(game, other_player,
-                                _("%s curses you. You gain a curse card.", (player.name, )), [])
-                        for val in game.check_empty_pile(type(card)):
+                                _("%s ambassadors you. You gain a card:", (player.name, )), [newcard])
+                        other_player.discard_pile.append(newcard)
+                        for val in game.check_empty_pile(samecards[0].__name__):
                             yield val
 
 

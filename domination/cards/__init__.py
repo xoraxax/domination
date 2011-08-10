@@ -15,7 +15,8 @@ Intrigue = Edition('intrigue', _("Intrigue game"))
 Alchemy = Edition('alchemy', _("Alchemy game"))
 Seaside = Edition('seaside', _("Seaside game"))
 Prosperity = Edition('prosperity', _("Prosperity game"))
-editions = [BaseGame, Intrigue, Alchemy, Seaside, Prosperity]
+Cornucopia = Edition('cornucopia', _("Cornucopia game"))
+editions = [BaseGame, Intrigue, Alchemy, Seaside, Prosperity, Cornucopia]
 
 
 class CardTypeRegistry(type):
@@ -184,6 +185,12 @@ class CurseCard(Card):
     abstract = True
     points = None
     classname = _("Curse card")
+
+
+class PrizeCard(Card):
+    optional = True
+    abstract = True
+    classname = _("Prize card")
 
 
 class CardSet(object):

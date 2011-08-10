@@ -75,9 +75,9 @@ class Chapel(ActionCard):
         # trash cards
         for card in cards:
             card.trash(game, player)
-        for other_player in game.participants:
-            if other_player is not player:
-                yield InfoRequest(game, other_player,
+        for info_player in game.participants:
+            if info_player is not player:
+                yield InfoRequest(game, info_player,
                         _("%s trashes these cards:", (player.name, )), cards)
 
 class Cellar(ActionCard):
@@ -95,9 +95,9 @@ class Cellar(ActionCard):
             for card in cards:
                 card.discard(player)
             player.draw_cards(len(cards))
-            for other_player in game.participants:
-                if other_player is not player:
-                    yield InfoRequest(game, other_player,
+            for info_player in game.participants:
+                if info_player is not player:
+                    yield InfoRequest(game, info_player,
                             _("%s discards these cards:", (player.name, )), cards)
 
 class Market(ActionCard):
@@ -512,11 +512,11 @@ class Witch(AttackCard):
         player.draw_cards(2)
         curse_cards = game.supply["Curse"]
         for other_player in game.following_players(player):
+            try:
+                handle_defense(self, game, other_player)
+            except Defended:
+                continue
             if curse_cards:
-                try:
-                    handle_defense(self, game, other_player)
-                except Defended:
-                    continue
                 other_player.discard_pile.append(curse_cards.pop())
                 yield InfoRequest(game, other_player,
                         _("%s curses you. You gain a curse card.", (player.name, )), [])

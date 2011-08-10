@@ -118,11 +118,11 @@ class Familiar(AttackCard):
         player.draw_cards(1)
         curse_cards = game.supply["Curse"]
         for other_player in game.following_players(player):
+            try:
+                handle_defense(self, game, other_player)
+            except Defended:
+                continue
             if curse_cards:
-                try:
-                    handle_defense(self, game, other_player)
-                except Defended:
-                    continue
                 other_player.discard_pile.append(curse_cards.pop())
                 yield InfoRequest(game, other_player,
                         _("%s curses you. You gain a curse card.", (player.name, )), [])
@@ -292,8 +292,8 @@ class Transmute(ActionCard):
                 msg=_("Which card do you want to trash?"))
         if cards:
             card = cards[0]
-            for other_player in game.following_participants(player):
-                yield InfoRequest(game, other_player,
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
                         _("%s trashes this card:", (player.name, )), cards)
             card.trash(game, player)
             if isinstance(card, ActionCard):

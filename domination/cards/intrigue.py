@@ -597,7 +597,6 @@ class TradingPost(ActionCard):
 class Tribute(ActionCard):
     name = _("Tribute")
     edition = Intrigue
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("The player to your left reveals then discards the top 2 cards "
              "of his deck. For each differently named card revealed, if it is "
@@ -613,15 +612,17 @@ class Tribute(ActionCard):
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s reveals the top 2 cards of his deck:",
                     (other_player.name, )), cards[:])
-        for card in cards:
+        for i,card in enumerate(cards):
+            if i == 1 and cards[1].__name__ == cards[0].__name__:
+                other_player.discard_pile.append(card)
+                break
             if isinstance(card, ActionCard):
                 player.remaining_actions += 2
             if isinstance(card, TreasureCard):
                 player.virtual_money += 2
             if isinstance(card, VictoryCard):
                 player.draw_cards(2)
-            card.discard(other_player)
-        #FIXME only if the second card is different from the first
+            other_player.discard_pile.append(card)
 
 class Upgrade(ActionCard):
     name = _("Upgrade")
@@ -713,6 +714,4 @@ card_sets = [
     CardSet(_('Underlings'),
             [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
              Pawn, Steward, Witch]),
-    CardSet('Intrigue Test',
-            [Saboteur]),
 ]
