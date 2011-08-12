@@ -359,7 +359,7 @@ class Game(object):
         for hook in self.hooks[hook_name]:
             hookgen = hook(*args)
             generator_forward(hookgen)
-            
+
     @property
     def participants(self):
         return self.players + self.kibitzers
