@@ -16,38 +16,35 @@ class Lookout(ActionCard):
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(3)
-        cards = []
-        cards.append(player.hand.pop())
-        cards.append(player.hand.pop())
-        cards.append(player.hand.pop())
-        yield InfoRequest(game, player, _("You draw:",), cards)
+        drawn, player.hand = player.hand[-3:], player.hand[:-3]
+        yield InfoRequest(game, player, _("You draw:",), drawn)
 
-        card_classes = [type(c) for c in cards]
+        card_classes = [type(c) for c in drawn]
         card_cls = (yield SelectCard(game, player,
             _("Which card do you want to trash?"),
             card_classes=card_classes))
-        card = [c for c in cards if isinstance(c, card_cls)][0]
-        cards.remove(card)
+        card = [c for c in drawn if isinstance(c, card_cls)][0]
+        drawn.remove(card)
         game.trash_pile.append(card)
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s trashes:", (player.name, )), [card])
 
-        card_classes = [type(c) for c in cards]
+        card_classes = [type(c) for c in drawn]
         card_cls = (yield SelectCard(game, player,
             _("Which card do you want to discard?"),
             card_classes=card_classes))
-        card = [c for c in cards if isinstance(c, card_cls)][0]
-        cards.remove(card)
+        card = [c for c in drawn if isinstance(c, card_cls)][0]
+        drawn.remove(card)
         player.discard_pile.append(card)
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s discards:", (player.name, )), [card])
 
-        card_classes = [type(c) for c in cards]
+        card_classes = [type(c) for c in drawn]
         card_cls = (yield SelectCard(game, player,
             _("Which card do you want to put back on deck?"),
             card_classes=card_classes))
-        card = [c for c in cards if isinstance(c, card_cls)][0]
-        cards.remove(card)
+        card = [c for c in drawn if isinstance(c, card_cls)][0]
+        drawn.remove(card)
         player.deck.append(card)
 
 class MerchantShip(ActionCard, DurationCard):
@@ -72,27 +69,23 @@ class Navigator(ActionCard):
     def activate_action(self, game, player):
         player.virtual_money += 2
         player.draw_cards(5)
-        cards = []
-        cards.append(player.hand.pop())
-        cards.append(player.hand.pop())
-        cards.append(player.hand.pop())
-        cards.append(player.hand.pop())
-        cards.append(player.hand.pop())
+        drawn, player.hand = player.hand[-5:], player.hand[:-5]
+        yield InfoRequest(game, info_player, _("You draw:",), drawn)
         yield InfoRequest(game, player, _("You draw:",), cards)
         actions = [("discard",    _("discard all 5 cards")),
                    ("backondeck", _("put the cards back in your specified order"))]
 
         answer = yield Question(game, player, _("What do you want to do?"), actions)
         if answer == "discard":
-            player.discard_pile.extend(cards)
+            player.discard_pile.extend(drawn)
         else:
-            while cards:
-                card_classes = [type(c) for c in cards]
+            while drawn:
+                card_classes = [type(c) for c in drawn]
                 card_cls = (yield SelectCard(game, player,
                     _("Which card do you want to put back?"),
                     card_classes=card_classes))
-                card = [c for c in cards if isinstance(c, card_cls)][0]
-                cards.remove(card)
+                card = [c for c in drawn if isinstance(c, card_cls)][0]
+                drawn.remove(card)
                 player.discard_pile.append(card)
 
 
@@ -115,21 +108,19 @@ class PirateShip(AttackCard):
                 except Defended:
                     continue
                 other_player.draw_cards(2)
-                cards = []
-                cards.append(other_player.hand.pop())
-                cards.append(other_player.hand.pop())
+                drawn, other_player.hand = other_player.hand[-2:], other_player.hand[:-2]
                 for info_player in game.participants:
                     yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:",
-                            (other_player.name, )), cards)
+                            (other_player.name, )), drawn)
                 trashed = False
-                for card in cards:
+                for card in drawn:
                     if isinstance(card, TreasureCard) and not trashed:
                         if (yield YesNoQuestion(game, player,
                             _("Do you want to trash %(name)s's card '%(cardname)s'?",
                             {"cardname": card.name, "name": other_player.name}))):
                             for info_player in game.participants:
                                 yield InfoRequest(game, info_player, _("%s trashes %s Treasure:",
-                                        (player.name, other_player.name, )), cards)
+                                        (player.name, other_player.name, )), drawn)
                             card.trash(game, other_player)
                             trashed = True
                         else:

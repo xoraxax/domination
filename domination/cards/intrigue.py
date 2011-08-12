@@ -607,13 +607,12 @@ class Tribute(ActionCard):
         cards = []
         other_player = player.left(game)
         other_player.draw_cards(2)
-        cards.append(other_player.hand.pop())
-        cards.append(other_player.hand.pop())
+        drawn, other_player.hand = other_player.hand[-2:], other_player.hand[:-2]
         for info_player in game.participants:
             yield InfoRequest(game, info_player, _("%s reveals the top 2 cards of his deck:",
-                    (other_player.name, )), cards[:])
-        for i,card in enumerate(cards):
-            if i == 1 and cards[1].__name__ == cards[0].__name__:
+                    (other_player.name, )), drawn)
+        for i,card in enumerate(drawn):
+            if i == 1 and drawn[1].__name__ == drawn[0].__name__:
                 other_player.discard_pile.append(card)
                 break
             if isinstance(card, ActionCard):
