@@ -139,6 +139,9 @@ class AttackCard(ActionCard):
         from domination.gameengine import InfoRequest, SelectHandCards
         already_selected = set()
         while True:
+            for c in other_player.aux_cards:
+                if hasattr(c, "process_defense"):
+                    c.process_defense(game, other_player, self)
             if not any(isinstance(c, ReactionCard) for c in other_player.hand):
                 break
             req = SelectHandCards(

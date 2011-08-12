@@ -341,9 +341,8 @@ class Lighthouse(ActionCard, DurationCard):
     cost = 2
     desc = _("+1 Action. Now and at the start of your next turn: +1 Money. While this is in play, when another player plays an Attack card it doesn't affect you.")
 
-    def defend_action(self, game, player, card):
+    def process_defense(self, game, player, card):
         # Lighthouse always defends
-        # FIXME: Lighthouse does not only defend while on hand, but when on play (duration_cards, aux_cards), too
         raise Defended
 
     def activate_action(self, game, player):

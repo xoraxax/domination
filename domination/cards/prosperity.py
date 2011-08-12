@@ -151,10 +151,20 @@ class Talisman(TreasureCard):
     cost = 4
     worth = 1
     desc = _("While this is in play, when you buy a card costing 4 Money or less that is not a Victory card, gain a copy of it.")
-    implemented=False
 
     def activate_action(self, game, player):
         pass
+
+    @classmethod
+    def on_buy_card(cls, game, player, card):
+        for c in player.aux_cards:
+            if isinstance(c, Talisman):
+                if not isinstance(card, VictoryCard) and card.cost <= 4:
+                    with fetch_card_from_supply(game, type(card)) as new_card:
+                        player.discard_pile.append(new_card)
+                        for info_player in game.participants:
+                            yield InfoRequest(game, info_player, _("%s gains another card (because of Talisman):", (player.name, )), [new_card])
+
 
 class Venture(TreasureCard):
     name = _("Venture")
