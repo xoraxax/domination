@@ -1,6 +1,7 @@
 syntax: glob
 *.pyc
 env/*
+env2/*
 *.swp
 *.mo
 *.pot
