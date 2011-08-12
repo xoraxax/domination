@@ -695,22 +695,22 @@ from domination.cards.base import (
     Militia, Remodel, Spy, Thief, ThroneRoom, Witch)
 
 card_sets = [
-    CardSet(_('Victory Dance'),
+    CardSet(_('Victory Dance [I]'),
             [Bridge, Duke, GreatHall, Harem, Ironworks, Masquerade, Nobles,
              Pawn, Scout, Upgrade]),
-    CardSet(_('Secret Schemes'),
+    CardSet(_('Secret Schemes [I]'),
             [Conspirator, Harem, Ironworks, Pawn, Saboteur, ShantyTown,
              Steward, Swindler, TradingPost, Tribute]),
-    CardSet(_('Best Wishes'),
+    CardSet(_('Best Wishes [I]'),
             [Coppersmith, Courtyard, Masquerade, Scout, ShantyTown, Steward,
              Torturer, TradingPost, Upgrade, WishingWell]),
-    CardSet(_('Deconstruction'),
+    CardSet(_('Deconstruction [B&I]'),
             [Bridge, MiningVillage, Remodel, Saboteur, SecretChamber, Spy,
              Swindler, Thief, ThroneRoom, Torturer]),
-    CardSet(_('Hand Madness'),
+    CardSet(_('Hand Madness [B&I]'),
             [Bureaucrat, Chancellor, CouncilRoom, Courtyard, Mine, Militia,
              Minion, Nobles, Steward, Torturer]),
-    CardSet(_('Underlings'),
+    CardSet(_('Underlings [B&I]'),
             [Baron, Cellar, Festival, Library, Masquerade, Minion, Nobles,
              Pawn, Steward, Witch]),
 ]
