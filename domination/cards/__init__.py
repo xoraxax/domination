@@ -70,7 +70,7 @@ class Card(object):
     def __init__(self):
         self.__name__ = type(self).__name__
         assert self.name != "UNKNOWN"
-        assert self.cost is not None
+        assert self.cost is not None or self.__class__.__dict__.get("get_cost")
         assert self.points is not None or self.__class__.__dict__.get("get_points")
         assert self.worth is not None or self.__class__.__dict__.get("get_worth")
         assert self.potion is not None
@@ -98,6 +98,10 @@ class Card(object):
 
     def get_points(self, game, player):
         return self.points
+
+    @classmethod
+    def get_cost(self, game=None, player=None):
+        return self.cost
 
     def get_worth(self, player):
         return self.worth

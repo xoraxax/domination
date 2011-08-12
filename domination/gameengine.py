@@ -134,7 +134,7 @@ class SelectHandCards(MultipleChoicesRequestMixin, Request):
                     factor = -1
             elif "Militia" in self.msg and isinstance(c, VictoryCard):
                 factor = -10
-            return c.cost * factor
+            return c.get_cost(self.game, self.player) * factor
         return sorted([c for c in self.player.hand if self.is_selectable(c)],
                 key=key)
 
@@ -158,18 +158,18 @@ class SelectDeal(Request):
         self.money = self.player.remaining_money
         self.potion = self.player.remaining_potion
         self.cards = CardTypeRegistry.keys2classes(self.game.supply.keys())
-        self.cards.sort(key=lambda c: (c.cost, c.name), reverse=True)
+        self.cards.sort(key=lambda c: (c.get_cost(game, player), c.name), reverse=True)
 
     @property
     def choices(self):
         l = [c for c in self.cards if self.is_buyable(c) and c.points not in (-1, 1) and c.get_worth != 1]
         random.shuffle(l)
         # we want to buy the most expensive card but not the same one every time
-        l.sort(key=lambda c: c.cost, reverse=True)
+        l.sort(key=lambda c: c.get_cost(self.game, self.player), reverse=True)
         return [c.__name__ for c in l]
 
     def is_buyable(self, card):
-        return card.cost <= self.money and card.potioncost <= self.potion and self.game.supply[card.__name__]
+        return card.get_cost(self.game, self.player) <= self.money and card.potioncost <= self.potion and self.game.supply[card.__name__]
 
 
 class SelectCard(Request):
@@ -178,7 +178,7 @@ class SelectCard(Request):
         Request.__init__(self, game, player, msg)
         self.card_classes = card_classes
         self.show_supply_count = show_supply_count
-        card_classes.sort(key=lambda x: x.cost, reverse=True)
+        card_classes.sort(key=lambda x: x.get_cost(game, player), reverse=True)
         self.choices = self.card_classes
 
     def fulfillable(self):
@@ -439,7 +439,7 @@ class Game(object):
                             card = self.supply[card_key].pop()
                             for val in self.check_empty_pile(card_key):
                                 yield val
-                            player.used_money += card.cost
+                            player.used_money += card.get_cost(self, player)
                             player.used_potion += card.potioncost
                             player.discard_pile.append(card)
                             for other_player in self.participants:
@@ -704,7 +704,7 @@ class Player(object):
 
     @property
     def sorted_hand(self):
-        return sorted(self.hand, key=lambda x: x.cost)
+        return sorted(self.hand, key=lambda x: x.get_cost(None, self))
 
     @property
     def total_cards(self): # does not include activated cards

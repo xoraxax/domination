@@ -77,7 +77,7 @@
       <form><button type="button" onclick="show_pile('#discardpilecards', '{% trans %}Discard pile{% endtrans %}');">{% trans %}Show{% endtrans %}</button></form>
       <div id="discardpilecards">
         {% for card in player.discard_pile %}
-          {% call macros.render_card(card, game) %}
+          {% call macros.render_card(card, game, player) %}
           {% endcall %}
         {% endfor %}
       </div>
@@ -95,7 +95,7 @@
     </ul>
     {% trans %}Your cards:{% endtrans %}
     {% for card in player.deck %}
-      {{ macros.render_card(card, game) }}
+      {{ macros.render_card(card, game, player) }}
     {% endfor %}
   {% endif %}
 
@@ -105,7 +105,7 @@
       <li class="infoitem">
         <h3>{{ req.msg }}</h3>
         {% for card in req.cards %}
-          {{ macros.render_card(card, game) }}
+          {{ macros.render_card(card, game, player) }}
         {% endfor %}
         </li>
     {% endfor %}
@@ -132,7 +132,7 @@
     {% endif %}
     </p>
       {% for card in req.cards %}
-        {% call macros.render_card(card, game) %}
+        {% call macros.render_card(card, game, player) %}
           <span class="{% if not game.supply[card.__name__] %}importantfigure{% endif %}">
 		  {{ _('%i left', (game.supply[card.__name__] | count, )) }}</span>
           {% if req.is_buyable(card) %}
@@ -164,7 +164,7 @@
           <input type="hidden" name="req_id" value="{{ req_id }}">
       {% endif %}
       {% for card in player.sorted_hand %}
-        {% call macros.render_card(card, game) %}
+        {% call macros.render_card(card, game, player) %}
           {% if req.is_selectable(card) %}
             {% if req.count_upper == 1 %}
               <form action="" method="post">
@@ -192,7 +192,7 @@
       {% endif %}
     {% elif req_type == "SelectCard" %}
       {% for card in req.card_classes %}
-        {% call macros.render_card(card, game) %}
+        {% call macros.render_card(card, game, player) %}
           {% if req.show_supply_count %}
             {{ _('%i left', (game.supply[card.__name__] | count, )) }}
           {% endif %}
@@ -247,18 +247,18 @@
       {% if player.activated_cards %}
       <h3>{% trans %}Activated action cards{% endtrans %}</h3>
         {% for card in player.activated_cards %}
-          {{ macros.render_card(card, game) }}
+          {{ macros.render_card(card, game, player) }}
         {% endfor %}
       {% endif %}
       {% if req_type != "SelectHandCards" %}
       <h3>{% trans %}Your hand{% endtrans %}</h3>
         {% for card in player.sorted_hand %}
-          {{ macros.render_card(card, game) }}
+          {{ macros.render_card(card, game, player) }}
         {% endfor %}
       {% if player.duration_cards %}
         <h3>{% trans %}Duration Cards from last round{% endtrans %}</h3>
           {% for card in player.duration_cards %}
-            {{ macros.render_card(card, game) }}
+            {{ macros.render_card(card, game, player) }}
           {% endfor %}
         {% endif %}
       {% endif %}
@@ -272,7 +272,7 @@
       <div id="supplycards">
         {% for key, cards in game.supply | dictsort %}
           {% if cards %}
-            {% call macros.render_card(cards[0], game) %}
+            {% call macros.render_card(cards[0], game, player) %}
               <span class="{% if not game.supply[key] %}importantfigure{% endif %}">
 		{{ _('%i left', (game.supply[key] | count, )) }}</span>
             {% endcall %}

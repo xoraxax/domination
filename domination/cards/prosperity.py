@@ -530,16 +530,17 @@ class Peddler(ActionCard):
     edition = Prosperity
     cost = 8
     desc = _("+1 Card, +1 Action, +1 Money. During the Buy phase, this costs 2 Money less per Action card you have in play, but no less than 0.")
-    implemented=False
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(1)
         player.virtual_money += 1
 
-
-
-
+    @classmethod
+    def get_cost(self, game=None, player=None):
+        if player is None:
+            return 8
+        return max(0, 8 - 2 * len(c for c in player.aux_cards if isinstance(c, ActionCard)))
 
 
 from domination.cards.base import \

@@ -1,4 +1,4 @@
-{% macro render_card(card, game=None) -%}
+{% macro render_card(card, game=None, player=None) -%}
 <div class="card {{ card.card_type }}{% if card.second_card_type %} Also{{ card.second_card_type }}{% endif %}">
   <h4>{{ card.name }} <span class="costs">&nbsp;{{ card.cost }}&nbsp;</span>{% if card.potioncost %} <span class="potioncosts">&nbsp;{{ card.potioncost }}&nbsp;</span>{% endif %}</h4>
   <div style="display: none;">
@@ -27,7 +27,7 @@
         {% if card.potioncost %}
         {{ _('%(cost)s Money and %(potion)i Potion(s)', {"cost": card.cost, "potion": card.potioncost}) }}
         {% else %}
-        {{ _('%(cost)s Money', {"cost": card.cost}) }}
+        {{ _('%(cost)s Money', {"cost": card.get_cost(game, player)}) }}
         {% endif %}
         {% if game %}
         <div class="cardinfos">
