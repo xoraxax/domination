@@ -314,7 +314,7 @@ class GameRunner(Thread):
 from domination.cards import DurationCard
 
 class Game(object):
-    HOOKS = ["on_buy_card", "on_render_card_info"]
+    HOOKS = ["on_pre_buy_card", "on_buy_card", "on_render_card_info"]
 
     def __init__(self, name, selected_cards):
         from domination.cards import CardTypeRegistry

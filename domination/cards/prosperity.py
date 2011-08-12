@@ -333,11 +333,14 @@ class Contraband(TreasureCard):
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
-        card_cls = yield SelectCard(game, player.left(game), card_classes=game.card_classes,
-                   msg=_("Select a card that %(playername)s shouldn't buy.",  {"playername": player.name}), show_supply_count=True)
-        for info_player in game.participants:
-            yield InfoRequest(game, info_player, _("%(player2name)s does not allow %(player2name)s's to buy:",
+        card_cls = yield SelectCard(game, player.left(game), card_classes=[c for c in game.card_classes.itervalues()
+            if game.supply.get(c.__name__)],
+            msg=_("Select a card that %(playername)s cannot buy this turn.",  {"playername": player.name}),
+            show_supply_count=True)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player, _("%(player2name)s does not allow %(player2name)s to buy:",
                             {"playername": player.name, "player2name": player.left(game).name}), [card_cls])
+
 
 class City(ActionCard):
     name = _("City")
