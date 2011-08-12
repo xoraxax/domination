@@ -593,22 +593,22 @@ from domination.cards.base import \
     Witch
 
 card_sets = [
-    CardSet(u"High Seas [S]",
+    CardSet(_("High Seas [S]"),
         [Bazaar, Caravan, Embargo, Explorer, Haven, Island, Lookout, PirateShip,
             Smugglers, Wharf]),
-    CardSet(u"Buried Treasure [S]",
+    CardSet(_("Buried Treasure [S]"),
         [Ambassador, Cutpurse, FishingVillage, Lighthouse, Outpost, PearlDiver,
             Tactician, TreasureMap, Warehouse, Wharf]),
-    CardSet(u"Shipwrecks [S]",
+    CardSet(_("Shipwrecks [S]"),
         [GhostShip, MerchantShip, NativeVillage, Navigator, PearlDiver, Salvager,
             SeaHag, Smugglers, Treasury, Warehouse]),
-    CardSet(u"Reach for Tomorrow [S&D]",
+    CardSet(_("Reach for Tomorrow [S&D]"),
         [Adventurer, Cellar, CouncilRoom, Cutpurse, GhostShip, Lookout, SeaHag,
             Spy, TreasureMap, Village]),
-    CardSet(u"Repetition [S&D]",
+    CardSet(_("Repetition [S&D]"),
         [Caravan, Chancellor, Explorer, Festival, Militia, Outpost, PearlDiver,
             PirateShip, Treasury, Workshop]),
-    CardSet(u"Give and Take [S&D]",
+    CardSet(_("Give and Take [S&D]"),
         [Ambassador, FishingVillage, Haven, Island, Library, Market, Moneylender,
             Salvager, Smugglers, Witch]),
 ]

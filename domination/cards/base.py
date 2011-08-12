@@ -554,19 +554,19 @@ class Workshop(ActionCard):
 
 
 card_sets = [
-    CardSet(_('First Game'),
+    CardSet(_('First Game [B]'),
             [Cellar, Market, Militia, Mine, Moat, Remodel, Smithy,
              Village, Woodcutter, Workshop]),
-    CardSet(_('Big Money'),
+    CardSet(_('Big Money [B]'),
             [Adventurer, Bureaucrat, Chancellor, Chapel, Feast,
              Laboratory, Market, Mine, Moneylender, ThroneRoom]),
-    CardSet(_('Interaction'),
+    CardSet(_('Interaction [B]'),
             [Bureaucrat, Chancellor, CouncilRoom, Festival, Library,
              Militia, Moat, Spy, Thief, Village]),
-    CardSet(_('Size Distortion'),
+    CardSet(_('Size Distortion [B]'),
             [Cellar, Chapel, Feast, Gardens, Laboratory, Thief, Village,
              Witch, Woodcutter, Workshop]),
-    CardSet(_('Village Square'),
+    CardSet(_('Village Square [B]'),
             [Bureaucrat, Cellar, Festival, Library, Market, Remodel,
              Smithy, ThroneRoom, Village, Woodcutter]),
 ]
