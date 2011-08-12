@@ -89,6 +89,10 @@ class Card(object):
             return _("Action/Victory card")
         return cls.classname
 
+    @classmethod
+    def get_card_infos(self, game):
+        return list(game.fire_hook("on_render_card_info", game, self))
+
     def activate_action(self, game, player):
         raise NotImplementedError
 

@@ -314,9 +314,14 @@ class GameRunner(Thread):
 from domination.cards import DurationCard
 
 class Game(object):
-    def __init__(self, name):
+    HOOKS = ["on_buy_card", "on_render_card_info"]
+
+    def __init__(self, name, selected_cards):
         from domination.cards import CardTypeRegistry
+        self.selected_cards = selected_cards
         self.players = []
+        self.pending_round_players = None
+        self.finished_round_players = []
         self.kibitzers = []
         self.supply = {}
         self.trash_pile = []
@@ -325,10 +330,36 @@ class Game(object):
         self.name = name
         self.card_classes = CardTypeRegistry.raw_card_classes
         self.cost_delta = {}
+        self.cards_to_draw = 5
+        self._hooks = {}
+        self.prepare_hooks(selected_cards)
 
     def __hash__(self):
         return hash(self.name)
 
+    def __getstate__(self):
+        d = self.__dict__.copy()
+        del d['_hooks']
+        return d
+
+    @property
+    def hooks(self):
+        if not self._hooks:
+            self.prepare_hooks(self.selected_cards)
+        return self._hooks
+
+    def prepare_hooks(self, cards):
+        for hook_name in Game.HOOKS:
+            self._hooks[hook_name] = []
+            for card in cards:
+                if hasattr(card, hook_name):
+                    self._hooks[hook_name].append(getattr(card, hook_name))
+
+    def fire_hook(self, hook_name, *args):
+        for hook in self.hooks[hook_name]:
+            hookgen = hook(*args)
+            generator_forward(hookgen)
+            
     @property
     def participants(self):
         return self.players + self.kibitzers
@@ -360,7 +391,10 @@ class Game(object):
         del self.players[self.players.index(kickee)]
 
     def play_round(self):
-        for player in self.players[:]:
+        self.pending_round_players = players = self.players[:]
+        while players:
+            player = players.pop(0)
+            self.finished_round_players.append(player)
             with player:
                 try:
                     # duration actions from last round
@@ -375,7 +409,7 @@ class Game(object):
                             if other_player is not player:
                                 yield InfoRequest(self, other_player,
                                         _("%s had duration cards:", (player.name, )), player.duration_cards)
-                    player.duration_cards=[]
+                    player.duration_cards = []
 
                     # action
                     while player.remaining_actions and [c for c in player.hand
@@ -412,11 +446,14 @@ class Game(object):
                                 if other_player is not player:
                                     yield InfoRequest(self, other_player,
                                             _("%s buys:", (player.name, )), [card])
+                            for elem in self.fire_hook("on_buy_card", self, player, card):
+                                yield elem
 
                         reason = self.check_end_of_game()
                         if reason:
                             self.end_of_game_reason = reason
                             self.end_of_game()
+                    cards_to_draw = self.cards_to_draw
                 finally:
                     # cleanup pt. 1
                     for cleanup_func in player.turn_cleanups:
@@ -432,13 +469,14 @@ class Game(object):
                 player.aux_cards = []
                 player.discard_pile.extend(player.hand)
                 player.hand = []
-                player.prepare_hand()
+                player.prepare_hand(cards_to_draw)
+        self.finished_round_players[:] = []
 
     def play_game(self, starting_from_checkpoint):
         if not starting_from_checkpoint:
             self.deal_cards()
             for player in self.players:
-                player.prepare_hand()
+                player.prepare_hand(self.cards_to_draw)
         while True:
             yield Checkpoint(self)
             self.round += 1
@@ -498,9 +536,6 @@ from domination.cards import Prosperity
 
 class DominationGame(Game):
     MAX_PLAYERS = 6 # maximum allowed number of players
-    def __init__(self, name, selected_cards):
-        Game.__init__(self, name)
-        self.selected_cards = selected_cards # cards chosen for the game
 
     @property
     def selected_cards_str(self):
@@ -678,9 +713,9 @@ class Player(object):
     def points(self, game):
         return sum(card.get_points(game, self) for card in self.deck) + self.tokens
 
-    def prepare_hand(self):
+    def prepare_hand(self, cards_to_draw):
         assert not self.hand
-        self.draw_cards(5)
+        self.draw_cards(cards_to_draw)
 
     def draw_cards(self, count):
         shuffled = False

@@ -1,10 +1,10 @@
 from domination.cards import TreasureCard, VictoryCard, ActionCard, \
      DurationCard, AttackCard, ReactionCard, CardSet, Seaside
-from domination.cards.base import Duchy, Estate, Copper, Province
+from domination.cards.base import Duchy, Estate, Copper, Curse, Province
 from domination.gameengine import SelectHandCards, Question, MultipleChoice, \
      InfoRequest, SelectCard, Defended, YesNoQuestion
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense
+from domination.macros.__macros__ import handle_defense, fetch_card_from_supply
 
 
 class Lookout(ActionCard):
@@ -141,14 +141,18 @@ class PirateShip(AttackCard):
 class Outpost(ActionCard, DurationCard):
     name = _("Outpost")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("You only draw 3 cards (instead of 5) in this turns Clean-up phase. Take an extra turn after this one. This can't cause you to take more than two consecutive turns.")
 
     def activate_action(self, game, player):
-        def extra_turn_with_three():
-            pass
+        if game.finished_round_players.count(player) > 1:
+            return
+        game.pending_round_players.insert(0, player)
+        game.cards_to_draw = 3
+        def extra_turn_with_three(p):
+            game.cards_to_draw = 5
         player.register_turn_cleanup(extra_turn_with_three)
+
 
 class PearlDiver(ActionCard):
     name = _("Pearl Diver")
@@ -302,13 +306,34 @@ class Cutpurse(AttackCard):
 class Embargo(ActionCard):
     name = _("Embargo")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
+    trash_after_playing = True
     cost = 2
     desc = _("+2 Money. Trash this card. Put an Embargo token on top of a Supply pile. When a player buys a card, he gains a Curse card per Embargo token on that pile.")
 
+    embargo_markers = {}
+
     def activate_action(self, game, player):
         player.virtual_money += 2
-        pass #FIXME
+        card_cls = yield SelectCard(game, player, card_classes=[c for c in game.card_classes.values() if game.supply.get(c.__name__)],
+            msg=_("Select a pile to put the Embargo token on."), show_supply_count=True)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player,
+                    _("%s puts an Embargo token on top of:", (player.name, )), [card_cls])
+        Embargo.embargo_markers[card_cls.__name__] = Embargo.embargo_markers.get(card_cls.__name__, 0) + 1
+    
+    @classmethod
+    def on_buy_card(cls, game, player, card):
+        for i in xrange(Embargo.embargo_markers.get(card.__name__, 0)):
+            with fetch_card_from_supply(game, Curse) as new_card:
+                player.discard_pile.append(new_card)
+                for info_player in game.participants:
+                    yield InfoRequest(game, info_player,
+                            _("%s gains a Curse card.", (player.name, )), [])
+
+    @classmethod
+    def on_render_card_info(cls, game, card):
+        yield (_("Embargo tokens"), Embargo.embargo_markers.get(card.__name__, 0))
+
 
 class Lighthouse(ActionCard, DurationCard):
     name = _("Lighthouse")

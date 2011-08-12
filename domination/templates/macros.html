@@ -1,4 +1,4 @@
-{% macro render_card(card) -%}
+{% macro render_card(card, game=None) -%}
 <div class="card {{ card.card_type }}{% if card.second_card_type %} Also{{ card.second_card_type }}{% endif %}">
   <h4>{{ card.name }} <span class="costs">&nbsp;{{ card.cost }}&nbsp;</span>{% if card.potioncost %} <span class="potioncosts">&nbsp;{{ card.potioncost }}&nbsp;</span>{% endif %}</h4>
   <div style="display: none;">
@@ -29,9 +29,23 @@
         {% else %}
         {{ _('%(cost)s Money', {"cost": card.cost}) }}
         {% endif %}
+        {% if game %}
+        <div class="cardinfos">
+          {% for key, value in card.get_card_infos(game) %}
+            <p><em>{{ key }}:</em> {{ value }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
         <p>{{ card.classnames() }}</p>
       {% else %}
         <img src="{{ make_image_url(card) }}" border="0" alt="{{ card.name }}">
+        {% if game %}
+        <div class="cardinfos">
+          {% for key, value in card.get_card_infos(game) %}
+            <p><em>{{ key }}:</em> {{ value }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
       {% endif %}
     </div>
   </div>
