@@ -375,7 +375,6 @@ class Goons(ActionCard):
     edition = Prosperity
     cost = 6
     desc = _("+1 Buy, +2 Money. Each other player discards down to 3 cards in hand.| While this is in play, when you buy a card, +1 token.")
-    implemented=False
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
@@ -396,6 +395,13 @@ class Goons(ActionCard):
                 # TODO: info players may only see one of the discarded cards
                 yield InfoRequest(game, info_player,
                         _("%s discards these cards:", (other_player.name, )), cards)
+
+    @classmethod
+    def on_buy_card(cls, game, player, card):
+        for c in player.aux_cards:
+            if isinstance(c, Goons):
+                player.tokens += 1
+
 
 class Hoard(TreasureCard):
     name = _("Hoard")
