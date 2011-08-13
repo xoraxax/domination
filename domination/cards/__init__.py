@@ -209,3 +209,4 @@ class CardSet(object):
         self.name = name
         self.editions = set(cls.edition for cls in card_classes)
         self.card_classes = card_classes
+
