@@ -206,14 +206,11 @@ class Rabble(AttackCard):
             except Defended:
                 continue
             other_player.draw_cards(3)
-            cards = []
-            cards.append(other_player.hand.pop())
-            cards.append(other_player.hand.pop())
-            cards.append(other_player.hand.pop())
+            drawn, other_player.hand = other_player.hand[-3:], other_player.hand[:-3]
             for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s reveals the top card of his deck:",
-                        (other_player.name, )), cards)
-            for card in cards:
+                        (other_player.name, )), drawn)
+            for card in drawn:
                 if isinstance(card, TreasureCard) or isinstance(card, ActionCard):
                     to_be_discarded.append(card)
             for info_player in game.participants:
