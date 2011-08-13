@@ -1,7 +1,8 @@
 from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
      AttackCard, ReactionCard, PrizeCard, CardSet, Cornucopia
+from domination.cards.base import Curse
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
-     YesNoQuestion, Defended, SelectActionCard
+     Question, YesNoQuestion, Defended, SelectActionCard
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense, generator_forward
 
@@ -80,6 +81,7 @@ class Followers(AttackCard, PrizeCard):
 
     def activate_action(self, game, player):
         player.draw_cards(2)
+        curse_cards = game.supply["Curse"]
         for other_player in game.following_players(player):
             try:
                 handle_defense(self, game, other_player)
@@ -120,6 +122,7 @@ class FortuneTeller(AttackCard):
                 continue
             found_cards = []
             to_be_discarded = []
+            shuffled = 0
             while True:
                 ret = other_player.draw_cards(1)
                 if ret is None: # no cards left
@@ -128,15 +131,15 @@ class FortuneTeller(AttackCard):
                 if shuffled == 2: # we shuffled our discard_pile 2 times, abort
                     break
                 card = other_player.hand.pop()
-                for info_player in game.participants:
-                    yield InfoRequest(game, info_player, _("%s reveals:", (other_player.name, )), [card])
                 if isinstance(card, VictoryCard) or isinstance(card, Curse):
                     found_cards.append(card)
                     break
                 else:
                     to_be_discarded.append(card)
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals:", (other_player.name, )), to_be_discarded+found_cards)
             other_player.discard_pile.extend(to_be_discarded)
-            other_player.hand.extend(found_cards)
+            other_player.deck.extend(found_cards)
 
 class Hamlet(ActionCard):
     name = _("Hamlet")
@@ -150,8 +153,8 @@ class Hamlet(ActionCard):
         cards = yield SelectHandCards(game, player, count_lower=0, count_upper=2,
                 msg=_("Which cards do you want to discard?"))
         # discard cards
-        cardcount = len(cards)
         if cards is not None:
+            cardcount = len(cards)
             for card in cards:
                 card.discard(player)
             for info_player in game.participants:
@@ -225,18 +228,37 @@ class HorseTraders(ReactionCard):
 class HuntingParty(ActionCard):
     name = _("Hunting Party")
     edition = Cornucopia
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("+1 Card, +1 Action. Reveal your hand. Reveal cards from your deck until you reveal a card that isn't a duplicate of one in your hand. Put it into your hand and discard the rest.")
 
     def activate_action(self, game, player):
+        to_be_discarded = []
+        found = None
         player.draw_cards(1)
         player.remaining_actions += 1
+        if player.hand:
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals his hand:", (player.name, )), player.hand)
+            card_classes = [type(c) for c in player.hand]
+            while True:
+                ret = player.draw_cards(1)
+                if ret is None: # no cards left
+                    break
+                card = player.hand.pop()
+                if type(card) in card_classes:
+                    to_be_discarded.append(card)
+                else:
+                    found = card
+                    break
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals:", (player.name, )), to_be_discarded + [found])
+            player.discard_pile.extend(to_be_discarded)
+            player.hand.append(found)
+
 
 class Jester(AttackCard):
     name = _("Jester")
     edition = Cornucopia
-    implemented = False #FIXME not implemented completely
     cost = 5
     desc = _("+2 Money. Each other player discards the top card of his deck. If it's a Victory card he gains a Curse. Otherwise either he gains a copy of the discarded or you do, your choice.")
 
@@ -247,43 +269,48 @@ class Jester(AttackCard):
                 handle_defense(self, game, other_player)
             except Defended:
                 continue
-                ret = other_player.draw_cards(1)
-                if ret is None: # no cards left
-                    break
-                card = other_player.hand.pop()
-                if isinstance(card, VictoryCard):
-                    other_player.discard_pile.append(curse_cards.pop())
-                    yield InfoRequest(game, other_player,
-                            _("%s curses you. You gain a curse card.", (player.name, )), [])
-                    for val in game.check_empty_pile("Curse"):
-                        yield val
-                else:
-                    other_player.draw_cards(1)
-                    cards = other_player.hand.pop()
-                    yield InfoRequest(game, player, _("%s discards the top card of his deck:",
-                            (other_player.name, )), [card])
-                    other_player.discard_pile.extend([card])
+            ret = other_player.draw_cards(1)
+            if ret is None: # no cards left
+                break
+            card = other_player.hand.pop()
+            for info_player in game.participants:
+                if info_player is not player:
+                    yield InfoRequest(game, info_player,
+                            _("%s discards:", (other_player.name, )), [card])
+            if isinstance(card, VictoryCard):
+                curse_cards = game.supply["Curse"]
+                other_player.discard_pile.append(curse_cards.pop())
+                yield InfoRequest(game, other_player,
+                        _("%s curses you. You gain a curse card.", (player.name, )), [])
+                for val in game.check_empty_pile("Curse"):
+                    yield val
+            else:
+                other_player.draw_cards(1)
+                cards = other_player.hand.pop()
+                yield InfoRequest(game, player, _("%s discards the top card of his deck:",
+                        (other_player.name, )), [card])
+                other_player.discard_pile.extend([card])
 
-                    actions = [("give", _("Give another copy of it to him")),
-                               ("take", _("Take a copy for yourself"))]
+                actions = [("give", _("Give another copy of it to him")),
+                           ("take", _("Take a copy for yourself"))]
 
-                    answer = yield Question(game, player, _("What do you want to do?"),
-                                            actions)
+                answer = yield Question(game, player, _("What do you want to do?"),
+                                        actions)
 
-                    for info_player in game.following_participants(player):
-                        yield InfoRequest(game, info_player,
-                                _("%(player)s chooses '%(action)s'", {"player": player.name, "action": _(dict(actions)[answer])}), [])
-                    if answer == "give":
-                        pass
-                    if answer == "take":
-                        pass
-
-        if answer == "cards":
-            player.draw_cards(2)
-        elif answer == "money":
-            player.virtual_money += 2
-
-            other_player.discard_pile.extend(card)
+                for info_player in game.following_participants(player):
+                    yield InfoRequest(game, info_player,
+                            _("%(player)s chooses '%(action)s'", {"player": player.name, "action": _(dict(actions)[answer])}), [])
+                new_card = game.supply[card.__name__].pop()
+                if answer == "give":
+                    other_player.discard_pile.append(new_card)
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:", (other_player.name, )), [new_card])
+                if answer == "take":
+                    player.discard_pile.append(new_card)
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:", (player.name, )), [new_card])
+                for val in game.check_empty_pile(card.__name__):
+                    yield val
 
 class Menagerie(ActionCard):
     name = _("Menagerie")
