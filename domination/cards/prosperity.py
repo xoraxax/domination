@@ -31,6 +31,18 @@ class TradeRoute(ActionCard):
     def activate_action(self, game, player):
         player.remaining_deals += 1
         player.virtual_money += 1 #FIXME
+        if not player.hand:
+            return
+        cards = yield SelectHandCards(game, player,
+                    count_lower=1, count_upper=1,
+                    msg=_("Select a card you want to trash."))
+        if cards:
+            card = cards[0]
+            card.trash(game, player)
+
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s trashes:", (player.name, )), [card])
 
 class Loan(TreasureCard):
     name = _("Loan")
@@ -263,10 +275,25 @@ class CountingHouse(ActionCard):
     edition = Prosperity
     cost = 5
     desc = _("Look through your discard pile, reveal any number of Copper cards from it and put them into your hand.")
-    implemented=False
 
     def activate_action(self, game, player):
-        pass
+        to_be_discarded = []
+        found = []
+        while True:
+            if not player.discard_pile:
+                break
+            card = player.discard_pile.pop()
+            yield InfoRequest(game, player, _("You find in your discard pile:"), [card])
+            if isinstance(card, Copper):
+                for info_player in game.participants:
+                    yield InfoRequest(game, info_player, _("%s reveals:",
+                            (player.name, )), [card])
+                if (yield YesNoQuestion(game, player, _("Do you want to keep this Copper?", {}))):
+                    found.append(card)
+                else:
+                    to_be_discarded.append(card)
+        player.discard_pile.extend(to_be_discarded)
+        player.hand.extend(found)
 
 class Mint(ActionCard):
     name = _("Mint")
@@ -276,7 +303,21 @@ class Mint(ActionCard):
     implemented=False
 
     def activate_action(self, game, player):
-        pass
+        cards = yield SelectHandCards(game, player, cls=TreasureCard,
+                    count_lower=1, count_upper=1,
+                    msg=_("Select a treasure card you want to reveal:"))
+        if cards:
+            card = cards[0]
+            for info_player in game.participants:
+                yield InfoRequest(game, info_player, _("%s reveals:",
+                        (player.name, )), [card])
+            new_card = game.supply[card.__name__].pop()
+            player.discard_pile.append(new_card)
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
+            for val in game.check_empty_pile(card_cls.__name__):
+                yield val
 
 class Mountebank(AttackCard):
     name = _("Mountebank")
