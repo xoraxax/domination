@@ -216,8 +216,8 @@ class SeaHag(AttackCard):
 class Smugglers(ActionCard):
     name = _("Smugglers")
     edition = Seaside
+    implemented=False
     cost = 3
-    implemented = False # needs cards_gained!?
     desc = _("Gain a copy of a Card costing up to 6 that the player to your rigth gained on his last turn.")
 
     def activate_action(self, game, player):
@@ -226,17 +226,17 @@ class Smugglers(ActionCard):
                             if c.cost <= 6 and
                             game.supply.get(c.__name__)]
             card_cls = yield SelectCard(game, player, card_classes=card_classes,
-                msg=_("Select a treasure card that you want to have."), show_supply_count=True)
+                msg=_("Select a card that you want to have."), show_supply_count=True)
         else:
             card_cls = type(player.right(game).cards_gained[0])
-            new_card = game.supply[card_cls.__name__].pop()
-            player.discard_pile.append(new_card)
+        new_card = game.supply[card_cls.__name__].pop()
+        player.discard_pile.append(new_card)
 
-            for other_player in game.following_participants(player):
-                yield InfoRequest(game, info_player,
-                        _("%s gains:", (player.name, )), [new_card])
-            for val in game.check_empty_pile(card_cls.__name__):
-                yield val
+        for other_player in game.following_participants(player):
+            yield InfoRequest(game, info_player,
+                    _("%s gains:", (player.name, )), [new_card])
+        for val in game.check_empty_pile(card_cls.__name__):
+            yield val
 
 
 
@@ -273,7 +273,6 @@ class Cutpurse(AttackCard):
 
     def activate_action(self, game, player):
         player.virtual_money += 2
-        #FIXME
         for other_player in game.following_players(player):
             try:
                 handle_defense(self, game, other_player)
@@ -369,14 +368,19 @@ class GhostShip(AttackCard):
 class Haven(ActionCard, DurationCard):
     name = _("Haven")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
+    implemented = False # XXX
     cost = 2
     desc = _("+1 Card, + 1 Action. Set aside a card from your hand face down. At the start of your next turn, put it into your hand.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
         player.draw_cards(1)
-        pass #FIXME
+        cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
+                msg=_("Which card do you want to set aside?"))
+        if cards:
+            card = cards[0]
+            player.hand.remove(card)
+            player.seaside_have_set_aside_cards.append(card)
 
 class Explorer(ActionCard):
     name = _("Explorer")
@@ -461,7 +465,16 @@ class Island(ActionCard, VictoryCard):
              " your deck at the end of the game.")
 
     def activate_action(self, game, player):
-        pass #FIXME
+        island_cards = [c for c in player.hand if isinstance(c, Island)]
+        player.seaside_island_set_aside_cards.append(island_cards[0])
+        if player.hand:
+            cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
+                    msg=_("Which card do you want to put on the island?"))
+            if cards is not None:
+                card = cards[0]
+                player.hand.remove(card)
+                player.seaside_island_set_aside_cards.append(card)
+
 
 class Ambassador(AttackCard):
     name = _("Ambassador")
@@ -471,12 +484,6 @@ class Ambassador(AttackCard):
 
     def activate_action(self, game, player):
         if player.hand:
-#            card_classes = [type(c) for c in player.hand]
-#            card_classes_count = {}
-#            for card_class in card_classes:
-#                same_cards = [c for c in player.hand if isinstance(c, TreasureMap)]
-#                if len(treasure_map_cards) >= 1: # only need one other treasure map in hand, because the other has already been played
-
             cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
                     msg=_("Which card do you want to Ambassador?"))
             card = cards[0]
@@ -535,7 +542,27 @@ class NativeVillage(ActionCard):
 
     def activate_action(self, game, player):
         player.remaining_actions += 2
-        pass #FIXME
+        actions = [("setaside", _("Set aside a card on the Native Village")),
+                   ("return", _("Put all cards from the Native Village into your hand."))]
+
+        answer = yield Question(game, player, _("What do you want to do?"),
+                                actions)
+
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player,
+                    _("%(player)s chooses '%(action)s'", {"player": player.name, "action": _(dict(actions)[answer])}), [])
+
+        if answer == "setaside":
+            if player.hand:
+                cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
+                        msg=_("Which card do you want to put on the Native Village?"))
+                if cards is not None:
+                    card = cards[0]
+                    player.hand.remove(card)
+                    player.seaside_nativevillage_set_aside_cards.append(card)
+        elif answer == "return":
+            player.hand.extend(player.seaside_nativevillage_set_aside_cards)
+            player.seaside_nativevillage_set_aside_cards = []
 
 class Wharf(ActionCard, DurationCard):
     name = _("Wharf")
