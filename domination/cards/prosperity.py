@@ -581,7 +581,7 @@ class Peddler(ActionCard):
     def get_cost(self, game=None, player=None):
         if player is None:
             return 8
-        return max(0, 8 - 2 * len(c for c in player.aux_cards if isinstance(c, ActionCard)))
+        return max(0, 8 - 2 * len([c for c in player.aux_cards if isinstance(c, ActionCard)]))
 
 
 from domination.cards.base import \
