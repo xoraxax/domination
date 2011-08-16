@@ -33,6 +33,9 @@ class ActivateNextActionMultipleTimes(Exception):
 class Defended(Exception):
     pass
 
+class AbortBuy(Exception):
+    pass
+
 class Request(object):
     choices = NotImplemented # used for AI and testing
     wise_slice = None
@@ -314,7 +317,7 @@ class GameRunner(Thread):
 from domination.cards import DurationCard
 
 class Game(object):
-    HOOKS = ["on_pre_buy_card", "on_buy_card", "on_render_card_info"]
+    HOOKS = ["on_pre_buy_card", "on_end_of_game", "on_start_of_turn", "on_end_of_turn", "on_buy_card", "on_render_card_info"]
 
     def __init__(self, name, selected_cards):
         from domination.cards import CardTypeRegistry
@@ -411,6 +414,9 @@ class Game(object):
                                         _("%s had duration cards:", (player.name, )), player.duration_cards)
                     player.duration_cards = []
 
+                    gen = self.fire_hook("on_start_of_turn", self, player)
+                    generator_forward(gen)
+
                     # action
                     while player.remaining_actions and [c for c in player.hand
                             if isinstance(c, ActionCard)]:
@@ -435,6 +441,12 @@ class Game(object):
                         if card_key is None:
                             break_selection = True
                         else:
+                            try:
+                                cardcls = CardTypeRegistry.keys2classes((card_key, ))[0]
+                                for elem in self.fire_hook("on_pre_buy_card", self, player, cardcls):
+                                    yield elem
+                            except AbortBuy:
+                                continue
                             player.remaining_deals -= 1
                             card = self.supply[card_key].pop()
                             for val in self.check_empty_pile(card_key):
@@ -470,6 +482,8 @@ class Game(object):
                 player.discard_pile.extend(player.hand)
                 player.hand = []
                 player.prepare_hand(cards_to_draw)
+                gen = self.fire_hook("on_end_of_turn", self, player)
+                generator_forward(gen)
         self.finished_round_players[:] = []
 
     def play_game(self, starting_from_checkpoint):
@@ -490,10 +504,13 @@ class Game(object):
         raise NotImplementedError
 
     def end_of_game(self):
+        list(self.fire_hook("on_end_of_game", self))
         for player in self.players:
-            player.deck += player.discard_pile + player.hand
+            player.deck += player.discard_pile + player.hand + player.aux_cards + player.duration_cards
             player.discard_pile = []
             player.hand = []
+            player.aux_cards = []
+            player.duration_cards = []
         raise EndOfGameException
 
     def following_players(self, current_player):

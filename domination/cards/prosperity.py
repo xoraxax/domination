@@ -47,6 +47,7 @@ class TradeRoute(ActionCard):
 class Loan(TreasureCard):
     name = _("Loan")
     edition = Prosperity
+    optional = True
     cost = 3
     worth = 2
     desc = _("When you play this, reveal cards from your deck until you reveal a treasure. Discard it or trash it. Discard the other cards.")
@@ -137,6 +138,7 @@ class Monument(ActionCard):
 class Quarry(TreasureCard):
     name = _("Quarry")
     edition = Prosperity
+    optional = True
     cost = 4
     worth = 1
     desc = _("|While this is in play, Action cards cost 2 Money less, but no less than 0.")
@@ -160,6 +162,7 @@ class Quarry(TreasureCard):
 class Talisman(TreasureCard):
     name = _("Talisman")
     edition = Prosperity
+    optional = True
     cost = 4
     worth = 1
     desc = _("While this is in play, when you buy a card costing 4 Money or less that is not a Victory card, gain a copy of it.")
@@ -181,6 +184,7 @@ class Talisman(TreasureCard):
 class Venture(TreasureCard):
     name = _("Venture")
     edition = Prosperity
+    optional = True
     cost = 5
     worth = 1
     desc = _("When you play this, you reveal cards from your deck until you reveal a Treasure. Discard the other cards. Play that Treasure.")
@@ -265,6 +269,7 @@ class RoyalSeal(TreasureCard):
     cost = 5
     worth = 2
     desc = _("While this card is in play, when you gain a card, you may put that card on top of your deck.")
+    optional = True
     implemented=False
 
     def activate_action(self, game, player):
@@ -367,7 +372,7 @@ class Contraband(TreasureCard):
     cost = 5
     worth = 3
     desc = _("+1 Buy. When you play this, the player to your left names a card. You can't buy this card this turn.")
-    implemented=False
+    optional = True
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
@@ -375,9 +380,20 @@ class Contraband(TreasureCard):
             if game.supply.get(c.__name__)],
             msg=_("Select a card that %(playername)s cannot buy this turn.",  {"playername": player.name}),
             show_supply_count=True)
+        player.prosperity_contraband_cards = getattr(player, "prosperity_contraband_cards", []).append(card_cls)
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player, _("%(player2name)s does not allow %(player2name)s to buy:",
                             {"playername": player.name, "player2name": player.left(game).name}), [card_cls])
+
+    @classmethod
+    def on_pre_buy_card(cls, game, player, card):
+        if isinstance(card, tuple(getattr(player, "prosperity_contraband_cards", []))):
+            yield InfoRequest(game, player, _("You are not allowed to buy this card."), [])
+            raise AbortBuy
+
+    @classmethod
+    def on_end_of_turn(cls, game, player):
+        player.prosperity_contraband_cards = []
 
 
 class City(ActionCard):
@@ -486,6 +502,7 @@ class Expand(ActionCard):
 class Bank(TreasureCard):
     name = _("Bank")
     edition = Prosperity
+    optional = True
     cost = 6
     desc = _("When you play this, it's worth 1 Money per Treasure card you have in play (counting this).")
 

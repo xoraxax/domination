@@ -368,11 +368,12 @@ class GhostShip(AttackCard):
 class Haven(ActionCard, DurationCard):
     name = _("Haven")
     edition = Seaside
-    implemented = False # XXX
     cost = 2
     desc = _("+1 Card, + 1 Action. Set aside a card from your hand face down. At the start of your next turn, put it into your hand.")
 
     def activate_action(self, game, player):
+        if not hasattr(player, "seaside_haven_set_aside_cards"):
+            player.seaside_haven_set_aside_cards = []
         player.remaining_actions += 1
         player.draw_cards(1)
         cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
@@ -380,7 +381,22 @@ class Haven(ActionCard, DurationCard):
         if cards:
             card = cards[0]
             player.hand.remove(card)
-            player.seaside_have_set_aside_cards.append(card)
+            player.seaside_haven_set_aside_cards.append(card)
+
+    @classmethod
+    def on_start_of_turn(cls, game, player):
+        if getattr(player, "seaside_haven_set_aside_cards", None):
+            yield InfoRequest(game, player,
+                  _("Cards you set aside with Haven last round:", ), player.seaside_haven_set_aside_cards)
+            player.hand.extend(player.seaside_haven_set_aside_cards)
+            player.seaside_haven_set_aside_cards = []
+
+    @classmethod
+    def on_end_of_game(cls, game):
+        for player in game.players:
+            player.hand.extend(getattr(player, "seaside_haven_set_aside_cards", []))
+            player.seaside_haven_set_aside_cards = []
+
 
 class Explorer(ActionCard):
     name = _("Explorer")
