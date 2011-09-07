@@ -232,7 +232,7 @@ class Rabble(AttackCard):
             for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s discards:",
                         (other_player.name, )), to_be_discarded)
-            player.discard_pile.extend(to_be_discarded)
+            other_player.discard_pile.extend(to_be_discarded)
 
 class Vault(ActionCard):
     name = _("Vault")
