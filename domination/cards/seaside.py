@@ -410,21 +410,23 @@ class Explorer(ActionCard):
     def activate_action(self, game, player):
         province_cards = [c for c in player.hand if isinstance(c, Province)]
         if province_cards:
-            new_card = game.supply["Gold"].pop()
-            player.hand.append(new_card)
-            for info_player in game.following_participants(player):
-                yield InfoRequest(game, info_player,
-                        _("%s gains:", (player.name, )), [new_card])
-            for val in game.check_empty_pile("Gold"):
-                yield val
+            if game.supply["Gold"]:
+                new_card = game.supply["Gold"].pop()
+                player.hand.append(new_card)
+                for info_player in game.following_participants(player):
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:", (player.name, )), [new_card])
+                for val in game.check_empty_pile("Gold"):
+                    yield val
         else:
-            new_card = game.supply["Silver"].pop()
-            player.hand.append(new_card)
-            for info_player in game.following_participants(player):
-                yield InfoRequest(game, info_player,
-                        _("%s gains:", (player.name, )), [new_card])
-            for val in game.check_empty_pile("Silver"):
-                yield val
+            if game.supply["Silver"]:
+                new_card = game.supply["Silver"].pop()
+                player.hand.append(new_card)
+                for info_player in game.following_participants(player):
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:", (player.name, )), [new_card])
+                for val in game.check_empty_pile("Silver"):
+                    yield val
 
 
 class FishingVillage(ActionCard, DurationCard):
@@ -630,9 +632,10 @@ class TreasureMap(ActionCard):
                             _("%s trashes:", (player.name, )), [card])
             new_cards = []
             for i in range(0, 4):
-                new_cards.append(game.supply["Gold"].pop())
-                for val in game.check_empty_pile("Gold"):
-                    yield val
+                if game.supply["Gold"]:
+                    new_cards.append(game.supply["Gold"].pop())
+                    for val in game.check_empty_pile("Gold"):
+                        yield val
             player.deck.extend(new_cards)
             for info_player in game.participants:
                 yield InfoRequest(game, info_player,

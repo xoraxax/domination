@@ -301,17 +301,18 @@ class Jester(AttackCard):
                 for info_player in game.following_participants(player):
                     yield InfoRequest(game, info_player,
                             _("%(player)s chooses '%(action)s'", {"player": player.name, "action": _(dict(actions)[answer])}), [])
-                new_card = game.supply[card.__name__].pop()
-                if answer == "give":
-                    other_player.discard_pile.append(new_card)
-                    yield InfoRequest(game, info_player,
-                            _("%s gains:", (other_player.name, )), [new_card])
-                if answer == "take":
-                    player.discard_pile.append(new_card)
-                    yield InfoRequest(game, info_player,
-                            _("%s gains:", (player.name, )), [new_card])
-                for val in game.check_empty_pile(card.__name__):
-                    yield val
+                if game.supply[card.__name__]:
+                    new_card = game.supply[card.__name__].pop()
+                    if answer == "give":
+                        other_player.discard_pile.append(new_card)
+                        yield InfoRequest(game, info_player,
+                                _("%s gains:", (other_player.name, )), [new_card])
+                    if answer == "take":
+                        player.discard_pile.append(new_card)
+                        yield InfoRequest(game, info_player,
+                                _("%s gains:", (player.name, )), [new_card])
+                    for val in game.check_empty_pile(card.__name__):
+                        yield val
 
 class Menagerie(ActionCard):
     name = _("Menagerie")
