@@ -427,7 +427,7 @@ class GrandMarket(ActionCard):
         player.remaining_deals += 1
         player.draw_cards(1)
 
-class Goons(ActionCard):
+class Goons(AttackCard):
     name = _("Goons")
     edition = Prosperity
     cost = 6
