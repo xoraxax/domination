@@ -70,8 +70,9 @@ class Navigator(ActionCard):
         player.virtual_money += 2
         player.draw_cards(5)
         drawn, player.hand = player.hand[-5:], player.hand[:-5]
-        yield InfoRequest(game, info_player, _("You draw:",), drawn)
-        yield InfoRequest(game, player, _("You draw:",), cards)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player, _("%s draws:", (player.name, )), drawn)
+        yield InfoRequest(game, player, _("You draw:",), drawn)
         actions = [("discard",    _("discard all 5 cards")),
                    ("backondeck", _("put the cards back in your specified order"))]
 
