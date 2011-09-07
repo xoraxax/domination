@@ -2,7 +2,7 @@ from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
      AttackCard, ReactionCard, PrizeCard, CardSet, Cornucopia
 from domination.cards.base import Curse
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
-     Question, YesNoQuestion, Defended, SelectActionCard
+     MultipleChoice, Question, YesNoQuestion, Defended, SelectActionCard
 from domination.tools import _
 from domination.macros.__macros__ import handle_defense, generator_forward
 
@@ -233,7 +233,7 @@ class HuntingParty(ActionCard):
 
     def activate_action(self, game, player):
         to_be_discarded = []
-        found = None
+        found = []
         player.draw_cards(1)
         player.remaining_actions += 1
         if player.hand:
@@ -248,12 +248,13 @@ class HuntingParty(ActionCard):
                 if type(card) in card_classes:
                     to_be_discarded.append(card)
                 else:
-                    found = card
+                    found.append(card)
                     break
-            for info_player in game.participants:
-                yield InfoRequest(game, info_player, _("%s reveals:", (player.name, )), to_be_discarded + [found])
+            if to_be_discarded + found:
+                for info_player in game.participants:
+                    yield InfoRequest(game, info_player, _("%s reveals:", (player.name, )), to_be_discarded + found)
             player.discard_pile.extend(to_be_discarded)
-            player.hand.append(found)
+        player.hand.extend(found)
 
 
 class Jester(AttackCard):
