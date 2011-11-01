@@ -16,7 +16,8 @@ Alchemy = Edition('alchemy', _("Alchemy game"))
 Seaside = Edition('seaside', _("Seaside game"))
 Prosperity = Edition('prosperity', _("Prosperity game"))
 Cornucopia = Edition('cornucopia', _("Cornucopia game"))
-editions = [BaseGame, Intrigue, Alchemy, Seaside, Prosperity, Cornucopia]
+Hinterlands = Edition('hinterlands', _("Hinterlands game"))
+editions = [BaseGame, Intrigue, Alchemy, Seaside, Prosperity, Cornucopia, Hinterlands]
 
 
 class CardTypeRegistry(type):

@@ -513,6 +513,13 @@ class Game(object):
             player.duration_cards = []
         raise EndOfGameException
 
+    def all_players(self, current_player):
+        """ Returns all players in the correct order.
+        """
+        players = self.players
+        return players[players.index(current_player):] + \
+                players[:players.index(current_player)]
+
     def following_players(self, current_player):
         """ Returns all other players in the correct order.
         """
@@ -782,5 +789,6 @@ from domination.cards.alchemy import card_sets as card_sets_alchemy
 from domination.cards.seaside import card_sets as card_sets_seaside
 from domination.cards.prosperity import card_sets as card_sets_prosperity
 from domination.cards.cornucopia import card_sets as card_sets_cornucopia
+from domination.cards.hinterlands import card_sets as card_sets_hinterlands
 
-card_sets = card_sets_base + card_sets_intrigue + card_sets_alchemy + card_sets_seaside + card_sets_prosperity + card_sets_cornucopia
+card_sets = card_sets_base + card_sets_intrigue + card_sets_alchemy + card_sets_seaside + card_sets_prosperity + card_sets_cornucopia + card_sets_hinterlands
