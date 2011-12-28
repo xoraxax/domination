@@ -586,13 +586,14 @@ class TradingPost(ActionCard):
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s trashes these cards:", (player.name, )), cards)
-        new_card = game.supply["Silver"].pop()
-        player.hand.append(new_card)
-        for info_player in game.following_participants(player):
-            yield InfoRequest(game, info_player,
-                    _("%s gains:", (player.name, )), [new_card])
-        for val in game.check_empty_pile("Silver"):
-            yield val
+        if game.supply["Silver"]:
+            new_card = game.supply["Silver"].pop()
+            player.hand.append(new_card)
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
+            for val in game.check_empty_pile("Silver"):
+                yield val
 
 class Tribute(ActionCard):
     name = _("Tribute")

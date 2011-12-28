@@ -70,8 +70,9 @@ class Navigator(ActionCard):
         player.virtual_money += 2
         player.draw_cards(5)
         drawn, player.hand = player.hand[-5:], player.hand[:-5]
-        yield InfoRequest(game, info_player, _("You draw:",), drawn)
-        yield InfoRequest(game, player, _("You draw:",), cards)
+        for info_player in game.following_participants(player):
+            yield InfoRequest(game, info_player, _("%s draws:", (player.name, )), drawn)
+        yield InfoRequest(game, player, _("You draw:",), drawn)
         actions = [("discard",    _("discard all 5 cards")),
                    ("backondeck", _("put the cards back in your specified order"))]
 
@@ -376,12 +377,13 @@ class Haven(ActionCard, DurationCard):
             player.seaside_haven_set_aside_cards = []
         player.remaining_actions += 1
         player.draw_cards(1)
-        cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
-                msg=_("Which card do you want to set aside?"))
-        if cards:
-            card = cards[0]
-            player.hand.remove(card)
-            player.seaside_haven_set_aside_cards.append(card)
+        if player.hand:
+            cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
+                    msg=_("Which card do you want to set aside?"))
+            if cards:
+                card = cards[0]
+                player.hand.remove(card)
+                player.seaside_haven_set_aside_cards.append(card)
 
     @classmethod
     def on_start_of_turn(cls, game, player):
@@ -394,8 +396,9 @@ class Haven(ActionCard, DurationCard):
     @classmethod
     def on_end_of_game(cls, game):
         for player in game.players:
-            player.hand.extend(getattr(player, "seaside_haven_set_aside_cards", []))
-            player.seaside_haven_set_aside_cards = []
+            if getattr(player, "seaside_haven_set_aside_cards", None):
+                player.hand.extend(player.seaside_haven_set_aside_cards)
+                player.seaside_haven_set_aside_cards = []
 
 
 class Explorer(ActionCard):
@@ -407,21 +410,23 @@ class Explorer(ActionCard):
     def activate_action(self, game, player):
         province_cards = [c for c in player.hand if isinstance(c, Province)]
         if province_cards:
-            new_card = game.supply["Gold"].pop()
-            player.hand.append(new_card)
-            for info_player in game.following_participants(player):
-                yield InfoRequest(game, info_player,
-                        _("%s gains:", (player.name, )), [new_card])
-            for val in game.check_empty_pile("Gold"):
-                yield val
+            if game.supply["Gold"]:
+                new_card = game.supply["Gold"].pop()
+                player.hand.append(new_card)
+                for info_player in game.following_participants(player):
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:", (player.name, )), [new_card])
+                for val in game.check_empty_pile("Gold"):
+                    yield val
         else:
-            new_card = game.supply["Silver"].pop()
-            player.hand.append(new_card)
-            for info_player in game.following_participants(player):
-                yield InfoRequest(game, info_player,
-                        _("%s gains:", (player.name, )), [new_card])
-            for val in game.check_empty_pile("Silver"):
-                yield val
+            if game.supply["Silver"]:
+                new_card = game.supply["Silver"].pop()
+                player.hand.append(new_card)
+                for info_player in game.following_participants(player):
+                    yield InfoRequest(game, info_player,
+                            _("%s gains:", (player.name, )), [new_card])
+                for val in game.check_empty_pile("Silver"):
+                    yield val
 
 
 class FishingVillage(ActionCard, DurationCard):
@@ -474,22 +479,31 @@ class Treasury(ActionCard):
 class Island(ActionCard, VictoryCard):
     name = _("Island")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 4
     points = 2
     desc = _("Set aside this and another card from your hand. Return them to"
              " your deck at the end of the game.")
 
     def activate_action(self, game, player):
-        island_cards = [c for c in player.hand if isinstance(c, Island)]
+        if not hasattr(player, "seaside_island_set_aside_cards"):
+            player.seaside_island_set_aside_cards = []
+        island_cards = [c for c in player.aux_cards if isinstance(c, Island)]
         player.seaside_island_set_aside_cards.append(island_cards[0])
+        player.aux_cards.remove(island_cards[0])
         if player.hand:
             cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
-                    msg=_("Which card do you want to put on the island?"))
-            if cards is not None:
+                    msg=_("Which card do you want to set aside?"))
+            if cards:
                 card = cards[0]
                 player.hand.remove(card)
                 player.seaside_island_set_aside_cards.append(card)
+
+    @classmethod
+    def on_end_of_game(cls, game):
+        for player in game.players:
+            if getattr(player, "seaside_nativevillage_set_aside_cards", None):
+                player.hand.extend(getattr(player, "seaside_island_set_aside_cards", []))
+                player.seaside_island_set_aside_cards = []
 
 
 class Ambassador(AttackCard):
@@ -552,11 +566,12 @@ class Tactician(ActionCard, DurationCard):
 class NativeVillage(ActionCard):
     name = _("Native Village")
     edition = Seaside
-    implemented = False #FIXME not implemented completely
     cost = 2
     desc = _("+2 Actions. Choose one: Set aside the top card of your deck face down on your Native Village mat; or put all cards from your mat into your hand. You may look at the cards on your mat at any time; return them to your deck at the end of the game.")
 
     def activate_action(self, game, player):
+        if not hasattr(player, "seaside_nativevillage_set_aside_cards"):
+            player.seaside_nativevillage_set_aside_cards = []
         player.remaining_actions += 2
         actions = [("setaside", _("Set aside a card on the Native Village")),
                    ("return", _("Put all cards from the Native Village into your hand."))]
@@ -569,16 +584,21 @@ class NativeVillage(ActionCard):
                     _("%(player)s chooses '%(action)s'", {"player": player.name, "action": _(dict(actions)[answer])}), [])
 
         if answer == "setaside":
-            if player.hand:
-                cards = yield SelectHandCards(game, player, count_lower=1, count_upper=1,
-                        msg=_("Which card do you want to put on the Native Village?"))
-                if cards is not None:
-                    card = cards[0]
-                    player.hand.remove(card)
-                    player.seaside_nativevillage_set_aside_cards.append(card)
+            player.draw_cards(1)
+            drawn, player.hand = player.hand[-1:], player.hand[:-1]
+            player.seaside_nativevillage_set_aside_cards.extend(drawn)
         elif answer == "return":
-            player.hand.extend(player.seaside_nativevillage_set_aside_cards)
-            player.seaside_nativevillage_set_aside_cards = []
+            if getattr(player, "seaside_nativevillage_set_aside_cards", None):
+                player.hand.extend(player.seaside_nativevillage_set_aside_cards)
+                player.seaside_nativevillage_set_aside_cards = []
+
+    @classmethod
+    def on_end_of_game(cls, game):
+        for player in game.players:
+            if getattr(player, "seaside_nativevillage_set_aside_cards", None):
+                player.hand.extend(player.seaside_nativevillage_set_aside_cards)
+                player.seaside_nativevillage_set_aside_cards = []
+
 
 class Wharf(ActionCard, DurationCard):
     name = _("Wharf")
@@ -612,9 +632,10 @@ class TreasureMap(ActionCard):
                             _("%s trashes:", (player.name, )), [card])
             new_cards = []
             for i in range(0, 4):
-                new_cards.append(game.supply["Gold"].pop())
-                for val in game.check_empty_pile("Gold"):
-                    yield val
+                if game.supply["Gold"]:
+                    new_cards.append(game.supply["Gold"].pop())
+                    for val in game.check_empty_pile("Gold"):
+                        yield val
             player.deck.extend(new_cards)
             for info_player in game.participants:
                 yield InfoRequest(game, info_player,
