@@ -17,7 +17,10 @@ def generator_forward(gen):
         # generic generator forwarding pattern
         while True:
             try:
+                #import sys
+                #print "YYY", sys._getframe().f_code.co_name, reply
                 reply = (yield gen.send(reply))
+                #print "ZZZ", sys._getframe().f_code.co_name, reply
             except StopIteration:
                 break
 
