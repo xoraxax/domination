@@ -3,6 +3,8 @@ import copy
 from domination.gameengine import Defended, TLS
 from domination.tools import _
 
+from domination.macros.__macros__ import generator_forward, generator_forward_ex
+
 
 class Edition(object):
     def __init__(self, key, name, optional=True):
@@ -124,6 +126,11 @@ class Card(object):
 
     def defend_action(self, game, player, card):
         raise NotImplementedError
+
+    @classmethod
+    def on_buy_card(cls, game, player, card):
+        gen = game.fire_hook("on_gain_card", game, player, card)
+        generator_forward(gen)
 
 
 class ActionCard(Card):

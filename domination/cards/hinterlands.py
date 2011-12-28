@@ -5,13 +5,12 @@ from domination.cards.prosperity import Platinum
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      YesNoQuestion, Question, Defended, SelectActionCard
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense, generator_forward
+from domination.macros.__macros__ import handle_defense, generator_forward, fetch_card_from_supply
 
 
 class BorderVillage(ActionCard):
     name = _("Border Village")
     edition = Hinterlands
-    implemented = False #FIXME Second half of the action should be triggered when card is gained.
     cost = 6
     desc = _("+1 Card +2 Actions. | When you gain this, gain a card costing less than this.")
 
@@ -19,19 +18,21 @@ class BorderVillage(ActionCard):
         player.remaining_actions += 2
         player.draw_cards(1)
 
-    def gainedthis(self, game, player):
+    @classmethod
+    def on_gain_card(cls, game, player, card):
+        if not isinstance(card, BorderVillage):
+            return
+
         card_classes = [c for c in game.card_classes.itervalues()
-                        if c.cost < this.cost and
+                        if c.cost < cls.cost and
                         game.supply.get(c.__name__)]
         card_cls = yield SelectCard(game, player, card_classes=card_classes,
             msg=_("Select a card that you want to have."), show_supply_count=True)
-        new_card = game.supply[card_cls.__name__].pop()
-        player.hand.append(new_card)
-        for info_player in game.following_participants(player):
-            yield InfoRequest(game, info_player,
-                    _("%s gains:", (player.name, )), [new_card])
-        for val in game.check_empty_pile(card_cls.__name__):
-            yield val
+        with fetch_card_from_supply(game, card_cls) as new_card:
+            player.discard_pile.append(new_card)
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s gains:", (player.name, )), [new_card])
 
 class Cache(TreasureCard):
     name = _("Cache")
@@ -55,9 +56,9 @@ class Cache(TreasureCard):
 class Cartographer(ActionCard):
     name = _("Cartographer")
     edition = Hinterlands
-    implemented = False #FIXME Second half of the action should be triggered when card is gained.
+    implemented = False
     cost = 5
-    desc = _("+1 Card +1 Action. | Look at the top 4 Cards of your deck "
+    desc = _("+1 Card +1 Action. Look at the top 4 Cards of your deck "
             "Discard any number of them. Put the rest back on top in any order.")
 
     def activate_action(self, game, player):
@@ -538,9 +539,9 @@ class Oracle(AttackCard):
 class Scheme(ActionCard):
     name = _("Scheme")
     edition = Hinterlands
-    implemented = False #FIXME Second half of the action should be triggered when card is gained.
+    implemented = False
     cost = 3
-    desc = _("+1 Card +1 Action. | At the start of Clean-up this turn, "
+    desc = _("+1 Card +1 Action. At the start of Clean-up this turn, "
             "you may choose an Action Card you have in play. "
             "If you discard it from play this turn, put it on your deck.")
 

@@ -311,13 +311,14 @@ class GameRunner(Thread):
             path = os.path.join(app.game_storage_path, taint_filename(self.game.name
             + app.game_storage_postfix))
         f = file(path, "wb")
-        pickle.dump(self, f, -1)
+        pickle.dump(self, f)#, -1)
         f.close()
 
-from domination.cards import DurationCard
+from domination.cards import DurationCard, Card
 
 class Game(object):
-    HOOKS = ["on_pre_buy_card", "on_end_of_game", "on_start_of_turn", "on_end_of_turn", "on_buy_card", "on_render_card_info"]
+    HOOKS = ["on_pre_buy_card", "on_end_of_game", "on_start_of_turn", "on_end_of_turn", "on_buy_card", "on_render_card_info",
+             "on_gain_card"]
 
     def __init__(self, name, selected_cards):
         from domination.cards import CardTypeRegistry
@@ -354,8 +355,8 @@ class Game(object):
     def prepare_hooks(self, cards):
         for hook_name in Game.HOOKS:
             self._hooks[hook_name] = []
-            for card in cards:
-                if hasattr(card, hook_name):
+            for card in cards + [Card]:
+                if hook_name in card.__dict__:
                     self._hooks[hook_name].append(getattr(card, hook_name))
 
     def fire_hook(self, hook_name, *args):
@@ -443,8 +444,8 @@ class Game(object):
                         else:
                             try:
                                 cardcls = CardTypeRegistry.keys2classes((card_key, ))[0]
-                                for elem in self.fire_hook("on_pre_buy_card", self, player, cardcls):
-                                    yield elem
+                                gen = self.fire_hook("on_pre_buy_card", self, player, cardcls)
+                                generator_forward(gen)
                             except AbortBuy:
                                 continue
                             player.remaining_deals -= 1
@@ -458,8 +459,8 @@ class Game(object):
                                 if other_player is not player:
                                     yield InfoRequest(self, other_player,
                                             _("%s buys:", (player.name, )), [card])
-                            for elem in self.fire_hook("on_buy_card", self, player, card):
-                                yield elem
+                            gen = self.fire_hook("on_buy_card", self, player, card)
+                            generator_forward(gen)
 
                         reason = self.check_end_of_game()
                         if reason:
