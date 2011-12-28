@@ -3,7 +3,7 @@ import pytest
 from random import SystemRandom
 from werkzeug import abort # WTH fails the import of this file without this import?
 from domination.gameengine import Player, DominationGame, InfoRequest, EndOfGameException, card_sets, Checkpoint
-from domination.cards import CardTypeRegistry, Cornucopia
+from domination.cards import CardTypeRegistry, Cornucopia, Hinterlands
 from domination.cards.base import ThroneRoom, Smithy
 from domination.cards.intrigue import Baron
 
@@ -105,3 +105,10 @@ class TestRandomRunner(object):
     def test_baron(self):
         for _ in xrange(2**6):
             yield self.do_test_run, [Baron] * 9 + [Smithy]
+
+    def test_hinterlands(self):
+        def sample_hinterlands():
+            return random.sample(CardTypeRegistry.cards_from_edition(Hinterlands), 10)
+
+        for _ in xrange(2**8):
+            yield self.do_test_run, sample_hinterlands()

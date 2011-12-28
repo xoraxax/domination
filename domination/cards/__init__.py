@@ -53,6 +53,9 @@ class CardTypeRegistry(type):
             classes.append(cls)
         return classes
 
+    @staticmethod
+    def cards_from_edition(edition):
+        return [c for c in CardTypeRegistry.raw_card_classes.values() if c.edition == edition and c.implemented]
 
 class Card(object):
     __metaclass__ = CardTypeRegistry
