@@ -27,13 +27,15 @@ class CardTypeRegistry(type):
 
     def __new__(cls, name, bases, d):
         abstract = d.pop("abstract", False)
+        orig_bases = bases[:]
+        bases = [b for b in bases if b.__name__ != "PrizeCard"]
         if not abstract:
             d['card_type'] = bases[0].__name__
             d['second_card_type'] = len(bases) > 1 and bases[1].__name__ or ''
         if name != "Card":
             cost = d.pop("cost", None)
             d["raw_cost"] = cost
-        kls = type.__new__(cls, name, bases, d)
+        kls = type.__new__(cls, name, orig_bases, d)
         if not abstract:
             CardTypeRegistry.raw_card_classes[name] = kls
         return kls

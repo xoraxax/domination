@@ -7,7 +7,7 @@ from domination.tools import _
 from domination.macros.__macros__ import handle_defense, generator_forward
 
 
-class BagOfGold(ActionCard, PrizeCard):
+class BagOfGold(PrizeCard, ActionCard):
     name = _("Bag of Gold")
     edition = Cornucopia
     cost = 0
@@ -21,7 +21,7 @@ class BagOfGold(ActionCard, PrizeCard):
             for val in game.check_empty_pile("Gold"):
                 yield val
 
-class Diadem(TreasureCard, PrizeCard):
+class Diadem(PrizeCard, TreasureCard):
     name = _("Diadem")
     edition = Cornucopia
     cost = 0
@@ -42,7 +42,7 @@ class Fairgrounds(VictoryCard):
         return len(set(card.__name__ for card in player.deck)) / 5
 
 class FarmingVillage(ActionCard):
-    name = _("FarmingVillage")
+    name = _("Farming Village")
     edition = Cornucopia
     cost = 4
     desc = _("+2 Actions. Reveal cards from the top of your deck until you reveal an Action or Treasure card. Put that card into your hand and and discard the other cards.")
@@ -70,7 +70,7 @@ class FarmingVillage(ActionCard):
         player.discard_pile.extend(to_be_discarded)
         player.hand.extend(found_cards)
 
-class Followers(AttackCard, PrizeCard):
+class Followers(PrizeCard, AttackCard):
     name = _("Followers")
     edition = Cornucopia
     cost = 0
@@ -324,7 +324,7 @@ class Menagerie(ActionCard):
         else:
             player.draw_cards(1)
 
-class Princess(ActionCard, PrizeCard):
+class Princess(PrizeCard, ActionCard):
     name = _("Princess")
     edition = Cornucopia
     implemented = False #FIXME not implemented completely
@@ -408,7 +408,7 @@ class Tournament(ActionCard):
         yield (_('Available prize cards'), True, game.tournament_cards)
 
 
-class TrustySteed(ActionCard, PrizeCard):
+class TrustySteed(PrizeCard, ActionCard):
     name = _("Trusty Steed")
     edition = Cornucopia
     implemented = False # XXX comment block/notification
