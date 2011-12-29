@@ -374,8 +374,11 @@ def check_seqno(game_runner):
 
 @app.before_request
 def before_request():
+    if request.authorization and app.auth_enabled:
+        session["username"] = request.authorization.user
     if "username" in session and session["username"] not in app.users:
         app.users[session["username"]] = {"games": {}}
+    session.permanent = True
 
 def restore_game(filename):
     f = file(filename, "rb")
@@ -400,6 +403,8 @@ def main(argv):
             type="string", help='Path to store savegames in', default=None)
     parser.add_option('-D', '--debug', dest='debug', action='store_true',
             help='Debug mode', default=None)
+    parser.add_option('-a', '--auth', dest='auth', action='store_true',
+            help='Use the webservers basic auth information', default=False)
 
     options, args = parser.parse_args()
     if args:
@@ -413,6 +418,8 @@ def main(argv):
                 print "\n"
             1/0
         app.secret_key = "insecure"
+
+    app.auth_enabled = options.auth
 
     if options.storagepath:
         # XXX does not really work
