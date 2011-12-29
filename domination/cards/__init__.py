@@ -210,7 +210,7 @@ class CurseCard(Card):
 
 
 class PrizeCard(Card):
-    optional = True
+    optional = False
     abstract = True
     classname = _("Prize card")
 

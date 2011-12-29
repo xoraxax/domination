@@ -75,12 +75,25 @@
       <h3>{% trans %}Your discard pile{% endtrans %}</h3>
       {{ _('%i cards', player.discard_pile | count) }}
       <form><button type="button" onclick="show_pile('#discardpilecards', '{% trans %}Discard pile{% endtrans %}');">{% trans %}Show{% endtrans %}</button></form>
-      <div id="discardpilecards">
+      <div id="discardpilecards" class="hiddenpile">
         {% for card in player.discard_pile %}
           {% call macros.render_card(card, game, player) %}
           {% endcall %}
         {% endfor %}
       </div>
+      {% for i, (name, open, cards) in enumerate(game.get_additional_piles(player)) %}
+      <h3>{{ name }}</h3>
+      {{ _('%i cards', cards | count) }}
+      {% if open %}
+      <form><button type="button" onclick="show_pile('#additionalpile-{{ i }}', '{{ name }}');">{% trans %}Show{% endtrans %}</button></form>
+      <div id="additionalpile-{{ i }}" class="hiddenpile">
+        {% for card in cards %}
+          {% call macros.render_card(card, game, player) %}
+          {% endcall %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endfor %}
     </div>
   {% endif %}
   <div id="infosep"></div>

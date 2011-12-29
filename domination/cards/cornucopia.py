@@ -1,6 +1,6 @@
 from domination.cards import TreasureCard, VictoryCard, CurseCard, ActionCard, \
-     AttackCard, ReactionCard, PrizeCard, CardSet, Cornucopia
-from domination.cards.base import Curse
+     AttackCard, ReactionCard, PrizeCard, CardSet, Cornucopia, CardTypeRegistry
+from domination.cards.base import Curse, Duchy, Province
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      MultipleChoice, Question, YesNoQuestion, Defended, SelectActionCard
 from domination.tools import _
@@ -10,7 +10,6 @@ from domination.macros.__macros__ import handle_defense, generator_forward
 class BagOfGold(ActionCard, PrizeCard):
     name = _("Bag of Gold")
     edition = Cornucopia
-    implemented = False #This card IS implemented, but prizecard functionality is not. disabled.
     cost = 0
     desc = _("+1 Action. Claim a gold, putting it on top of your deck.")
 
@@ -25,7 +24,6 @@ class BagOfGold(ActionCard, PrizeCard):
 class Diadem(TreasureCard, PrizeCard):
     name = _("Diadem")
     edition = Cornucopia
-    implemented = False #This card IS implemented, but prizecard functionality is not. disabled.
     cost = 0
     worth = 2
     desc = _("When you play this, +1 Money per unused Action you have.")
@@ -75,7 +73,6 @@ class FarmingVillage(ActionCard):
 class Followers(AttackCard, PrizeCard):
     name = _("Followers")
     edition = Cornucopia
-    implemented = False #This card IS implemented, but prizecard functionality is not. disabled.
     cost = 0
     desc = _("+2 Cards. Gain an Estate. Each other player gains a Curse and discards down to 3 Cards in hand.")
 
@@ -372,26 +369,57 @@ class Remake(ActionCard):
 class Tournament(ActionCard):
     name = _("Tournament")
     edition = Cornucopia
-    implemented = False #FIXME not implemented completely
     cost = 4
     desc = _("+1 Action. Each player may reveal a Province from his hand. If you do, discard it and gain a Prize (from the Prize pile) or a Duchy, putting it on top of your deck. If no-one else does, +1 Card, +1 Money.")
 
     def activate_action(self, game, player):
         player.remaining_actions += 1
+        others_revealed = False
+        player_revealed = False
+        for other_player in game.all_players(player):
+            province_cards = [c for c in other_player.hand if isinstance(c, Province)]
+            if province_cards:
+                card = province_cards[0]
+                reply = (yield YesNoQuestion(game, other_player,
+                    _("Do you want to reveal a Province card from your hand?")))
+                if reply:
+                    if other_player is player:
+                        player_revealed = True
+                        card.discard(player)
+                        card_cls = (yield SelectCard(game, player, _("Which prize card do you want to gain?"),
+                            [type(c) for c in game.tournament_cards] + [Duchy]))
+                        card = [c for c in game.tournament_cards if isinstance(c, card_cls)][0]
+                        player.deck.append(card)
+                        game.tournament_cards.remove(card)
+                    else:
+                        others_revealed = True
+                    for info_player in game.following_participants(other_player):
+                        yield InfoRequest(game, info_player, _("%s reveals a card:", (other_player.name, )), [card])
+        if not others_revealed:
+            player.virtual_money += 1
+            player.draw_cards(1)
+
+    @classmethod
+    def on_setup_card(self, game):
+        game.tournament_cards = [c() for c in CardTypeRegistry.raw_card_classes.values() if issubclass(c, PrizeCard)]
+
+    @classmethod
+    def on_render_piles(self, game, player):
+        yield (_('Available prize cards'), True, game.tournament_cards)
+
 
 class TrustySteed(ActionCard, PrizeCard):
     name = _("Trusty Steed")
     edition = Cornucopia
-    implemented = False #This card IS implemented, but prizecard functionality is not. disabled.
+    implemented = False # XXX comment block/notification
     cost = 0
-    desc = _("Choose two: +2 Cards, +2 Actions, +2 Money, gain 4 Silvers and put your deck into the discard pile (the choices must be different.)") # Wähle zwei verschiedene: +2 Karten, +2 Aktionen, +2 Geld, nimm dir 4 Silber und lege sofort deinen kompletten Nachziehstapel ab.
-    # german and english version have different semantic, which should we follow?
+    desc = _("Choose two: +2 Cards, +2 Actions, +2 Money, gain 4 Silvers and put your deck into the discard pile (the choices must be different.)")
 
     def activate_action(self, game, player):
         actions = [("cards", _("+2 Cards")),
                    ("actions", _("+2 Actions")),
                    ("money", _("+2 Money")),
-                   ("silverdiscard", _("gain 4 Silvers and discard Hand"))]
+                   ("silverdiscard", _("Gain 4 Silvers and discard Hand"))]
 
         while True:
             answers = yield MultipleChoice(game, player, _("What do you want to do?"), actions, min_amount=2, max_amount=2)

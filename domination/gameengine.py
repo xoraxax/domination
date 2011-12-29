@@ -318,7 +318,7 @@ from domination.cards import DurationCard, Card
 
 class Game(object):
     HOOKS = ["on_pre_buy_card", "on_end_of_game", "on_start_of_turn", "on_end_of_turn", "on_buy_card", "on_render_card_info",
-             "on_gain_card"]
+            "on_gain_card", "on_setup_card", "on_render_piles"]
 
     def __init__(self, name, selected_cards):
         from domination.cards import CardTypeRegistry
@@ -490,6 +490,8 @@ class Game(object):
     def play_game(self, starting_from_checkpoint):
         if not starting_from_checkpoint:
             self.deal_cards()
+            gen = self.fire_hook("on_setup_card", self)
+            generator_forward(gen)
             for player in self.players:
                 player.prepare_hand(self.cards_to_draw)
         while True:
@@ -555,6 +557,10 @@ class Game(object):
         empty_batches = [card_key for card_key, cards in self.supply.items()
                 if not cards]
         return len(empty_batches)
+
+    def get_additional_piles(self, player):
+        return list(self.fire_hook("on_render_piles", self, player))
+
 
 from domination.cards import Alchemy
 from domination.cards import Prosperity

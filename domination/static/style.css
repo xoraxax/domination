@@ -16,7 +16,8 @@ body { margin: 0; padding: 0; }
 #players { float: left; }
 #infosep { clear: both; }
 #supply h3 { cursor: pointer; }
-#supplycards, #discardpilecards { display: none; }
+#supplycards { display: none; }
+.hiddenpile { display: none; }
 
 .card { display: inline-block; width: 9em; padding: 0.5em; margin: 0.5em; }
 .card h4 { margin-top: 0px; margin-bottom: 0.8em; }

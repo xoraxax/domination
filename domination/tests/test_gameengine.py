@@ -112,3 +112,10 @@ class TestRandomRunner(object):
 
         for _ in xrange(2**8):
             yield self.do_test_run, sample_hinterlands()
+
+    def test_cornucopia(self):
+        def sample():
+            return random.sample(CardTypeRegistry.cards_from_edition(Cornucopia), 10)
+
+        for _ in xrange(2**8):
+            yield self.do_test_run, sample()

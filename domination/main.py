@@ -53,7 +53,7 @@ def make_image_url(cardcls):
     if os.path.exists(path):
         return url_for('static', filename="cardimages/%s/%s.jpg" % (locale, cardcls.__name__))
 app.template_context_processors[None].append(lambda: {'app': app, 'store': get_store()})
-app.jinja_env.globals.update(gettext=_, ngettext=ngettext, make_image_url=make_image_url)
+app.jinja_env.globals.update(gettext=_, ngettext=ngettext, make_image_url=make_image_url, enumerate=enumerate)
 def finalizer(x):
     if isinstance(x, Markup):
         return x

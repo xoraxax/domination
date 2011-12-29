@@ -301,7 +301,9 @@ class Embargo(ActionCard):
     cost = 2
     desc = _("+2 Money. Trash this card. Put an Embargo token on top of a Supply pile. When a player buys a card, he gains a Curse card per Embargo token on that pile.")
 
-    embargo_markers = {}
+    @classmethod
+    def on_setup_card(self, game):
+        game.embargo_markers = {}
 
     def activate_action(self, game, player):
         player.virtual_money += 2
@@ -310,11 +312,11 @@ class Embargo(ActionCard):
         for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s puts an Embargo token on top of:", (player.name, )), [card_cls])
-        Embargo.embargo_markers[card_cls.__name__] = Embargo.embargo_markers.get(card_cls.__name__, 0) + 1
-    
+        game.embargo_markers[card_cls.__name__] = game.embargo_markers.get(card_cls.__name__, 0) + 1
+
     @classmethod
     def on_buy_card(cls, game, player, card):
-        for i in xrange(Embargo.embargo_markers.get(card.__name__, 0)):
+        for i in xrange(game.embargo_markers.get(card.__name__, 0)):
             with fetch_card_from_supply(game, Curse) as new_card:
                 player.discard_pile.append(new_card)
                 for info_player in game.participants:
@@ -323,7 +325,7 @@ class Embargo(ActionCard):
 
     @classmethod
     def on_render_card_info(cls, game, card):
-        yield (_("Embargo tokens"), Embargo.embargo_markers.get(card.__name__, 0))
+        yield (_("Embargo tokens"), game.embargo_markers.get(card.__name__, 0))
 
 
 class Lighthouse(ActionCard, DurationCard):
