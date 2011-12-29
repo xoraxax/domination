@@ -394,7 +394,7 @@ class Tournament(ActionCard):
                     else:
                         others_revealed = True
                     for info_player in game.following_participants(other_player):
-                        yield InfoRequest(game, info_player, _("%s reveals a card:", (other_player.name, )), [card])
+                        yield InfoRequest(game, info_player, _("%s gains a card:", (other_player.name, )), [card])
         if not others_revealed:
             player.virtual_money += 1
             player.draw_cards(1)
