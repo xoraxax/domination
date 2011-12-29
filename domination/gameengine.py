@@ -343,7 +343,8 @@ class Game(object):
 
     def __getstate__(self):
         d = self.__dict__.copy()
-        del d['_hooks']
+        if d.get("_hooks", None) is not None:
+            del d['_hooks']
         return d
 
     @property
