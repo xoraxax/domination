@@ -375,7 +375,7 @@ def check_seqno(game_runner):
 @app.before_request
 def before_request():
     if request.authorization and app.auth_enabled:
-        session["username"] = request.authorization.user
+        session["username"] = request.authorization.username
     if "username" in session and session["username"] not in app.users:
         app.users[session["username"]] = {"games": {}}
     session.permanent = True
