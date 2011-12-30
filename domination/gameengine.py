@@ -3,6 +3,7 @@ import pickle
 from random import SystemRandom
 from threading import Thread, local
 from threading import _Condition as PristineCondition
+from collections import defaultdict
 
 from domination.tools import _, taint_filename
 from domination.macros.__macros__ import generator_forward, generator_forward_ex
@@ -11,6 +12,9 @@ from domination.macros.__macros__ import generator_forward, generator_forward_ex
 random = SystemRandom()
 TLS = local()
 
+
+def make_false():
+    return False
 
 class Condition(PristineCondition):
     def __getstate__(self):
@@ -98,12 +102,13 @@ class MultipleChoice(MultipleChoicesRequestMixin, Request):
 
 class SelectHandCards(MultipleChoicesRequestMixin, Request):
     def __init__(self, game, player, msg, cls=None, count_lower=0, count_upper=None,
-                 not_selectable=()):
+                 not_selectable=(), preselect_all=False):
         Request.__init__(self, game, player, msg)
         self.cls = cls
         self.count_lower = count_lower
         self.count_upper = count_upper
         self.not_selectable = not_selectable
+        self.preselect_all = preselect_all
 
         count = self.count_lower
         if self.count_upper is not None:
@@ -337,6 +342,7 @@ class Game(object):
         self.cards_to_draw = 5
         self._hooks = {}
         self.prepare_hooks(selected_cards)
+        self.player_options = {}
 
     def __hash__(self):
         return hash(self.name)
@@ -373,13 +379,16 @@ class Game(object):
         self.supply.setdefault(cls.__name__, []).extend(cls() for _ in xrange(no))
 
     def play_action_card(self, player, card):
+        player.activated_cards.append(card)
+        try:
+            gen = card.activate_action(self, player)
+        except NotImplementedError:
+            return
         for other_player in self.participants:
             if other_player is not player:
                 yield InfoRequest(self, other_player,
                         _("%s plays:", (player.name, )), [card])
 
-        player.activated_cards.append(card)
-        gen = card.activate_action(self, player)
         generator_forward(gen)
 
     def kick(self, kicker, kickee):
@@ -396,6 +405,8 @@ class Game(object):
         del self.players[self.players.index(kickee)]
 
     def play_round(self):
+        from domination.cards import TreasureCard
+
         self.pending_round_players = players = self.players[:]
         while players:
             player = players.pop(0)
@@ -435,6 +446,20 @@ class Game(object):
                             player.aux_cards.append(card)
                         gen = self.play_action_card(player, card)
                         generator_forward(gen)
+
+                    # select money cards
+                    if not player.options["automatic_money_selection"]:
+                        cards = (yield SelectHandCards(self, player, _("Which money cards do you want to play?"), TreasureCard,
+                            preselect_all=True))
+                    else:
+                        cards = [c for c in player.hand if isinstance(c, TreasureCard)]
+                    player.aux_cards.extend(cards)
+                    for card in cards:
+                        player.hand.remove(card)
+                    for card in cards:
+                        gen = self.play_action_card(player, card)
+                        generator_forward(gen)
+                    player.activated_treasure_cards = cards
 
                     # deal
                     break_selection = False
@@ -689,6 +714,8 @@ class Player(object):
         self.kicked_by = None
         self.turn_cleanups = []
         self.duration_cards = [] # duration_cards from seaside
+        self.options = defaultdict(make_false)
+        self.activated_treasure_cards = None
 
         self.request_queue = []
         self.info_queue = []
@@ -712,6 +739,7 @@ class Player(object):
         self.activated_cards = []
         self.current = False
         self.turn_cleanups = []
+        self.activated_treasure_cards = None
         if exc_type is PlayerKickedException:
             return True
 
@@ -726,7 +754,7 @@ class Player(object):
 
     @property
     def remaining_money(self):
-        return self.virtual_money + sum(card.get_worth(self) for card in self.hand)\
+        return self.virtual_money + sum(card.get_worth(self) for card in self.activated_treasure_cards)\
                 - self.used_money
 
     @property

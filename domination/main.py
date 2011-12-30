@@ -372,6 +372,17 @@ def check_seqno(game_runner):
     return jsonify()
 
 
+@app.route("/game/toggle_option/<name>")
+@needs_login
+@gets_game
+def toggle_option(game_runner):
+    key = request.args["optionkey"]
+    value = request.args["optionvalue"].lower() == "true"
+    player = get_store()["games"][game_runner.game]
+    player.options[key] = value
+    return jsonify()
+
+
 @app.before_request
 def before_request():
     if request.authorization and app.auth_enabled:

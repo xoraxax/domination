@@ -229,7 +229,7 @@ class Farmland(VictoryCard):
             for val in game.check_empty_pile(card_cls.__name__):
                 yield val
 
-class FoolsGold(TreasureCard,ReactionCard):
+class FoolsGold(TreasureCard, ReactionCard):
     name = _("Fool's Gold")
     edition = Hinterlands
     implemented = False #FIXME Second half of the action should be triggered when card is gained.

@@ -14,6 +14,8 @@ class Platinum(TreasureCard):
     edition = Prosperity
     cost = 9
     worth = 5
+    wants_money_selection = False
+    optional = False
 
 class Colony(VictoryCard):
     name = _("Colony")
