@@ -13,9 +13,6 @@ random = SystemRandom()
 TLS = local()
 
 
-def make_false():
-    return False
-
 class Condition(PristineCondition):
     def __getstate__(self):
         return True
@@ -524,6 +521,8 @@ class Game(object):
             generator_forward(gen)
             for player in self.players:
                 player.prepare_hand(self.cards_to_draw)
+                for optionkey, optionvalue in self.player_option_defaults.items():
+                    player.options[optionkey] = optionvalue
         while True:
             yield Checkpoint(self)
             self.round += 1
@@ -718,9 +717,7 @@ class Player(object):
         self.kicked_by = None
         self.turn_cleanups = []
         self.duration_cards = [] # duration_cards from seaside
-        self.options = defaultdict(make_false)
-        for optionkey, optionvalue in game.player_option_defaults.items():
-            self.options[optionkey] = optionvalue
+        self.options = {}
         self.activated_treasure_cards = None
 
         self.request_queue = []
