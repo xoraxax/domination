@@ -215,8 +215,14 @@ def create_game():
     while newname in app.games:
         ctr += 1
         newname = "%s (%i)" % (name, ctr)
+    if "card" in request.args:
+        enabled_cards = set(request.args.getlist("card"))
+        enabled_editions = set(c.edition.name for c in CardTypeRegistry.keys2classes(request.form.getlist('card_key')))
+    else:
+        enabled_cards = enabled_editions = ()
     return render_template("create_game.html", editions=editions,
-                           card_sets=transform_sets(card_sets), name=newname)
+                           card_sets=transform_sets(card_sets), name=newname, enabled_editions=enabled_editions,
+                           enabled_cards=enabled_cards)
 
 @app.route("/game/<name>", methods=['GET', 'POST'])
 @needs_login

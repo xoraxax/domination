@@ -601,6 +601,10 @@ class DominationGame(Game):
     def selected_cards_str(self):
         return ", ".join(unicode(c.name) for c in self.selected_cards)
 
+    @property
+    def selected_cards_keys(self):
+        return [c.__name__ for c in self.selected_cards]
+
     def deal_cards(self):
         self.deal_initial_decks()
         self.deal_supply_cards(self.selected_cards)

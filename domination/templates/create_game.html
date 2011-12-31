@@ -75,7 +75,7 @@
     <p>{% trans %}Editions:{% endtrans %}
       {% for edition in editions %}
       <input type="checkbox" name="edition" value="{{ edition.key }}"
-      {% if not edition.optional %}checked="checked" disabled="disabled"{% endif %}>
+      {% if not edition.optional %}checked="checked" disabled="disabled"{% else %}{% if edition.name in enabled_editions %}checked="checked"{% endif %}{% endif %}>
       {{ edition.name }}
       {% endfor %}
     </p>
@@ -95,7 +95,7 @@
             <span id="card-{{ cls.__name__ }}"></span>
             <span class="edition-{{ cls.edition.key }}"></span>
             <input type="checkbox" name="card_key" value="{{ cls.__name__ }}"
-            {% if not cls.implemented %}checked="checked" disabled="disabled"{% endif %}>
+            {% if cls.__name__ in enabled_cards %}checked="checked"{% endif %}>
           {% endcall %}
         {% endfor %}
       {% endfor %}
