@@ -333,25 +333,25 @@ class JackOfAllTrades(ActionCard):
             "You may trash a card from your hand that is not a Treasure.")
 
     def activate_action(self, game, player):
-        silver_cards = game.supply["Silver"]
-        if silver_cards:
-            player.discard_pile.append(silver_cards.pop())
-            new_card = silver_cards.pop()
+        with fetch_card_from_supply(game, Silver) as new_card:
+            player.discard_pile.append(new_card)
             for info_player in game.following_participants(player):
                 yield InfoRequest(game, info_player,
                         _("%s gains:", (player.name, )), [new_card])
-            for val in game.check_empty_pile("Silver"):
-                yield val
         player.draw_cards(1)
         drawn, player.hand = player.hand[-1:], player.hand[:-1]
-        if (yield YesNoQuestion(game, player, _("Do you want to keep this %s?"%drawn[0].name, {}))):
+        if (yield YesNoQuestion(game, player, _("Do you want to keep the card '%s' on your hand?" (drawn[0].name,) ))):
             player.hand.extend(drawn)
         else:
             player.discard_pile.extend(drawn)
 
+        while len(player.hand) < 5:
+            if player.draw_cards(1) is None:
+                break
+
         #FIXME only cards that are no treasure
         cards = yield SelectHandCards(game, player,
-                    count_lower=0, count_upper=1,
+                    count_lower=0, count_upper=1, not_selectable=[c for c in player.hand if isinstance(c, TreasureCard)],
                     msg=_("Select a card you want to trash."))
         if cards:
             card = cards[0]
