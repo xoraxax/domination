@@ -389,7 +389,7 @@ class Contraband(TreasureCard):
             show_supply_count=True)
         player.prosperity_contraband_cards = getattr(player, "prosperity_contraband_cards", []).append(card_cls)
         for info_player in game.following_participants(player):
-            yield InfoRequest(game, info_player, _("%(player2name)s does not allow %(player2name)s to buy:",
+            yield InfoRequest(game, info_player, _("%(player2name)s does not allow %(playername)s to buy:",
                             {"playername": player.name, "player2name": player.left(game).name}), [card_cls])
 
     @classmethod

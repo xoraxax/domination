@@ -233,7 +233,7 @@ class Smugglers(ActionCard):
         new_card = game.supply[card_cls.__name__].pop()
         player.discard_pile.append(new_card)
 
-        for other_player in game.following_participants(player):
+        for info_player in game.following_participants(player):
             yield InfoRequest(game, info_player,
                     _("%s gains:", (player.name, )), [new_card])
         for val in game.check_empty_pile(card_cls.__name__):
