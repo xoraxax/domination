@@ -503,7 +503,7 @@ class Island(ActionCard, VictoryCard):
     @classmethod
     def on_end_of_game(cls, game):
         for player in game.players:
-            if getattr(player, "seaside_nativevillage_set_aside_cards", None):
+            if getattr(player, "seaside_island_set_aside_cards", None):
                 player.hand.extend(getattr(player, "seaside_island_set_aside_cards", []))
                 player.seaside_island_set_aside_cards = []
 
