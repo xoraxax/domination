@@ -119,7 +119,7 @@ class Bishop(ActionCard):
                             _("%s trashes:", (player.name, )), [card])
         for other_player in game.following_players(player):
             cards = yield SelectHandCards(game, other_player, count_lower=0, count_upper=1,
-                    msg=_("%s played Bishop. You may trash a card:?", (player.name, )))
+                    msg=_("%s played Bishop. You may trash a card:", (player.name, )))
             if cards:
                 for card in cards:
                     card.trash(game, other_player)
@@ -148,7 +148,7 @@ class Quarry(TreasureCard):
     def activate_action(self, game, player):
         decreased_for_cards = []
         action_card_classes  = [cls for cls in game.card_classes.itervalues()
-                    if isinstance(cls, ActionCard)]
+                    if issubclass(cls, ActionCard)]
         for card in action_card_classes:
             if card.cost >= 1:
                 card.cost -= 1
@@ -192,7 +192,7 @@ class Venture(TreasureCard):
     desc = _("When you play this, you reveal cards from your deck until you reveal a Treasure. Discard the other cards. Play that Treasure.")
 
     def activate_action(self, game, player):
-        found_treasure = []
+        found_treasure = None
         to_be_discarded = []
         while True:
             ret = player.draw_cards(1)
@@ -202,12 +202,16 @@ class Venture(TreasureCard):
             for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s reveals:", (player.name, )), [card])
             if isinstance(card, TreasureCard):
-                found_treasure.append(card)
+                found_treasure = card
                 break
             else:
                 to_be_discarded.append(card)
         player.discard_pile.extend(to_be_discarded)
-        found_treasure.activate_action(game, player)
+        if found_treasure is not None:
+            player.aux_cards.append(found_treasure)
+            gen = game.play_action_card(player, found_treasure)
+            generator_forward(gen)
+            player.activated_treasure_cards.append(found_treasure)
 
 class Rabble(AttackCard):
     name = _("Rabble")
@@ -561,6 +565,8 @@ class Forge(ActionCard):
         if player.hand:
             cards = yield SelectHandCards(game, player,
                     msg=_("Which cards do you want to trash?"))
+        else:
+            return
         # trash cards
         if cards:
             for card in cards:

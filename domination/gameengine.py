@@ -343,6 +343,7 @@ class Game(object):
         self._hooks = {}
         self.prepare_hooks(selected_cards)
         self.player_options = {}
+        self.player_option_defaults = {}
 
     def __hash__(self):
         return hash(self.name)
@@ -355,7 +356,8 @@ class Game(object):
 
     @property
     def hooks(self):
-        if not self._hooks:
+        if not hasattr(self, "_hooks"):
+            self._hooks = {}
             self.prepare_hooks(self.selected_cards)
         return self._hooks
 
@@ -451,15 +453,17 @@ class Game(object):
                     if not player.options["automatic_money_selection"]:
                         cards = (yield SelectHandCards(self, player, _("Which money cards do you want to play?"), TreasureCard,
                             preselect_all=True))
+                        if cards is None:
+                            cards = []
                     else:
                         cards = [c for c in player.hand if isinstance(c, TreasureCard)]
                     player.aux_cards.extend(cards)
                     for card in cards:
                         player.hand.remove(card)
+                    player.activated_treasure_cards = cards
                     for card in cards:
                         gen = self.play_action_card(player, card)
                         generator_forward(gen)
-                    player.activated_treasure_cards = cards
 
                     # deal
                     break_selection = False
@@ -697,7 +701,7 @@ class Kibitzer(object):
 
 class Player(object):
     is_ai = False
-    def __init__(self, name):
+    def __init__(self, name, game):
         self.name = name
         self.discard_pile = []
         self.deck = []
@@ -715,6 +719,8 @@ class Player(object):
         self.turn_cleanups = []
         self.duration_cards = [] # duration_cards from seaside
         self.options = defaultdict(make_false)
+        for optionkey, optionvalue in game.player_option_defaults.items():
+            self.options[optionkey] = optionvalue
         self.activated_treasure_cards = None
 
         self.request_queue = []
@@ -759,7 +765,7 @@ class Player(object):
 
     @property
     def remaining_potion(self):
-        return sum(card.potion for card in self.hand)\
+        return sum(card.potion for card in self.aux_cards)\
                 - self.used_potion
 
     @property

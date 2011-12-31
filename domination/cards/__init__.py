@@ -139,6 +139,7 @@ class Card(object):
     def on_setup_card(cls, game):
         if [c for c in game.selected_cards if c.wants_money_selection]:
             game.player_options["automatic_money_selection"] = _("Play all available treasure cards")
+        game.player_option_defaults["automatic_money_selection"] = True
 
 
 class ActionCard(Card):
