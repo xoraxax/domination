@@ -525,19 +525,19 @@ class Oracle(AttackCard):
             actions = [("discard",   _("Discard the cards")),
                        ("backontop", _("Put the cards back on top of your deck"))]
 
-            answer = yield Question(game, any_player, _("What do you want to do?"),
+            answer = yield Question(game, player, _("What do you want to do?"),
                                     actions)
 
             for info_player in game.following_participants(any_player):
                 yield InfoRequest(game, info_player,
-                        _("%(player)s chooses '%(action)s'", {"player": any_player.name, "action": _(dict(actions)[answer])}), [])
+                        _("%(player)s chooses '%(action)s' for %(playertarget)s", {"player": player.name,
+                            "playertarget": any_player.name,
+                            "action": _(dict(actions)[answer])}), [])
 
-            if answer=="discard":
+            if answer == "discard":
                 any_player.discard_pile.extend(drawn)
             else:
-                any_player.deck.extend(drawn)
-
-
+                any_player.deck.extend(drawn) # XXX "in an order he chooses!"
         player.draw_cards(2)
 
 class Scheme(ActionCard):
