@@ -403,11 +403,14 @@ class Margrave(AttackCard):
                 handle_defense(self, game, other_player)
             except Defended:
                 continue
+            other_player.draw_cards(1)
             if len(other_player.hand) < 4:
                 continue
             count = len(other_player.hand) - 3
-            cards = yield SelectHandCards(game, other_player, count_lower=2, count_upper=2,
-                    msg=_("%s played Margrave, you need to discard your hand down to three card. Which cards do you want to discard?", (player.name, )))
+            if count <= 0:
+                continue
+            cards = yield SelectHandCards(game, other_player, count_lower=count, count_upper=count,
+                    msg=_("%s played Margrave, you need to discard your hand down to three cards. Which cards do you want to discard?", (player.name, )))
             for card in cards:
                 card.discard(other_player)
             for info_player in game.participants:
