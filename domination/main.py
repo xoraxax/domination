@@ -171,7 +171,7 @@ def logout():
         for game, player in games.items():
             # XXX race condition possible
             if player.current:
-                game.kick(Player("Logout Button"), player)
+                game.kick(Player("Logout Button", game), player)
             else:
                 game.players.remove(player)
     return redirect(url_for("index"))
@@ -187,7 +187,7 @@ def create_game(): # XXX check for at most 10 sets
             return render_error(_("Please enter a name!"))
         game = DominationGame(name,
                 CardTypeRegistry.keys2classes(request.form.getlist('card_key')))
-        player = Player(session["username"])
+        player = Player(session["username"], game)
         game.players.append(player)
         app.games[name] = GameRunner(game, player)
         get_store()["games"][game] = player
@@ -199,7 +199,7 @@ def create_game(): # XXX check for at most 10 sets
             except ValueError:
                 n = 1
             for i in range(n):
-                player = AIPlayer(names[i] + " [AI]")
+                player = AIPlayer(names[i] + " [AI]", game)
                 game.players.append(player)
         return redirect(url_for('game', name=name))
     def transform_sets(sets):
@@ -281,7 +281,7 @@ def join_game(game_runner):
     assert not game_runner in get_store()["games"]
     if not game_runner.joinable:
         return render_error(_("Game has begun or ended already."))
-    get_store()["games"][game_runner.game] = player = Player(session["username"])
+    get_store()["games"][game_runner.game] = player = Player(session["username"], game_runner.game)
     game = game_runner.game
     assert player not in game.players
     game.players.append(player)
@@ -372,10 +372,21 @@ def check_seqno(game_runner):
     return jsonify()
 
 
+@app.route("/game/toggle_option/<name>")
+@needs_login
+@gets_game
+def toggle_option(game_runner):
+    key = request.args["optionkey"]
+    value = request.args["optionvalue"].lower() == "true"
+    player = get_store()["games"][game_runner.game]
+    player.options[key] = value
+    return jsonify()
+
+
 @app.before_request
 def before_request():
     if request.authorization and app.auth_enabled:
-        session["username"] = request.authorization.user
+        session["username"] = request.authorization.username
     if "username" in session and session["username"] not in app.users:
         app.users[session["username"]] = {"games": {}}
     session.permanent = True

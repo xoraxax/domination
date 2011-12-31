@@ -2,10 +2,12 @@
 {% block title %}{% trans %}Game: {% endtrans %}{{ game.name }}{% endblock %}
 {% block head %}
   {{ super() }}
+  <script type="text/javascript">
+    var game_name = {{ runner.game.name | tojson | safe }};
+  </script>
   {% if not req %}
   <script type="text/javascript">
     var initial_seqno = {{ seqno | tojson | safe }};
-    var game_name = {{ runner.game.name | tojson | safe }};
     $(handle_page_refresh);
   </script>
   {% endif %}
@@ -13,6 +15,7 @@
     {% if req %}
       your_turn_reminder();
     {% endif %}
+    $(register_handle_option_click);
     $(function() {
         {% if req %}
         var offset = 2;
@@ -189,7 +192,7 @@
               {% endif %}
               </form>
             {% else %}
-              <input type="checkbox" name="card" value="{{ loop.index0 }}">
+              <input type="checkbox" name="card" value="{{ loop.index0 }}" {{ "checked" if req.preselect_all else "" }}>
             {% endif %}
           {% endif %}
         {% endcall %}
@@ -258,7 +261,7 @@
       {% endif %}
     {% else %}
       {% if player.activated_cards %}
-      <h3>{% trans %}Activated action cards{% endtrans %}</h3>
+      <h3>{% trans %}Played cards{% endtrans %}</h3>
         {% for card in player.activated_cards %}
           {{ macros.render_card(card, game, player) }}
         {% endfor %}
@@ -293,5 +296,10 @@
         {% endfor %}
       </div>
     </div>
-  {% endif%}
+  {% endif %}
+  <div id="options"><form>
+    {% for key, optiontext in game.player_options.items() %}
+      <input type="checkbox" {{ ["", "checked"][player.options[key]] }} class="playeroption" name="{{ key }}"> {{ optiontext }}    
+    {% endfor %}
+  </form></div>
 {% endblock %}

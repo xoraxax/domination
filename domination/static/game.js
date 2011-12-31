@@ -40,3 +40,10 @@ function show_pile(selector, title) {
       }
   });
 }
+
+function register_handle_option_click() {
+  $(".playeroption").click(function () {
+    $.getJSON($SCRIPT_ROOT + '/game/toggle_option/' + game_name, {optionkey: this.name, optionvalue: this.checked});
+  });
+}
+

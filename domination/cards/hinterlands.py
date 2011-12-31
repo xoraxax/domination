@@ -105,7 +105,7 @@ class Develop(ActionCard):
     name = _("Develop")
     edition = Hinterlands
     cost = 3
-    desc = _("Trash a Crad from your hand. "
+    desc = _("Trash a card from your hand. "
             "Gain a card costing exactly 1 Money more than it "
             "and a card costing exactly 1 Money less than it, "
             "in either order, putting them on top of your deck.")
@@ -229,7 +229,7 @@ class Farmland(VictoryCard):
             for val in game.check_empty_pile(card_cls.__name__):
                 yield val
 
-class FoolsGold(TreasureCard,ReactionCard):
+class FoolsGold(TreasureCard, ReactionCard):
     name = _("Fool's Gold")
     edition = Hinterlands
     implemented = False #FIXME Second half of the action should be triggered when card is gained.
@@ -419,6 +419,7 @@ class Margrave(AttackCard):
 class NobleBrigand(AttackCard):
     name = _("Noble Brigand")
     edition = Hinterlands
+    implemented = False # XXX doesnt work at all
     cost = 4
     desc = _("+1 Money. When you buy this or play it, each other player reveals the top 2 cards of his deck,"
             "trashes a revealed Silver or Gold you choose, and discards the rest. "
@@ -573,6 +574,9 @@ class SpiceMerchant(ActionCard):
         if cards:
             card = cards[0]
             card.trash(game, player)
+            for info_player in game.following_participants(player):
+                yield InfoRequest(game, info_player,
+                        _("%s trashes:", (player.name, )), [card])
             actions = [("cards_action",   _("+2 Cards +1 Action")),
                        ("moneys_buy", _("+2 Money +1 Buy"))]
 

@@ -73,6 +73,7 @@ class Card(object):
     abstract = True    # abstract template?
     trash_after_playing = False  # does it go to trash after playing?
     durationaction_activated = False # Seaside duration cards
+    wants_money_selection = False
     __slots__ = ()
 
     def __init__(self):
@@ -133,6 +134,12 @@ class Card(object):
     def on_buy_card(cls, game, player, card):
         gen = game.fire_hook("on_gain_card", game, player, card)
         generator_forward(gen)
+
+    @classmethod
+    def on_setup_card(cls, game):
+        if [c for c in game.selected_cards if c.wants_money_selection]:
+            game.player_options["automatic_money_selection"] = _("Play all available treasure cards")
+        game.player_option_defaults["automatic_money_selection"] = True
 
 
 class ActionCard(Card):
@@ -203,6 +210,8 @@ class TreasureCard(Card):
     abstract = True
     worth = None
     classname = _("Treasure card")
+    wants_money_selection = True
+    optional = True
 
 
 class CurseCard(Card):

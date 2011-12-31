@@ -4,7 +4,7 @@ from domination.cards.base import Curse, Duchy, Province
 from domination.gameengine import InfoRequest, SelectCard, SelectHandCards, \
      MultipleChoice, Question, YesNoQuestion, Defended, SelectActionCard
 from domination.tools import _
-from domination.macros.__macros__ import handle_defense, generator_forward
+from domination.macros.__macros__ import handle_defense, generator_forward, fetch_card_from_supply
 
 
 class BagOfGold(PrizeCard, ActionCard):
@@ -327,12 +327,20 @@ class Menagerie(ActionCard):
 class Princess(PrizeCard, ActionCard):
     name = _("Princess")
     edition = Cornucopia
-    implemented = False #FIXME not implemented completely
     cost = 0
     desc = _("+1 Buy | While this is in play, Cards cost 2 Money less, but not less than 0 Money.")
 
     def activate_action(self, game, player):
         player.remaining_deals += 1
+        decreased_for_cards = []
+        for card in game.card_classes.itervalues():
+            if card.cost >= 2:
+                card.cost -= 2
+                decreased_for_cards.append(card)
+        def restore_cards(player):
+            for card in decreased_for_cards:
+                card.cost += 2
+        player.register_turn_cleanup(restore_cards)
 
 class Remake(ActionCard):
     name = _("Remake")
@@ -388,13 +396,17 @@ class Tournament(ActionCard):
                         card.discard(player)
                         card_cls = (yield SelectCard(game, player, _("Which prize card do you want to gain?"),
                             [type(c) for c in game.tournament_cards] + [Duchy]))
-                        card = [c for c in game.tournament_cards if isinstance(c, card_cls)][0]
+                        if card_cls is Duchy:
+                            with fetch_card_from_supply(game, card_cls) as new_card:
+                                card = new_card
+                        else:
+                            card = [c for c in game.tournament_cards if isinstance(c, card_cls)][0]
+                            game.tournament_cards.remove(card)
                         player.deck.append(card)
-                        game.tournament_cards.remove(card)
                     else:
                         others_revealed = True
                     for info_player in game.following_participants(other_player):
-                        yield InfoRequest(game, info_player, _("%s gains a card:", (other_player.name, )), [card])
+                        yield InfoRequest(game, info_player, _("%s reveals a card:", (other_player.name, )), [card])
         if not others_revealed:
             player.virtual_money += 1
             player.draw_cards(1)

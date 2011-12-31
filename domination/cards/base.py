@@ -11,18 +11,24 @@ class Copper(TreasureCard):
     edition = BaseGame
     cost = 0
     worth = 1
+    wants_money_selection = False
+    optional = False
 
 class Silver(TreasureCard):
     name = _("Silver")
     edition = BaseGame
     cost = 3
     worth = 2
+    wants_money_selection = False
+    optional = False
 
 class Gold(TreasureCard):
     name = _("Gold")
     edition = BaseGame
     cost = 6
     worth = 3
+    wants_money_selection = False
+    optional = False
 
 class Estate(VictoryCard):
     name = _("Estate")

@@ -13,6 +13,7 @@ from jinja2 import Markup
 class Translatable(unicode):
     def __new__(cls, string, parameters=()):
         inst = super(Translatable, cls).__new__(cls, string)
+        inst.pristine_str = string
         inst.parameters = parameters
         return inst
 
@@ -26,7 +27,7 @@ class Translatable(unicode):
         return t.ugettext(self[:]) % self.parameters
 
     def __newargs__(self):
-        return (unicode.__unicode__(self), self.parameters)
+        return (self.pristine_str, self.parameters)
 
 
 def _(string, parameters=()):
