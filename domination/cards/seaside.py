@@ -217,9 +217,9 @@ class SeaHag(AttackCard):
 class Smugglers(ActionCard):
     name = _("Smugglers")
     edition = Seaside
-    implemented=False
+    implemented = False
     cost = 3
-    desc = _("Gain a copy of a Card costing up to 6 that the player to your rigth gained on his last turn.")
+    desc = _("Gain a copy of a Card costing up to 6 that the player to your right gained on his last turn.")
 
     def activate_action(self, game, player):
         if len(player.right(game).cards_gained) > 1:
