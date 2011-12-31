@@ -340,7 +340,7 @@ class JackOfAllTrades(ActionCard):
                         _("%s gains:", (player.name, )), [new_card])
         player.draw_cards(1)
         drawn, player.hand = player.hand[-1:], player.hand[:-1]
-        if (yield YesNoQuestion(game, player, _("Do you want to keep the card '%s' on your hand?" (drawn[0].name,) ))):
+        if (yield YesNoQuestion(game, player, _("Do you want to keep the card '%s' on your hand?", (drawn[0].name,) ))):
             player.hand.extend(drawn)
         else:
             player.discard_pile.extend(drawn)
