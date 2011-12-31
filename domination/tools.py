@@ -26,8 +26,8 @@ class Translatable(unicode):
             return self % self.parameters
         return t.ugettext(self[:]) % self.parameters
 
-    def __newargs__(self):
-        return (self.pristine_str, self.parameters)
+    def __reduce__(self):
+        return (Translatable, (self.pristine_str, self.parameters))
 
 
 def _(string, parameters=()):

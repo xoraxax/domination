@@ -704,7 +704,7 @@ class Kibitzer(object):
 
 class Player(object):
     is_ai = False
-    def __init__(self, name, game):
+    def __init__(self, name):
         self.name = name
         self.discard_pile = []
         self.deck = []
