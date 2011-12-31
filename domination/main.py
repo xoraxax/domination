@@ -217,7 +217,7 @@ def create_game():
         newname = "%s (%i)" % (name, ctr)
     if "card" in request.args:
         enabled_cards = set(request.args.getlist("card"))
-        enabled_editions = set(c.edition.name for c in CardTypeRegistry.keys2classes(request.form.getlist('card_key')))
+        enabled_editions = set(c.edition.key for c in CardTypeRegistry.keys2classes(request.args.getlist('card')))
     else:
         enabled_cards = enabled_editions = ()
     return render_template("create_game.html", editions=editions,

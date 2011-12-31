@@ -75,7 +75,7 @@
     <p>{% trans %}Editions:{% endtrans %}
       {% for edition in editions %}
       <input type="checkbox" name="edition" value="{{ edition.key }}"
-      {% if not edition.optional %}checked="checked" disabled="disabled"{% else %}{% if edition.name in enabled_editions %}checked="checked"{% endif %}{% endif %}>
+      {% if not edition.optional %}checked="checked" disabled="disabled"{% else %}{% if edition.key in enabled_editions %}checked="checked"{% endif %}{% endif %}>
       {{ edition.name }}
       {% endfor %}
     </p>
