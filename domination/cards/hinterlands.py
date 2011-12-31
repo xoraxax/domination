@@ -508,7 +508,7 @@ class Oracle(AttackCard):
     name = _("Oracle")
     edition = Hinterlands
     cost = 3
-    desc = _("Each player (including you) reveals the top 2 cards of his desk, "
+    desc = _("Each player (including you) reveals the top 2 cards of his deck, "
             "and you choose one: Either he discards them, or he puts them back on top "
             "in an order he chooses. +2 Cards")
 
