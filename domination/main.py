@@ -178,15 +178,17 @@ def logout():
 
 @app.route("/create_game", methods=['GET', 'POST'])
 @needs_login
-def create_game(): # XXX check for at most 10 sets
+def create_game():
     if request.method == 'POST':
         name = request.form['name']
         if name in app.games:
             return render_error(_("Game with this name is already existing!"))
         if not name:
             return render_error(_("Please enter a name!"))
-        game = DominationGame(name,
-                CardTypeRegistry.keys2classes(request.form.getlist('card_key')))
+        cards = CardTypeRegistry.keys2classes(request.form.getlist('card_key'))
+        if len(cards) != 10:
+            return render_error(_("Must specify 10 card sets!"))
+        game = DominationGame(name, cards)
         player = Player(session["username"], game)
         game.players.append(player)
         app.games[name] = GameRunner(game, player)
