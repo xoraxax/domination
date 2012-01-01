@@ -55,7 +55,7 @@ class Loan(TreasureCard):
     desc = _("When you play this, reveal cards from your deck until you reveal a treasure. Discard it or trash it. Discard the other cards.")
 
     def activate_action(self, game, player):
-        found_treasure = []
+        found_treasure = None
         to_be_discarded = []
         while True:
             ret = player.draw_cards(1)
@@ -65,16 +65,17 @@ class Loan(TreasureCard):
             for info_player in game.participants:
                 yield InfoRequest(game, info_player, _("%s reveals:", (player.name, )), [card])
             if isinstance(card, TreasureCard):
-                found_treasure.append(card)
+                found_treasure = card
                 break
             else:
                 to_be_discarded.append(card)
         player.discard_pile.extend(to_be_discarded)
-        if (yield YesNoQuestion(game, player,
-            _("Do you want to trash your Treasure?"))): #FIXME show which treasure was found, and ask trash/discard instead of yes/no
-            found_treasure.trash(game, player)
-        else:
-            player.discard_pile.extend(to_be_discarded)
+        if found_treasure is not None:
+            if (yield YesNoQuestion(game, player,
+                _("Do you want to trash your Treasure?"))): #FIXME show which treasure was found, and ask trash/discard instead of yes/no
+                found_treasure.trash(game, player)
+            else:
+                player.discard_pile.append(found_treasure)
 
 class Watchtower(ReactionCard):
     name = _("Watchtower")
